@@ -1,79 +1,67 @@
-create table role (
-	id int not null auto_increment,
-    rolename varchar(100) not null,
-    
-    primary key ( id ) 
+CREATE TABLE role (
+    id INT NOT NULL AUTO_INCREMENT,
+    rolename VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id)
 );
 
-
-create table user (
-	id int not null auto_increment,
-    firstname varchar(100) not null ,
-    secondname varchar(100) not null, 
-    email varchar(100) not null unique ,
-    pass varchar(100) not null ,
-    address varchar(250) not null ,
-    role_id int ,
-    
-    primary key (id) ,
-    foreign key (role_id) references role(id)
+CREATE TABLE user (
+    id INT NOT NULL AUTO_INCREMENT,
+    firstname VARCHAR(100) NOT NULL,
+    secondname VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    pass VARCHAR(100) NOT NULL,
+    address VARCHAR(250) NOT NULL,
+    role_id INT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (role_id)
+        REFERENCES role (id)
 );
 
-
-create table purchase (
-	id int not null auto_increment,
-    date_created date not null,
-    user_id int ,
-    status varchar(200) not null,
-    
-    primary key ( id ),
-    foreign key ( user_id ) references user(id)
-);
-    
-
-create table product(
-	id int not null auto_increment,
-    product_name varchar(200) not null unique,
-    description varchar (400),
-    price decimal(10,2) not null,
-    stock int not null,
-    artist varchar(100) not null,
-    category varchar(200) not null,
-    
-    primary key ( id )
-);
-    
-
-create table purchase_product (
-	purchase_id int,
-    product_id int,
-    nr_items int not null,
-    
-    foreign key ( purchase_id ) references purchase(id),
-    foreign key ( product_id ) references product(id)
-    
+CREATE TABLE purchase (
+    id INT NOT NULL AUTO_INCREMENT,
+    date_created DATE NOT NULL,
+    user_id INT,
+    status VARCHAR(200) NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id)
+        REFERENCES user (id)
 );
 
-
-
-create table cart (
-	id int not null auto_increment,
-    user_id int,
-    
-    primary key ( id ),
-    foreign key ( user_id ) references user(id)
-);
-    
-
-
-create table product_cart(
-	cart_id int,
-    product_id int,
-    nr_items int not null,
-    
-    foreign key ( cart_id ) references cart(id),
-    foreign key ( product_id ) references product(id)
+CREATE TABLE product (
+    id INT NOT NULL AUTO_INCREMENT,
+    product_name VARCHAR(200) NOT NULL UNIQUE,
+    description VARCHAR(400),
+    price DECIMAL(10 , 2 ) NOT NULL,
+    stock INT NOT NULL,
+    artist VARCHAR(100) NOT NULL,
+    category VARCHAR(200) NOT NULL,
+    PRIMARY KEY (id)
 );
 
-    
-	
+CREATE TABLE purchase_product (
+    purchase_id INT,
+    product_id INT,
+    nr_items INT NOT NULL,
+    FOREIGN KEY (purchase_id)
+        REFERENCES purchase (id),
+    FOREIGN KEY (product_id)
+        REFERENCES product (id)
+);
+
+CREATE TABLE cart (
+    id INT NOT NULL AUTO_INCREMENT,
+    user_id INT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id)
+        REFERENCES user (id)
+);
+
+CREATE TABLE product_cart (
+    cart_id INT,
+    product_id INT,
+    nr_items INT NOT NULL,
+    FOREIGN KEY (cart_id)
+        REFERENCES cart (id),
+    FOREIGN KEY (product_id)
+        REFERENCES product (id)
+);
