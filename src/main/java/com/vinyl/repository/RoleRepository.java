@@ -8,5 +8,4 @@ import com.vinyl.model.Role;
 @Repository
 public interface RoleRepository extends CrudRepository<Role, Integer> {
 
-	
 }
