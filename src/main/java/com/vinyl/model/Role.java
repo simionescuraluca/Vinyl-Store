@@ -17,11 +17,14 @@ public class Role {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
 	@GenericGenerator(name = "native", strategy = "native")
+	private Integer id;
 
-	private Long id;
-
+	@NotNull
 	@Column(nullable = false)
 	private String roleName;
+
+	public Role() {
+	}
 
 	public Role(@NotNull String roleName) {
 		this.roleName = roleName;
@@ -35,11 +38,11 @@ public class Role {
 		this.roleName = roleName;
 	}
 
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
