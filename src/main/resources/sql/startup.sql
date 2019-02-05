@@ -42,11 +42,14 @@ CREATE TABLE purchase_product (
     purchase_id INT NOT NULL,
     product_id INT NOT NULL,
     nr_items INT NOT NULL,
+    PRIMARY KEY (purchase_id, product_id),
     FOREIGN KEY (purchase_id)
         REFERENCES purchase (id),
     FOREIGN KEY (product_id)
         REFERENCES product (id)
+    
 );
+
 
 CREATE TABLE cart (
     id INT NOT NULL AUTO_INCREMENT,
@@ -60,6 +63,7 @@ CREATE TABLE product_cart (
     cart_id INT NOT NULL,
     product_id INT NOT NULL,
     nr_items INT NOT NULL,
+    PRIMARY KEY(cart_id, product_id),
     FOREIGN KEY (cart_id)
         REFERENCES cart (id),
     FOREIGN KEY (product_id)
