@@ -10,36 +10,36 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name="PRODUCT")
+@Table(name = "PRODUCT")
 public class Product {
 
 	@Id
 	@NotNull
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@NotEmpty
 	@Column(nullable = false)
 	private String productName;
-	
+
 	@NotEmpty
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private String description;
-	
+
 	@NotNull
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Integer price;
-	
+
 	@NotNull
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private Integer stock;
-	
+
 	@NotEmpty
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private String artist;
-	
+
 	@NotEmpty
-	@Column(nullable=false)
+	@Column(nullable = false)
 	private String category;
 
 	public Integer getId() {
@@ -97,8 +97,4 @@ public class Product {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-
-	
-	
-	
 }

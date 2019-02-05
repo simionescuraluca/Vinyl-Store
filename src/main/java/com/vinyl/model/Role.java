@@ -1,6 +1,5 @@
 package com.vinyl.model;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,15 +16,10 @@ public class Role {
 	@NotNull
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@NotNull
 	@Column(nullable = false)
 	private String roleName;
-
-
-	public Role(@NotNull String roleName) {
-		this.roleName = roleName;
-	}
 
 	public Integer getId() {
 		return id;

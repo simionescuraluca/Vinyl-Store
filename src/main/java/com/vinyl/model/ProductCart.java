@@ -21,13 +21,13 @@ public class ProductCart {
 	@NotNull
 	@Column(nullable = false)
 	private Integer nrItems;
-	
+
 	@Id
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "cart_id", nullable = false)
 	private Cart cart;
-	
+
 	@Id
 	@NotNull
 	@ManyToOne
@@ -57,21 +57,21 @@ public class ProductCart {
 	public void setProduct(Product product) {
 		this.product = product;
 	}
-	
+
 	@SuppressWarnings("serial")
 	public static class ProductCartId implements Serializable {
-		
+
 		private Cart cart;
 		private Product product;
-		
+
 		public ProductCartId(Cart cart, Product product) {
-			
+
 			this.cart = cart;
 			this.product = product;
 		}
 
 		public ProductCartId() {
-			
+
 		}
 
 		@Override
@@ -120,8 +120,6 @@ public class ProductCart {
 		public void setProduct(Product product) {
 			this.product = product;
 		}
-		
-		
-		
+
 	}
 }
