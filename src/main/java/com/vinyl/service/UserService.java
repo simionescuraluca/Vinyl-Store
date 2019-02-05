@@ -23,14 +23,14 @@ public class UserService {
 			throw new RuntimeException("User already exists!");
 		}
 
-		Role r = new Role("ADMIN");
+		Role r = new Role("BASIC_USER");
 		r = roleRepository.save(r);
 		user.setAddress("Defaul Address");
 		user.setRole(r);
 
 		return userRepository.save(user);
 
-	}// adaug un user in bd; se poate sa existe deja;
+	}
 
 	public void deleteUser(Integer id) {
 		userRepository.deleteById(id);
