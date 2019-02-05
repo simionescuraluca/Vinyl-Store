@@ -1,6 +1,5 @@
 package com.vinyl.model;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,30 +8,23 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "ROLE")
 public class Role {
 
 	@Id
-	@NotNull
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
-	@NotNull
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+	@GenericGenerator(name = "native", strategy = "native")
+
+	private Long id;
+
 	@Column(nullable = false)
 	private String roleName;
 
-
 	public Role(@NotNull String roleName) {
 		this.roleName = roleName;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public String getRoleName() {
@@ -42,4 +34,13 @@ public class Role {
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 }

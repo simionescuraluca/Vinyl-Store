@@ -11,14 +11,16 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "USER")
 public class User {
 
 	@Id
-	@NotNull
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+	@GenericGenerator(name = "native", strategy = "native")
+	private Long id;
 
 	@NotEmpty
 	@Column(nullable = false)
@@ -26,7 +28,7 @@ public class User {
 
 	@NotNull
 	@Column(nullable = false)
-	private String second_name;
+	private String secondName;
 
 	@NotNull
 	@Column(nullable = false)
@@ -49,28 +51,28 @@ public class User {
 
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public String getFirst_name() {
+	public String getFirstName() {
 		return firstName;
 	}
 
-	public void setFirst_name(String first_name) {
-		this.firstName = first_name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getSecond_name() {
-		return second_name;
+	public String getSecondName() {
+		return secondName;
 	}
 
-	public void setSecond_name(String second_name) {
-		this.second_name = second_name;
+	public void setSecondName(String secondName) {
+		this.secondName = secondName;
 	}
 
 	public String getEmail() {
