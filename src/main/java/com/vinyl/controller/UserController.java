@@ -28,6 +28,7 @@ public class UserController {
 		user.setEmail(userDTO.getEmail());
 		user.setPass(userDTO.getPass());
 
+		
 		userService.addUser(user);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 
