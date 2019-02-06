@@ -8,25 +8,26 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "ROLE")
 public class Role {
 
 	@Id
-	@NotNull
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+	@GenericGenerator(name = "native", strategy = "native")
 	private Integer id;
 
 	@NotNull
 	@Column(nullable = false)
 	private String roleName;
 
-	public Integer getId() {
-		return id;
+	public Role() {
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public Role(@NotNull String roleName) {
+		this.roleName = roleName;
 	}
 
 	public String getRoleName() {
@@ -36,4 +37,13 @@ public class Role {
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 }
