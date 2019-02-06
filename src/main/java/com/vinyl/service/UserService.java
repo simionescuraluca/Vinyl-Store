@@ -1,6 +1,7 @@
 package com.vinyl.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.vinyl.model.Role;
@@ -17,6 +18,9 @@ public class UserService {
 	@Autowired
 	private RoleRepository roleRepository;
 
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+
 	public User addUser(User user) {
 
 		if (userRepository.findByEmail(user.getEmail()) != null) {
@@ -28,6 +32,7 @@ public class UserService {
 		user.setAddress("Defaul Address");
 		user.setRole(r);
 
+		user.setPass(passwordEncoder.encode(user.getPass()));
 		return userRepository.save(user);
 
 	}
