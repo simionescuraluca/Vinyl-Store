@@ -30,7 +30,8 @@ public class UserService {
 
 		Validation accountValidation = new Validation();
 		accountValidation.validateNames(user);
-
+		accountValidation.validateEmail(user);
+		
 		return userRepository.save(user);
 
 	}
