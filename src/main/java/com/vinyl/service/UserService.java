@@ -28,7 +28,7 @@ public class UserService {
 		user.setAddress("Defaul Address");
 		user.setRole(r);
 
-		Validation accountValidation = new Validation();
+		Validator accountValidation = new Validator();
 		accountValidation.validateNames(user);
 
 		return userRepository.save(user);
