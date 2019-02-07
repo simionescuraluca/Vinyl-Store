@@ -36,6 +36,7 @@ public class UserService {
 		user.setRole(r);
 
 		accountValidator.validateNames(user);
+		accountValidator.validateEmail(user);
 
 		user.setPass(passwordEncoder.encode(user.getPass()));
 		return userRepository.save(user);
