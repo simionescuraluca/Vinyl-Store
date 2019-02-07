@@ -21,6 +21,9 @@ public class UserService {
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 
+	@Autowired
+	private Validator accountValidator;
+
 	public User addUser(User user) {
 
 		if (userRepository.findByEmail(user.getEmail()) != null) {
@@ -31,6 +34,8 @@ public class UserService {
 		r = roleRepository.save(r);
 		user.setAddress("Defaul Address");
 		user.setRole(r);
+
+		accountValidator.validateNames(user);
 
 		user.setPass(passwordEncoder.encode(user.getPass()));
 		return userRepository.save(user);
@@ -44,5 +49,4 @@ public class UserService {
 	public User findByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
-
 }
