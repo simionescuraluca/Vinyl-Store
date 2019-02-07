@@ -1,4 +1,3 @@
-
 package com.vinyl;
 
 import org.springframework.boot.SpringApplication;
