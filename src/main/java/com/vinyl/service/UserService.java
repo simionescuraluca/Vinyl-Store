@@ -33,7 +33,6 @@ public class UserService {
 		accountValidation.validateEmail(user);
 		
 		return userRepository.save(user);
-
 	}
 
 	public void deleteUser(Integer id) {
