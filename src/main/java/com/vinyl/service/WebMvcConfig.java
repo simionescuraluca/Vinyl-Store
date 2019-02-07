@@ -12,9 +12,4 @@ public class WebMvcConfig {
 		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 		return bCryptPasswordEncoder;
 	}
-
-	@Bean
-	public Validator validator() {
-		return new Validator();
-	}
 }

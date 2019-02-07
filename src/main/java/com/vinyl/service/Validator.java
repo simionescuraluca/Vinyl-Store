@@ -3,9 +3,12 @@ package com.vinyl.service;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.stereotype.Component;
+
 import com.vinyl.model.User;
 import com.vinyl.service.exception.BadRequestException;
 
+@Component
 public class Validator {
 
 	public static final String VALID_NAME_REGEX = "^[A-Z][a-zA-Z]+$";
