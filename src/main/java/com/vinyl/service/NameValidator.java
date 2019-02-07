@@ -11,7 +11,7 @@ import com.vinyl.service.exception.BadRequestException;
 @Component
 public class NameValidator {
 
-	public static final String VALID_NAME_REGEX = "^[A-Z][a-zA-Z]+$";
+	private static final String VALID_NAME_REGEX = "^[A-Z][a-zA-Z]+$";
 	private static final Pattern NAME_PATTERN = Pattern.compile(VALID_NAME_REGEX);
 
 	
