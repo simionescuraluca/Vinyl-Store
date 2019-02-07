@@ -1,14 +1,8 @@
 package com.vinyl.service;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-//import javax.ws.rs.BadRequestException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vinyl.service.exception.BadRequestException;
 import com.vinyl.model.Role;
 import com.vinyl.model.User;
 import com.vinyl.repository.RoleRepository;
@@ -34,13 +28,8 @@ public class UserService {
 		user.setAddress("Defaul Address");
 		user.setRole(r);
 
-		Pattern p = Pattern.compile("^[A-Z][a-zA-Z]+$");
-		Matcher matcher1 = p.matcher(user.getFirstName());
-		Matcher matcher2 = p.matcher(user.getSecondName());
-
-		if (!matcher1.find() || !matcher2.find()) {
-			throw new BadRequestException("The names should start with capital letter and have more than 1 character!");
-		}
+		Validation accountValidation = new Validation();
+		accountValidation.validateNames(user);
 
 		return userRepository.save(user);
 
@@ -53,5 +42,4 @@ public class UserService {
 	public User findByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
-
 }
