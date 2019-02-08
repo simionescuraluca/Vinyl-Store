@@ -8,6 +8,7 @@ import com.vinyl.model.Role;
 import com.vinyl.model.User;
 import com.vinyl.repository.RoleRepository;
 import com.vinyl.repository.UserRepository;
+import com.vinyl.service.validation.ValidatorFactory;
 
 @Service("userService")
 public class UserService {
@@ -22,7 +23,7 @@ public class UserService {
 	private BCryptPasswordEncoder passwordEncoder;
 
 	@Autowired
-	private ValidatorFactory validatorFactory;;
+	private ValidatorFactory validatorFactory;
 
 	public User addUser(User user) {
 
@@ -37,6 +38,7 @@ public class UserService {
 
 		validatorFactory.getUserNameValidator().validate(user);
 		validatorFactory.getUserEmailValidator().validate(user);
+		validatorFactory.getUserPasswordValidator().validate(user);
 
 		user.setPass(passwordEncoder.encode(user.getPass()));
 		return userRepository.save(user);

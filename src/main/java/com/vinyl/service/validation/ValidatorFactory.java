@@ -1,4 +1,4 @@
-package com.vinyl.service;
+package com.vinyl.service.validation;
 
 import org.springframework.stereotype.Component;
 
@@ -13,5 +13,9 @@ public class ValidatorFactory {
 
 	public Validator<User> getUserEmailValidator() {
 		return new UserEmailValidator();
+	}
+
+	public Validator<User> getUserPasswordValidator() {
+		return new UserPasswordValidator();
 	}
 }
