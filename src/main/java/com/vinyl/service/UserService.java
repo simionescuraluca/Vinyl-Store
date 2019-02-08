@@ -22,7 +22,7 @@ public class UserService {
 	private BCryptPasswordEncoder passwordEncoder;
 
 	@Autowired
-	private ValidatorFactory accountValidator;;
+	private ValidatorFactory validatorFactory;;
 
 	public User addUser(User user) {
 
@@ -35,11 +35,8 @@ public class UserService {
 		user.setAddress("Defaul Address");
 		user.setRole(r);
 
-		Validator<User> nameValidator = accountValidator.getUserNameValidator();
-		nameValidator.validate(user);
-
-		Validator<User> emailValidator = accountValidator.getUserEmailValidator();
-		emailValidator.validate(user);
+		validatorFactory.getUserNameValidator().validate(user);
+		validatorFactory.getUserEmailValidator().validate(user);
 
 		user.setPass(passwordEncoder.encode(user.getPass()));
 		return userRepository.save(user);
