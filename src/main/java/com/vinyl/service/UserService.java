@@ -37,6 +37,7 @@ public class UserService {
 
 		validatorFactory.getUserNameValidator().validate(user);
 		validatorFactory.getUserEmailValidator().validate(user);
+		validatorFactory.getUserPasswordValidator().validate(user);
 
 		user.setPass(passwordEncoder.encode(user.getPass()));
 		return userRepository.save(user);

@@ -14,4 +14,8 @@ public class ValidatorFactory {
 	public Validator<User> getUserEmailValidator() {
 		return new UserEmailValidator();
 	}
+
+	public Validator<User> getUserPasswordValidator() {
+		return new UserPasswordValidator();
+	}
 }
