@@ -1,8 +1,6 @@
 package com.vinyl.service;
 
-import com.vinyl.model.User;
+public interface Validator<T> {
 
-public interface Validator {
-
-	public void validate(User user);
+	public void validate(T obj);
 }

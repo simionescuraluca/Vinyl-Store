@@ -2,19 +2,16 @@ package com.vinyl.service;
 
 import org.springframework.stereotype.Component;
 
+import com.vinyl.model.User;
+
 @Component
 public class ValidatorFactory {
 
-	public Validator getValidator(String validatorType) {
-		if (validatorType == null) {
-			return null;
-		}
-		if (validatorType.equalsIgnoreCase("NAME_VALIDATOR")) {
-			return new NameValidator();
+	public Validator<User> getUserNameValidator() {
+		return new UserNameValidator();
+	}
 
-		} else if (validatorType.equalsIgnoreCase("EMAIL_VALIDATOR")) {
-			return new EmailValidator();
-		}
-		return null;
+	public Validator<User> getUserEmailValidator() {
+		return new UserEmailValidator();
 	}
 }

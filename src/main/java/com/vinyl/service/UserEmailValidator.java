@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import com.vinyl.model.User;
 import com.vinyl.service.exception.BadRequestException;
 
-public class EmailValidator implements Validator {
+public class UserEmailValidator implements Validator<User> {
 
 	private static final String VALID_EMAIL_REGEX = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";

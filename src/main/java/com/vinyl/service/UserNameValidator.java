@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import com.vinyl.model.User;
 import com.vinyl.service.exception.BadRequestException;
 
-public class NameValidator implements Validator {
+public class UserNameValidator implements Validator<User> {
 
 	private static final String VALID_NAME_REGEX = "^[A-Z][a-zA-Z]+$";
 	private static final Pattern NAME_PATTERN = Pattern.compile(VALID_NAME_REGEX);

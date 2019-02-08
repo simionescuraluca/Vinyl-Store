@@ -35,10 +35,10 @@ public class UserService {
 		user.setAddress("Defaul Address");
 		user.setRole(r);
 
-		Validator nameValidator = accountValidator.getValidator("NAME_VALIDATOR");
+		Validator<User> nameValidator = accountValidator.getUserNameValidator();
 		nameValidator.validate(user);
 
-		Validator emailValidator = accountValidator.getValidator("EMAIL_VALIDATOR");
+		Validator<User> emailValidator = accountValidator.getUserEmailValidator();
 		emailValidator.validate(user);
 
 		user.setPass(passwordEncoder.encode(user.getPass()));
