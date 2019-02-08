@@ -1,4 +1,4 @@
-package com.vinyl.service;
+package com.vinyl.service.validation;
 
 public interface Validator<T> {
 

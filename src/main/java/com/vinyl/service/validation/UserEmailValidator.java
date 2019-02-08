@@ -1,4 +1,4 @@
-package com.vinyl.service;
+package com.vinyl.service.validation;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

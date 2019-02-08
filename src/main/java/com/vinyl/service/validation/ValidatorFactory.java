@@ -1,4 +1,4 @@
-package com.vinyl.service;
+package com.vinyl.service.validation;
 
 import org.springframework.stereotype.Component;
 

@@ -8,6 +8,7 @@ import com.vinyl.model.Role;
 import com.vinyl.model.User;
 import com.vinyl.repository.RoleRepository;
 import com.vinyl.repository.UserRepository;
+import com.vinyl.service.validation.ValidatorFactory;
 
 @Service("userService")
 public class UserService {
