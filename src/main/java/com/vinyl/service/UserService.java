@@ -22,7 +22,7 @@ public class UserService {
 	private BCryptPasswordEncoder passwordEncoder;
 
 	@Autowired
-	private ValidatorFactory validatorFactory;;
+	private ValidatorFactory validatorFactory;
 
 	public User addUser(User user) {
 
