@@ -27,10 +27,6 @@ public class UserService {
 
 	public User addUser(User user) {
 
-		if (userRepository.findByEmail(user.getEmail()) != null) {
-			throw new RuntimeException("User already exists!");
-		}
-
 		Role r = new Role("BASIC_USER");
 		r = roleRepository.save(r);
 		user.setAddress("Defaul Address");

@@ -14,7 +14,7 @@ public class UserPasswordValidator implements Validator<User> {
 	@Override
 	public void validate(User user) {
 
-		Matcher matcher = PASS_PATTERN.matcher(user.getEmail());
+		Matcher matcher = PASS_PATTERN.matcher(user.getPass());
 
 		if (!matcher.find()) {
 			throw new BadRequestException(
