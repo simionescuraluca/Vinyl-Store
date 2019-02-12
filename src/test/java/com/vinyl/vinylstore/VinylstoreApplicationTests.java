@@ -12,4 +12,5 @@ public class VinylstoreApplicationTests {
 	@Test
 	public void contextLoads() {
 	}
+
 }
