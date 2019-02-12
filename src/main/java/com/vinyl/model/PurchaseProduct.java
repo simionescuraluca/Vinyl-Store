@@ -50,6 +50,7 @@ public class PurchaseProduct {
 		this.product = product;
 	}
 
+	@SuppressWarnings("serial")
 	public static class PurchaseProductId implements Serializable {
 
 		private Purchase purchase;

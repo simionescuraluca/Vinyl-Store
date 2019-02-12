@@ -20,7 +20,6 @@ public class UserEmailValidator implements Validator<User> {
 		this.userRepository = userRepository;
 	}
 
-
 	@Override
 	public void validate(User user) {
 
@@ -29,9 +28,7 @@ public class UserEmailValidator implements Validator<User> {
 		if (!matcher.find()) {
 			throw new BadRequestException("The email address is invalid!");
 		}
-
-		if (userRepository.findByEmail(user.getEmail()) != null) {
-			throw new BadRequestException("Email address already exists!");
-		}
+		
+		userRepository.findByEmail(user.getEmail()).ifPresent(((e) -> new BadRequestException("Email address already exists!")));
 	}
 }

@@ -12,5 +12,10 @@ public class VinylstoreApplicationTests {
 	@Test
 	public void contextLoads() {
 	}
+	
+	@Test
+	public void passTest() {
+		
+	}
 
 }
