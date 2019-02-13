@@ -1,11 +1,14 @@
 package com.vinyl.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.vinyl.model.Role;
 import com.vinyl.model.User;
+import com.vinyl.modelDTO.DeleteUserDTO;
 import com.vinyl.repository.RoleRepository;
 import com.vinyl.repository.UserRepository;
 import com.vinyl.service.validation.ValidatorFactory;
@@ -41,11 +44,10 @@ public class UserService {
 
 	}
 
-	public void deleteUser(Integer id) {
-		userRepository.deleteById(id);
-	}
+	public void deleteUser(DeleteUserDTO credentials) {
 
-	public User findByEmail(String email) {
-		return userRepository.findByEmail(email);
+		validatorFactory.getDeleteUserValidator().validate(credentials);
+		Optional<User> user = userRepository.findByEmail(credentials.getEmail());
+		user.ifPresent(userRepository::delete);
 	}
 }

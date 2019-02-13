@@ -2,6 +2,7 @@ package com.vinyl.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,7 +28,13 @@ public class Cart {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@ManyToMany
+	@ManyToMany(cascade =
+        {
+                CascadeType.DETACH,
+                CascadeType.MERGE,
+                CascadeType.REFRESH,
+                CascadeType.PERSIST
+        })
 	@JoinTable(name = "PRODUCT_CART", joinColumns = @JoinColumn(name = "cart_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
 	public List<Product> products;
 
