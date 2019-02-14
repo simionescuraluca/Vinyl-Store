@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+	<changeSet id="1_create_address_table" author="raluca">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="ADDRESS" schemaName="vinylstore" />
+			</not>
+		</preConditions>
+		<createTable tableName="ADDRESS" schemaName="vinylstore">
+			<column name="id" type="int">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="country" type="varchar(100)" />
+			<column name="city" type="varchar(100)" />
+			<column name="street" type="varchar(100)" />
+			<column name="number" type="int" />
+		</createTable>
+	</changeSet>
+
+	<changeSet id="2_drop_user_address_column" author="raluca">
+		<preConditions onFail="MARK_RAN">
+			<columnExists columnName="address" tableName="USER" />
+		</preConditions>
+		<dropColumn schemaName="vinylstore" columnName="address"
+			tableName="USER" />
+	</changeSet>
+
+	<changeSet id="3_add_user_address_id_" author="raluca">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<columnExists columnName="address_id" tableName="USER" />
+			</not>
+		</preConditions>
+		<addColumn schemaName="vinylstore" tableName="USER">
+			<column name="address_id" type="int" />
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="4_add_user_address_id_fk" author="raluca">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<foreignKeyConstraintExists
+					foreignKeyName="fk_user_address_id" />
+			</not>
+		</preConditions>
+		<addForeignKeyConstraint
+			constraintName="fk_user_address_id" baseTableName="USER"
+			baseColumnNames="address_id" baseTableSchemaName="vinylstore"
+			referencedTableName="ADDRESS" referencedColumnNames="id"
+			referencedTableSchemaName="vinylstore" />
+	</changeSet>
+</databaseChangeLog>
