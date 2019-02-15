@@ -12,14 +12,40 @@
 			</not>
 		</preConditions>
 		<createTable tableName="ADDRESS" schemaName="vinylstore">
-			<column name="id" type="int">
+			<column name="id" type="int" autoIncrement="true"
+				startWith="1">
 				<constraints primaryKey="true" />
 			</column>
-			<column name="country" type="varchar(100)" />
-			<column name="city" type="varchar(100)" />
-			<column name="street" type="varchar(100)" />
-			<column name="number" type="int" />
+			<column name="country" type="varchar(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="city" type="varchar(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="street" type="varchar(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="number" type="int">
+				<constraints nullable="false" />
+			</column>
+
 		</createTable>
+	</changeSet>
+
+	<changeSet id="2_add_uq_constraint" author="raluca">
+		<preConditions>
+			<sqlCheck expectedResult="0">
+				select count(*)
+				from
+				information_schema.table_constraints
+				where table_name='address'and
+				table_schema='vinylstore' and
+				constraint_type='UNIQUE';
+			</sqlCheck>
+		</preConditions>
+		<addUniqueConstraint
+			columnNames="country, city, street, number" tableName="ADDRESS"
+			schemaName="vinylstore" constraintName="uq_address" />
 	</changeSet>
 
 	<changeSet id="2_drop_user_address_column" author="raluca">
@@ -37,11 +63,48 @@
 			</not>
 		</preConditions>
 		<addColumn schemaName="vinylstore" tableName="USER">
-			<column name="address_id" type="int" />
+			<column name="address_id" type="int">
+			</column>
 		</addColumn>
 	</changeSet>
 
-	<changeSet id="4_add_user_address_id_fk" author="raluca">
+	<changeSet id="4_insert_default_address_in_address"
+		author="raluca">
+		<preConditions onFail="MARK_RAN">
+			<sqlCheck expectedResult="0">
+				SELECT
+				COUNT(1)
+				FROM
+				ADDRESS
+				WHERE
+				((ADDRESS.country="Romania") AND
+				(ADDRESS.city="Iasi") AND
+				(ADDRESS.street="Strada Palat") AND
+				(ADDRESS.number=1));
+			</sqlCheck>
+		</preConditions>
+		<sql>
+			INSERT INTO ADDRESS(country,city,street,number)
+			values("Romania","Iasi","Strada Palat", 1);
+		</sql>
+	</changeSet>
+
+	<changeSet id="5_update_user_address_id" author="raluca">
+		<sql>
+			UPDATE USER
+			SET
+			USER.address_id=(SELECT ADDRESS.id from ADDRESS
+			WHERE
+			(ADDRESS.country="Romania") AND
+			(ADDRESS.city="Iasi") AND
+			(ADDRESS.street="Strada Palat") AND
+			(ADDRESS.number=1)
+			)
+			WHERE USER.address_id=null;
+		</sql>
+	</changeSet>
+
+	<changeSet id="6_add_user_address_id_fk" author="raluca">
 		<preConditions onFail="MARK_RAN">
 			<not>
 				<foreignKeyConstraintExists
