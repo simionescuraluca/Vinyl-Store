@@ -100,7 +100,8 @@
 			(ADDRESS.street="Strada Palat") AND
 			(ADDRESS.number=1)
 			)
-			WHERE USER.address_id=null;
+			WHERE
+			USER.address_id=null;
 		</sql>
 	</changeSet>
 
@@ -116,5 +117,18 @@
 			baseColumnNames="address_id" baseTableSchemaName="vinylstore"
 			referencedTableName="ADDRESS" referencedColumnNames="id"
 			referencedTableSchemaName="vinylstore" />
+	</changeSet>
+
+	<changeSet id="7_add_not_null_address_id" author="raluca">
+		<preConditions onFail="MARK_RAN">
+			<sqlCheck expectedResult="NO">
+				SELECT is_Nullable
+				FROM INFORMATION_SCHEMA.COLUMNS
+				WHERE table_name='USER'
+				AND column_name='address_id'
+			</sqlCheck>
+		</preConditions>
+		<addNotNullConstraint columnDataType="int"
+			columnName="address_id" schemaName="vinylstore" tableName="USER" />
 	</changeSet>
 </databaseChangeLog>
