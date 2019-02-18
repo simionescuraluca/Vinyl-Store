@@ -123,11 +123,9 @@
 		<preConditions onFail="MARK_RAN">
 			<sqlCheck expectedResult="NO">
 				SELECT is_Nullable
-				FROM
-				INFORMATION_SCHEMA.COLUMNS
+				FROM INFORMATION_SCHEMA.COLUMNS
 				WHERE table_name='USER'
-				AND
-				column_name='address_id'
+				AND column_name='address_id'
 			</sqlCheck>
 		</preConditions>
 		<addNotNullConstraint columnDataType="int"
