@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vinyl.model.User;
-import com.vinyl.modelDTO.DeleteUserDTO;
+import com.vinyl.modelDTO.EmailPassDTO;
 import com.vinyl.modelDTO.UserDTO;
 import com.vinyl.service.UserService;
 
@@ -34,10 +34,17 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/users", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<?> deleteUser(@RequestBody DeleteUserDTO credentials) {
+	public ResponseEntity<?> deleteUser(@RequestBody EmailPassDTO credentials) {
 
 		userService.deleteUser(credentials);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+	
+	@RequestMapping(value="/users/login", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> userLogin(@RequestBody EmailPassDTO loginInfo) {
+		
+		 String token=userService.loginUser(loginInfo);
+		return new ResponseEntity<>(token,HttpStatus.OK);
 	}
 
 }

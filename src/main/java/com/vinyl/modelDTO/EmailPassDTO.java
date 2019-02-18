@@ -1,6 +1,6 @@
 package com.vinyl.modelDTO;
 
-public class DeleteUserDTO {
+public class EmailPassDTO {
 
 	private String email;
 	private String pass;
