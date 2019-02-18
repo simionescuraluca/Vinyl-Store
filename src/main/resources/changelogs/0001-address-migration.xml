@@ -89,7 +89,7 @@
 		</sql>
 	</changeSet>
 
-	<changeSet id="5_update_user_address_id" author="raluca">
+	<changeSet id="5_update_user_address_id" author="raluca" runOnChange="true">
 		<sql>
 			UPDATE USER
 			SET
@@ -101,7 +101,7 @@
 			(ADDRESS.number=1)
 			)
 			WHERE
-			USER.address_id=null;
+			USER.address_id is null;
 		</sql>
 	</changeSet>
 
@@ -119,16 +119,18 @@
 			referencedTableSchemaName="vinylstore" />
 	</changeSet>
 
-	<changeSet id="7_add_not_null_address_id" author="raluca">
+	<changeSet id="7_add_not_null_address_id" author="raluca" runOnChange="true">
 		<preConditions onFail="MARK_RAN">
-			<sqlCheck expectedResult="NO">
-				SELECT is_Nullable
+			<sqlCheck expectedResult="1">
+				SELECT COUNT(*)
 				FROM INFORMATION_SCHEMA.COLUMNS
 				WHERE table_name='USER'
-				AND column_name='address_id'
+				AND column_name='address_id' AND IS_NULLABLE = "YES";
 			</sqlCheck>
 		</preConditions>
-		<addNotNullConstraint columnDataType="int"
-			columnName="address_id" schemaName="vinylstore" tableName="USER" />
+		<sql>
+			ALTER TABLE vinylstore.USER MODIFY address_id INT NOT NULL;
+		</sql>
+		<addNotNullConstraint columnDataType="int" schemaName="vinylstore" tableName="USER" columnName="address_id"/>
 	</changeSet>
 </databaseChangeLog>
