@@ -40,8 +40,8 @@ public class UserService {
 		user.setRole(r);
 
 
-		Address a = addressRepository.findByCountryAndCityAndStreetAndNumber("Romania", "Iasi", "Strada Palat", 1);
-		user.setAddress(a);
+		Address defaultAddress = addressRepository.findByCountryAndCityAndStreetAndNumber("Romania", "Iasi", "Strada Palat", 1);
+		user.setAddress(defaultAddress);
 
 		validatorFactory.getUserNameValidator().validate(user);
 		validatorFactory.getUserEmailValidator().validate(user);
