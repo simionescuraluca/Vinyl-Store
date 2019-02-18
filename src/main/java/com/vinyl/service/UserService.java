@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.vinyl.model.Address;
 import com.vinyl.model.Role;
 import com.vinyl.model.User;
-import com.vinyl.modelDTO.DeleteUserDTO;
+import com.vinyl.modelDTO.EmailPassDTO;
 import com.vinyl.repository.AddressRepository;
 import com.vinyl.repository.RoleRepository;
 import com.vinyl.repository.UserRepository;
@@ -25,7 +25,7 @@ public class UserService {
 	private RoleRepository roleRepository;
 	
 	@Autowired
-	private AddressRepository addressRepository;;
+	private AddressRepository addressRepository;
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -52,10 +52,17 @@ public class UserService {
 
 	}
 
-	public void deleteUser(DeleteUserDTO credentials) {
+	public void deleteUser(EmailPassDTO credentials) {
 
-		validatorFactory.getDeleteUserValidator().validate(credentials);
+		validatorFactory.getEmailAndPasswordValidator().validate(credentials);
 		Optional<User> user = userRepository.findByEmail(credentials.getEmail());
 		user.ifPresent(userRepository::delete);
+	}
+
+	public String loginUser(EmailPassDTO loginInfo) {
+
+		validatorFactory.getEmailAndPasswordValidator().validate(loginInfo);
+		return "dummy token";
+
 	}
 }

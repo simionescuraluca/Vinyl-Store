@@ -5,7 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.vinyl.model.User;
-import com.vinyl.modelDTO.DeleteUserDTO;
+import com.vinyl.modelDTO.EmailPassDTO;
 import com.vinyl.repository.UserRepository;
 
 @Component
@@ -32,8 +32,8 @@ public class ValidatorFactory {
 		return new UserPasswordValidator();
 	}
 	
-	public Validator<DeleteUserDTO> getDeleteUserValidator() {
-		return new DeleteValidator(userRepository, passwordEncoder);
+	public Validator<EmailPassDTO> getEmailAndPasswordValidator() {
+		return new EmailAndPasswordValidator(userRepository, passwordEncoder);
 	}
 
 }
