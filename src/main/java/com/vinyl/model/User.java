@@ -43,23 +43,23 @@ public class User {
 	@Column(nullable = false)
 	private String pass;
 
-	@NotEmpty
-	@Column(nullable = false)
-	private String address;
-
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "role_id", nullable = false)
 	private Role role;
 
-	@OneToMany(mappedBy = "user",cascade=CascadeType.REMOVE)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	private List<Purchase> purchases = new ArrayList<Purchase>();
-	
-	@OneToMany(mappedBy = "user",cascade=CascadeType.REMOVE)
-	private List<Cart> carts = new ArrayList<Cart>();
-	
-	public User() {
 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	private List<Cart> carts = new ArrayList<Cart>();
+
+	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "address_id", nullable = false)
+	private Address address;
+
+	public User() {
 	}
 
 	public Integer getId() {
@@ -102,14 +102,6 @@ public class User {
 		this.pass = pass;
 	}
 
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
 	public Role getRole() {
 		return role;
 	}
@@ -117,5 +109,30 @@ public class User {
 	public void setRole(Role role) {
 		this.role = role;
 	}
+
+	public List<Purchase> getPurchases() {
+		return purchases;
+	}
+
+	public void setPurchases(List<Purchase> purchases) {
+		this.purchases = purchases;
+	}
+
+	public List<Cart> getCarts() {
+		return carts;
+	}
+
+	public void setCarts(List<Cart> carts) {
+		this.carts = carts;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
 
 }

@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.vinyl.model.Address;
 import com.vinyl.model.Role;
 import com.vinyl.model.User;
 import com.vinyl.modelDTO.DeleteUserDTO;
+import com.vinyl.repository.AddressRepository;
 import com.vinyl.repository.RoleRepository;
 import com.vinyl.repository.UserRepository;
 import com.vinyl.service.validation.ValidatorFactory;
@@ -21,6 +23,9 @@ public class UserService {
 
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	@Autowired
+	private AddressRepository addressRepository;;
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -32,8 +37,11 @@ public class UserService {
 
 		Role r = new Role("BASIC_USER");
 		r = roleRepository.save(r);
-		user.setAddress("Defaul Address");
 		user.setRole(r);
+
+
+		Address defaultAddress = addressRepository.findByCountryAndCityAndStreetAndNumber("Romania", "Iasi", "Strada Palat", 1);
+		user.setAddress(defaultAddress);
 
 		validatorFactory.getUserNameValidator().validate(user);
 		validatorFactory.getUserEmailValidator().validate(user);
