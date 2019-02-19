@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vinyl.model.Token;
 import com.vinyl.model.User;
 import com.vinyl.modelDTO.EmailPassDTO;
+import com.vinyl.modelDTO.TokenDTO;
 import com.vinyl.modelDTO.UserDTO;
 import com.vinyl.service.UserService;
 
@@ -43,8 +45,12 @@ public class UserController {
 	@RequestMapping(value="/users/login", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> userLogin(@RequestBody EmailPassDTO loginInfo) {
 		
-		 String token=userService.loginUser(loginInfo);
-		return new ResponseEntity<>(token,HttpStatus.OK);
+		 Token token=userService.loginUser(loginInfo);
+		 
+		 TokenDTO tokenDTO = new TokenDTO();
+		 tokenDTO.setHash(token.getHash());
+		 
+		return new ResponseEntity<>(tokenDTO,HttpStatus.OK);
 	}
 
 }

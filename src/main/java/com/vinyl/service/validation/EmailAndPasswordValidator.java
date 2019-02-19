@@ -13,6 +13,8 @@ public class EmailAndPasswordValidator implements Validator<EmailPassDTO> {
 
 	private final UserRepository userRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
+	
+	private User user;
 
 	public EmailAndPasswordValidator(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
@@ -23,10 +25,20 @@ public class EmailAndPasswordValidator implements Validator<EmailPassDTO> {
 	public void validate(EmailPassDTO credentials) {
 
 		Optional<User> toBeDeleted = userRepository.findByEmail(credentials.getEmail());
-		toBeDeleted.orElseThrow(() -> new BadRequestException("Cannot validate email during delete process!"));
+		toBeDeleted.orElseThrow(() -> new BadRequestException("Cannot validate email during process!"));
 		toBeDeleted.map(e -> e.getPass()).filter(e -> passwordEncoder.matches(credentials.getPass(), e))
-				.orElseThrow((() -> new BadRequestException("Cannot validate password during delete process!")));
+				.orElseThrow((() -> new BadRequestException("Cannot validate password during process!")));
 
 	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
+	
 
 }
