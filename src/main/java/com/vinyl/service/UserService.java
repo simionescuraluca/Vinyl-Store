@@ -67,11 +67,6 @@ public class UserService {
 	public Token loginUser(EmailPassDTO info) {
 
 		validatorFactory.getEmailAndPasswordValidator().validate(info);
-		/*
-		 * EmailAndPasswordValidator validator = new
-		 * EmailAndPasswordValidator(userRepository, passwordEncoder);
-		 * validator.validate(info);
-		 */
 
 		Token token = new Token();
 		
