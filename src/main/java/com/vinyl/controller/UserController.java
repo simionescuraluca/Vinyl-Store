@@ -49,6 +49,7 @@ public class UserController {
 		 
 		 TokenDTO tokenDTO = new TokenDTO();
 		 tokenDTO.setHash(token.getHash());
+		 tokenDTO.setValidUntil(token.getValidUntil());
 		 
 		return new ResponseEntity<>(tokenDTO,HttpStatus.OK);
 	}

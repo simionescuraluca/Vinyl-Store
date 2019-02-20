@@ -14,7 +14,7 @@ public class EmailAndPasswordValidator implements Validator<EmailPassDTO> {
 	private final UserRepository userRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 	
-	private User user;
+
 
 	public EmailAndPasswordValidator(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
@@ -30,15 +30,4 @@ public class EmailAndPasswordValidator implements Validator<EmailPassDTO> {
 				.orElseThrow((() -> new BadRequestException("Cannot validate password during process!")));
 
 	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
-	
-
 }

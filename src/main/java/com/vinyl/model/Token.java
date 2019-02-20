@@ -1,13 +1,15 @@
 package com.vinyl.model;
 
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -24,8 +26,12 @@ public class Token {
 	@Column(name="HASH")
 	@NotNull
 	private String hash;
+	
+	@Column(name="valid_until")
+	@NotNull
+	private LocalDate validUntil;
 
-	@OneToOne
+	@ManyToOne
 	@NotNull
 	@JoinColumn(name="user_id")
 	private User user;
@@ -52,4 +58,14 @@ public class Token {
 	public void setHash(String hash) {
 		this.hash=hash;
 	}
+
+	public LocalDate getValidUntil() {
+		return validUntil;
+	}
+
+	public void setValidUntil(LocalDate validUntil) {
+		this.validUntil = validUntil;
+	}
+	
+	
 }

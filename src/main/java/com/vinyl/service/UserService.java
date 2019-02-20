@@ -1,5 +1,6 @@
 package com.vinyl.service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,18 +70,25 @@ public class UserService {
 		validatorFactory.getEmailAndPasswordValidator().validate(info);
 
 		Token token = new Token();
-		
+
 		token.setUser(userRepository.findByEmail(info.getEmail()).get());
 		token.setHash(String.valueOf(Math.abs(info.hashCode())));
+
+		LocalDate tokenCreateDate = LocalDate.now();
+		LocalDate tokenValidUntil = tokenCreateDate.plusMonths(1);
+		token.setValidUntil(tokenValidUntil);
 
 		return save(token);
 	}
 
 	public Token save(Token toSave) {
+		
 		Token token = tokenRepository.findByHash(toSave.getHash());
+
 		if (token == null) {
 			return tokenRepository.save(toSave);
 		}
+
 		return token;
 	}
 }
