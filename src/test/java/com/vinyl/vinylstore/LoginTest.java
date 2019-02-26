@@ -2,22 +2,19 @@ package com.vinyl.vinylstore;
 
 import java.time.LocalDate;
 
+import com.vinyl.repository.AddressRepository;
+import com.vinyl.repository.RoleRepository;
+import com.vinyl.repository.TokenRepository;
 import com.vinyl.service.validation.ValidatorFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.vinyl.model.Address;
 import com.vinyl.model.Role;
@@ -25,21 +22,10 @@ import com.vinyl.model.Token;
 import com.vinyl.model.User;
 import com.vinyl.modelDTO.EmailPassDTO;
 import com.vinyl.modelDTO.TokenDTO;
-import com.vinyl.repository.AddressRepository;
-import com.vinyl.repository.RoleRepository;
-import com.vinyl.repository.TokenRepository;
-import com.vinyl.repository.UserRepository;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureTestDatabase
-@RunWith(SpringRunner.class)
-@ActiveProfiles("test")
-public class VinylstoreApplicationTests {
-
-	@Autowired
-	private TestRestTemplate trt;
+public class LoginTest extends com.vinyl.vinylstore.Test {
 
 	@Autowired
 	private TokenRepository tokenRepository;
@@ -49,8 +35,6 @@ public class VinylstoreApplicationTests {
 
 	@Autowired
 	private AddressRepository addressRepository;
-	@Autowired
-	private UserRepository userRepository;
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
