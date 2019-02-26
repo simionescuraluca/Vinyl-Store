@@ -2,8 +2,6 @@ package com.vinyl.vinylstore;
 
 import java.time.LocalDate;
 
-import com.vinyl.repository.AddressRepository;
-import com.vinyl.repository.RoleRepository;
 import com.vinyl.repository.TokenRepository;
 import com.vinyl.service.validation.ValidatorFactory;
 import org.assertj.core.api.Assertions;
@@ -29,12 +27,6 @@ public class LoginTest extends com.vinyl.vinylstore.Test {
 
 	@Autowired
 	private TokenRepository tokenRepository;
-
-	@Autowired
-	private RoleRepository roleRepository;
-
-	@Autowired
-	private AddressRepository addressRepository;
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;

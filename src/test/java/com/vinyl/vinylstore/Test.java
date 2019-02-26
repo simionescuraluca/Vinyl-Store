@@ -1,5 +1,7 @@
 package com.vinyl.vinylstore;
 
+import com.vinyl.repository.AddressRepository;
+import com.vinyl.repository.RoleRepository;
 import com.vinyl.repository.UserRepository;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 public abstract class Test {
     @Autowired
     TestRestTemplate trt;
+
+    @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
+    AddressRepository addressRepository;
 
     @Autowired
     UserRepository userRepository;
