@@ -36,7 +36,7 @@ public class User {
 	private String secondName;
 
 	@NotNull
-	@Column(nullable = false)
+	@Column(nullable = false, unique=true)
 	private String email;
 
 	@NotEmpty
@@ -49,10 +49,10 @@ public class User {
 	private Role role;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-	private List<Purchase> purchases = new ArrayList<Purchase>();
+	private List<Purchase> purchases = new ArrayList<>();
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-	private List<Cart> carts = new ArrayList<Cart>();
+	private List<Cart> carts = new ArrayList<>();
 
 	@NotNull
 	@ManyToOne

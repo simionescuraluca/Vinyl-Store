@@ -12,7 +12,7 @@ import com.vinyl.repository.UserRepository;
 public class ValidatorFactory {
 
 	private final UserRepository userRepository;
-	private final BCryptPasswordEncoder passwordEncoder;
+	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Autowired
 	public ValidatorFactory(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
@@ -36,4 +36,7 @@ public class ValidatorFactory {
 		return new EmailAndPasswordValidator(userRepository, passwordEncoder);
 	}
 
+	public void setPasswordEncoder(BCryptPasswordEncoder passwordEncoder) {
+		this.passwordEncoder = passwordEncoder;
+	}
 }

@@ -69,26 +69,25 @@ public class UserService {
 
 		validatorFactory.getEmailAndPasswordValidator().validate(info);
 
-		Token token = new Token();
-
-		token.setUser(userRepository.findByEmail(info.getEmail()).get());
-		token.setHash(String.valueOf(Math.abs(info.hashCode())));
-
-		LocalDate tokenCreateDate = LocalDate.now();
-		LocalDate tokenValidUntil = tokenCreateDate.plusMonths(1);
-		token.setValidUntil(tokenValidUntil);
-
-		return save(token);
-	}
-
-	public Token save(Token toSave) {
+		User user=userRepository.findByEmail(info.getEmail()).get();
+		Token token = tokenRepository.findFirstByUserOrderByValidUntilDesc(user);
 		
-		Token token = tokenRepository.findByHash(toSave.getHash());
-
 		if (token == null) {
-			return tokenRepository.save(toSave);
-		}
+			token=new Token();
+			token.setUser(userRepository.findByEmail(info.getEmail()).get());
+			token.setHash(String.valueOf(Math.abs(info.hashCode())));
 
-		return token;
+			LocalDate tokenCreateDate = LocalDate.now();
+			LocalDate tokenValidUntil = tokenCreateDate.plusMonths(1);
+			token.setValidUntil(tokenValidUntil);
+		}
+		else
+		{
+			if (LocalDate.now().compareTo(token.getValidUntil()) < 0) {
+				return token;
+			}
+		}
+		
+		return tokenRepository.save(token);
 	}
 }

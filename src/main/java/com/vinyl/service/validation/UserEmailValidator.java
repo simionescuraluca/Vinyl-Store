@@ -28,7 +28,6 @@ public class UserEmailValidator implements Validator<User> {
 		if (!matcher.find()) {
 			throw new BadRequestException("The email address is invalid!");
 		}
-		
-		userRepository.findByEmail(user.getEmail()).ifPresent(((e) -> new BadRequestException("Email address already exists!")));
+		userRepository.findByEmail(user.getEmail()).ifPresent((e) -> {throw new BadRequestException("Email address already exists!");});
 	}
 }
