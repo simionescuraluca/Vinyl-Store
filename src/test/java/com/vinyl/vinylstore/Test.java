@@ -1,5 +1,8 @@
 package com.vinyl.vinylstore;
 
+import com.vinyl.model.Address;
+import com.vinyl.model.Role;
+import com.vinyl.model.User;
 import com.vinyl.repository.AddressRepository;
 import com.vinyl.repository.RoleRepository;
 import com.vinyl.repository.UserRepository;
@@ -27,4 +30,9 @@ public abstract class Test {
 
     @Autowired
     UserRepository userRepository;
+
+    abstract Address createAddress();
+    abstract Role createRole();
+    abstract User createUser();
+
 }

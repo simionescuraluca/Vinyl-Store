@@ -99,7 +99,8 @@ public class LoginTest extends com.vinyl.vinylstore.Test {
 		return tokenRepository.save(token);
 	}
 
-	private Address createAddress() {
+	@Override
+	Address createAddress() {
 		Address address = new Address();
 		address.setCity("Iasi");
 		address.setCountry("Romaniaa");
@@ -108,12 +109,14 @@ public class LoginTest extends com.vinyl.vinylstore.Test {
 		return addressRepository.save(address);
 	}
 
-	private Role createRole() {
+	@Override
+	Role createRole() {
 		Role role = new Role("BASIC_USER");
 		return roleRepository.save(role);
 	}
 
-	private User createUser() {
+	@Override
+	User createUser() {
 		User user = new User();
 		user.setEmail("ralucaioana@yahoo.com");
 		user.setFirstName("Raluca");
