@@ -13,10 +13,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 @AutoConfigureTestDatabase
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
-public class Test {
+public abstract class Test {
     @Autowired
-    public TestRestTemplate trt;
+    TestRestTemplate trt;
 
     @Autowired
-    public UserRepository userRepository;
+    UserRepository userRepository;
 }
