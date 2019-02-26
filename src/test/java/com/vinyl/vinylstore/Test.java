@@ -19,6 +19,4 @@ public class Test {
 
     @Autowired
     public UserRepository userRepository;
-
-
 }
