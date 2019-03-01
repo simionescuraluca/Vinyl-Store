@@ -18,21 +18,40 @@ import org.springframework.test.context.junit4.SpringRunner;
 @AutoConfigureTestDatabase
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
-public abstract class Test {
+public class Test {
     @Autowired
-    TestRestTemplate trt;
-
-    @Autowired
-    RoleRepository roleRepository;
+    protected TestRestTemplate trt;
 
     @Autowired
-    AddressRepository addressRepository;
+    protected RoleRepository roleRepository;
 
     @Autowired
-    UserRepository userRepository;
+    protected AddressRepository addressRepository;
 
-    abstract Address createAddress();
-    abstract Role createRole();
-    abstract User createUser();
+    @Autowired
+    protected UserRepository userRepository;
 
+   public Address createAddress(){
+        Address address = new Address();
+        address.setCity("Iasi");
+        address.setCountry("Romaniaa");
+        address.setNumber(1);
+        address.setStreet("Strada Palat");
+        return addressRepository.save(address);
+    }
+
+    public Role createRole(){
+        Role role = new Role("BASIC_USER");
+        return roleRepository.save(role);
+    }
+    public User createUser(){
+        User user = new User();
+        user.setEmail("ralucaioana@yahoo.com");
+        user.setFirstName("Raluca");
+        user.setSecondName("Ioana");
+        user.setPass("Raluca1@");
+        user.setRole(createRole());
+        user.setAddress(createAddress());
+        return userRepository.save(user);
+    }
 }

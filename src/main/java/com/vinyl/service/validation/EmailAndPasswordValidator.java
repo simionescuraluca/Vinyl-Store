@@ -13,8 +13,6 @@ public class EmailAndPasswordValidator implements Validator<EmailPassDTO> {
 
 	private final UserRepository userRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
-	
-
 
 	public EmailAndPasswordValidator(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;

@@ -14,8 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.vinyl.model.Address;
-import com.vinyl.model.Role;
 import com.vinyl.model.Token;
 import com.vinyl.model.User;
 import com.vinyl.modelDTO.EmailPassDTO;
@@ -34,17 +32,18 @@ public class LoginTest extends com.vinyl.vinylstore.Test {
 	@Autowired
 	private ValidatorFactory validatorFactory;
 
-	private BCryptPasswordEncoder mockedEncoder;
+	private BCryptPasswordEncoder mockedPasswordEncoder;
 
 	private User user;
 
+	EmailPassDTO request = new EmailPassDTO();
 
 	@Before
 	public void setUp() {
 		user = createUser();
-		mockedEncoder = Mockito.mock(BCryptPasswordEncoder.class);
-		Mockito.when(mockedEncoder.matches(anyString(), anyString())).thenReturn(true);
-		validatorFactory.setPasswordEncoder(mockedEncoder);
+		mockedPasswordEncoder = Mockito.mock(BCryptPasswordEncoder.class);
+		Mockito.when(mockedPasswordEncoder.matches(anyString(), anyString())).thenReturn(true);
+		validatorFactory.setPasswordEncoder(mockedPasswordEncoder);
 	}
 
 	@After
@@ -57,17 +56,24 @@ public class LoginTest extends com.vinyl.vinylstore.Test {
 	}
 
 	@Test
-	public void loginWithValidEmailAndPassword() {
+	public void loginWithValidEmailAndPasswordWhenTokenExists() {
 		Token token = createToken(user);
-
-		EmailPassDTO request = new EmailPassDTO();
-		request.setEmail(user.getEmail());
-		request.setPass(user.getPass());
+		setRequest(request);
 
 		ResponseEntity<TokenDTO> tdo = trt.postForEntity("/users/login", request, TokenDTO.class);
 
 		Assertions.assertThat(tdo.getStatusCode()).isEqualTo(HttpStatus.OK);
 		Assertions.assertThat(tdo.getBody().getHash()).isEqualTo(token.getHash());
+	}
+
+	@Test
+	public void loginWithValidEmailAndPasswordWhenTokenDoesNotExist() {
+		setRequest(request);
+
+		ResponseEntity<TokenDTO> tdo = trt.postForEntity("/users/login", request, TokenDTO.class);
+
+		Assertions.assertThat(tdo.getStatusCode()).isEqualTo(HttpStatus.OK);
+		Assertions.assertThat(tdo.getBody().getHash());
 	}
 
 	@Test
@@ -99,31 +105,8 @@ public class LoginTest extends com.vinyl.vinylstore.Test {
 		return tokenRepository.save(token);
 	}
 
-	@Override
-	Address createAddress() {
-		Address address = new Address();
-		address.setCity("Iasi");
-		address.setCountry("Romaniaa");
-		address.setNumber(1);
-		address.setStreet("Strada Palat");
-		return addressRepository.save(address);
-	}
-
-	@Override
-	Role createRole() {
-		Role role = new Role("BASIC_USER");
-		return roleRepository.save(role);
-	}
-
-	@Override
-	User createUser() {
-		User user = new User();
-		user.setEmail("ralucaioana@yahoo.com");
-		user.setFirstName("Raluca");
-		user.setSecondName("Ioana");
-		user.setPass("Raluca1@");
-		user.setRole(createRole());
-		user.setAddress(createAddress());
-		return userRepository.save(user);
+	public void setRequest(EmailPassDTO request){
+		request.setEmail(user.getEmail());
+		request.setPass(user.getPass());
 	}
 }

@@ -23,7 +23,7 @@ public class Token {
 	@GenericGenerator(name = "native", strategy = "native")
 	private Integer id;
 	
-	@Column(name="HASH")
+	@Column(name="hash")
 	@NotNull
 	private String hash;
 	
