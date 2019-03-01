@@ -73,7 +73,7 @@ public class LoginTest extends com.vinyl.vinylstore.Test {
 		ResponseEntity<TokenDTO> tdo = trt.postForEntity("/users/login", request, TokenDTO.class);
 
 		Assertions.assertThat(tdo.getStatusCode()).isEqualTo(HttpStatus.OK);
-		Assertions.assertThat(tdo.getBody().getHash());
+		Assertions.assertThat(tokenRepository.findByUserId(user.getId()));
 	}
 
 	@Test
