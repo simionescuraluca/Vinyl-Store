@@ -4,7 +4,7 @@ public class EmailPassDTO {
 
 	private String email;
 	private String pass;
-	
+
 	public String getEmail() {
 		return email;
 	}
@@ -17,6 +17,6 @@ public class EmailPassDTO {
 	public void setPass(String pass) {
 		this.pass = pass;
 	}
-	
-	
+
+
 }

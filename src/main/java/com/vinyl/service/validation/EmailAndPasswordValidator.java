@@ -23,10 +23,9 @@ public class EmailAndPasswordValidator implements Validator<EmailPassDTO> {
 	public void validate(EmailPassDTO credentials) {
 
 		Optional<User> toBeDeleted = userRepository.findByEmail(credentials.getEmail());
-		toBeDeleted.orElseThrow(() -> new BadRequestException("Cannot validate email during delete process!"));
+		toBeDeleted.orElseThrow(() -> new BadRequestException("Cannot validate email during process!"));
 		toBeDeleted.map(e -> e.getPass()).filter(e -> passwordEncoder.matches(credentials.getPass(), e))
-				.orElseThrow((() -> new BadRequestException("Cannot validate password during delete process!")));
+				.orElseThrow((() -> new BadRequestException("Cannot validate password during process!")));
 
 	}
-
 }
