@@ -1,11 +1,14 @@
-package com.vinyl.vinylstore;
+package com.vinyl;
 
+import com.vinyl.helper.DefaultEntitiesHelper;
 import com.vinyl.model.Address;
 import com.vinyl.model.Role;
 import com.vinyl.model.User;
 import com.vinyl.repository.AddressRepository;
 import com.vinyl.repository.RoleRepository;
 import com.vinyl.repository.UserRepository;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -18,7 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @AutoConfigureTestDatabase
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
-public class Test {
+public class BaseTest {
     @Autowired
     protected TestRestTemplate trt;
 
@@ -30,6 +33,21 @@ public class Test {
 
     @Autowired
     protected UserRepository userRepository;
+
+    protected User user;
+
+    @Autowired
+    protected DefaultEntitiesHelper defaultentitiesHelper;
+
+    @Before
+    public void setUp() {
+        user = createUser();
+    }
+
+    @After
+    public void tearDown() {
+        defaultentitiesHelper.tearDown();
+    }
 
    public Address createAddress(){
         Address address = new Address();

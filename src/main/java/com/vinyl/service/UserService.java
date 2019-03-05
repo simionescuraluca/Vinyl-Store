@@ -1,21 +1,21 @@
 package com.vinyl.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import com.vinyl.model.*;
+import com.vinyl.modelDTO.CartDetailsDTO;
+import com.vinyl.modelDTO.ProductDTO;
+import com.vinyl.repository.*;
+import com.vinyl.service.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.vinyl.model.Address;
-import com.vinyl.model.Role;
-import com.vinyl.model.Token;
-import com.vinyl.model.User;
 import com.vinyl.modelDTO.EmailPassDTO;
-import com.vinyl.repository.AddressRepository;
-import com.vinyl.repository.RoleRepository;
-import com.vinyl.repository.TokenRepository;
-import com.vinyl.repository.UserRepository;
 import com.vinyl.service.validation.ValidatorFactory;
 
 @Service("userService")
@@ -38,6 +38,12 @@ public class UserService {
 
 	@Autowired
 	private TokenRepository tokenRepository;
+
+	@Autowired
+	private ProductCartRepository productCartRepository;
+
+	@Autowired
+	private CartRepository cartRepository;
 
 	public User addUser(User user) {
 
@@ -90,4 +96,31 @@ public class UserService {
 		
 		return tokenRepository.save(token);
 	}
-}
+
+	public CartDetailsDTO getCartDetails(String tokenHash){
+
+		Token token = tokenRepository.findByHash(tokenHash);
+		if(token==null) { throw new UnauthorizedException("Token is invalid!"); }
+		if (LocalDate.now().compareTo(token.getValidUntil()) > 0) { throw new UnauthorizedException("Token is expired!"); }
+
+		User user=token.getUser();
+
+			Cart cart = cartRepository.findByUser(user);
+			List<ProductCart> productCartList = productCartRepository.findByCart(cart);
+			List<ProductDTO> productDetails = new ArrayList<>();
+			double cost = 0.0;
+			for (ProductCart product : productCartList) {
+				String name = product.getProduct().getProductName();
+				productDetails.add(new ProductDTO(name, product.getNrItems(), product.getProductPrice()));
+
+				cost = cost + (product.getProductPrice() * product.getNrItems());
+			}
+
+			CartDetailsDTO cartDetails = new CartDetailsDTO();
+			cartDetails.setNrProducts(productDetails.size());
+			cartDetails.setProducts(productDetails);
+			cartDetails.setTotalCost(cost);
+
+			return cartDetails;
+		}
+	}

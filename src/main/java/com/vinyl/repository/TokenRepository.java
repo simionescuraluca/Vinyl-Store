@@ -10,4 +10,5 @@ import com.vinyl.model.User;
 public interface TokenRepository extends CrudRepository<Token, Integer>{
 
 	Token findFirstByUserOrderByValidUntilDesc(User user);
+	Token findByHash(String hash);
 }
