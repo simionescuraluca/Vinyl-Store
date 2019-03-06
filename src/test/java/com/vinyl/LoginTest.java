@@ -1,12 +1,8 @@
-package com.vinyl.vinylstore;
-
-import java.time.LocalDate;
+package com.vinyl;
 
 import com.vinyl.repository.TokenRepository;
 import com.vinyl.service.validation.ValidatorFactory;
 import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.vinyl.model.Token;
-import com.vinyl.model.User;
 import com.vinyl.modelDTO.EmailPassDTO;
 import com.vinyl.modelDTO.TokenDTO;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
-public class LoginTest extends com.vinyl.vinylstore.Test {
+public class LoginTest extends BaseTest {
 
 	@Autowired
 	private TokenRepository tokenRepository;
@@ -34,30 +29,25 @@ public class LoginTest extends com.vinyl.vinylstore.Test {
 
 	private BCryptPasswordEncoder mockedPasswordEncoder;
 
-	private User user;
-
 	EmailPassDTO request = new EmailPassDTO();
 
-	@Before
+	@Override
 	public void setUp() {
-		user = createUser();
+		super.setUp();
 		mockedPasswordEncoder = Mockito.mock(BCryptPasswordEncoder.class);
 		Mockito.when(mockedPasswordEncoder.matches(anyString(), anyString())).thenReturn(true);
 		validatorFactory.setPasswordEncoder(mockedPasswordEncoder);
 	}
 
-	@After
+	@Override
 	public void tearDown() {
-		tokenRepository.deleteAll();
-		userRepository.deleteAll();
-		addressRepository.deleteAll();
-		roleRepository.deleteAll();
 		validatorFactory.setPasswordEncoder(passwordEncoder);
+		super.tearDown();
 	}
 
 	@Test
 	public void loginWithValidEmailAndPasswordWhenTokenExists() {
-		Token token = createToken(user);
+		Token token = defaultentitiesHelper.createToken(user);
 		setRequest(request);
 
 		ResponseEntity<TokenDTO> tdo = trt.postForEntity("/users/login", request, TokenDTO.class);
@@ -95,14 +85,6 @@ public class LoginTest extends com.vinyl.vinylstore.Test {
 
 		ResponseEntity<TokenDTO> tdo = trt.postForEntity("/users/login", request, TokenDTO.class);
 		Assertions.assertThat(tdo.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-	}
-
-	private Token createToken(User user) {
-		Token token = new Token();
-		token.setHash("5");
-		token.setValidUntil(LocalDate.now().plusMonths(1));
-		token.setUser(user);
-		return tokenRepository.save(token);
 	}
 
 	public void setRequest(EmailPassDTO request){

@@ -1,17 +1,11 @@
 package com.vinyl.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -19,24 +13,17 @@ import javax.validation.constraints.NotNull;
 public class Cart {
 
 	@Id
-	@NotNull
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+	@GenericGenerator(name = "native", strategy = "native")
 	private Integer id;
 
 	@NotNull
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@ManyToMany(cascade =
-        {
-                CascadeType.DETACH,
-                CascadeType.MERGE,
-                CascadeType.REFRESH,
-                CascadeType.PERSIST
-        })
-	@JoinTable(name = "PRODUCT_CART", joinColumns = @JoinColumn(name = "cart_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
-	public List<Product> products;
+	@OneToMany(mappedBy = "product")
+	public List<ProductCart> products = new ArrayList<>();
 
 	public Integer getId() {
 		return id;
@@ -54,11 +41,11 @@ public class Cart {
 		this.user = user;
 	}
 
-	public List<Product> getProducts() {
+	public List<ProductCart> getProducts() {
 		return products;
 	}
 
-	public void setProducts(List<Product> products) {
+	public void setProducts(List<ProductCart> products) {
 		this.products = products;
 	}
 

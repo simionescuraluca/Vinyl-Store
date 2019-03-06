@@ -34,6 +34,18 @@ public class ProductCart {
 	@JoinColumn(name = "product_id", nullable = false)
 	private Product product;
 
+	@NotNull
+	@Column(nullable=false)
+	private Double productPrice;
+
+	public Double getProductPrice() {
+		return productPrice;
+	}
+
+	public void setProductPrice(Double productPrice) {
+		this.productPrice = productPrice;
+	}
+
 	public Integer getNrItems() {
 		return nrItems;
 	}
@@ -61,65 +73,32 @@ public class ProductCart {
 	@SuppressWarnings("serial")
 	public static class ProductCartId implements Serializable {
 
-		private Cart cart;
-		private Product product;
+		private int cart;
+		private int product;
 
-		public ProductCartId(Cart cart, Product product) {
+		public ProductCartId(int cart, int product) {
 
 			this.cart = cart;
 			this.product = product;
 		}
 
 		public ProductCartId() {
-
 		}
 
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((cart == null) ? 0 : cart.hashCode());
-			result = prime * result + ((product == null) ? 0 : product.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			ProductCartId other = (ProductCartId) obj;
-			if (cart == null) {
-				if (other.cart != null)
-					return false;
-			} else if (!cart.equals(other.cart))
-				return false;
-			if (product == null) {
-				if (other.product != null)
-					return false;
-			} else if (!product.equals(other.product))
-				return false;
-			return true;
-		}
-
-		public Cart getCart() {
+		public int getCart() {
 			return cart;
 		}
 
-		public void setCart(Cart cart) {
+		public void setCart(int cart) {
 			this.cart = cart;
 		}
 
-		public Product getProduct() {
+		public int getProduct() {
 			return product;
 		}
 
-		public void setProduct(Product product) {
+		public void setProduct(int product) {
 			this.product = product;
 		}
-
 	}
 }
