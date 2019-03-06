@@ -37,7 +37,7 @@ public class BaseTest {
     protected User user;
 
     @Autowired
-    protected DefaultEntitiesHelper defaultentitiesHelper;
+    protected DefaultEntitiesHelper defaultEntitiesHelper;
 
     @Before
     public void setUp() {
@@ -46,7 +46,7 @@ public class BaseTest {
 
     @After
     public void tearDown() {
-        defaultentitiesHelper.tearDown();
+        defaultEntitiesHelper.tearDown();
     }
 
    public Address createAddress(){

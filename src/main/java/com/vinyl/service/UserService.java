@@ -11,7 +11,6 @@ import com.vinyl.modelDTO.ProductDTO;
 import com.vinyl.repository.*;
 import com.vinyl.service.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -105,22 +104,22 @@ public class UserService {
 
 		User user=token.getUser();
 
-			Cart cart = cartRepository.findByUser(user);
-			List<ProductCart> productCartList = productCartRepository.findByCart(cart);
-			List<ProductDTO> productDetails = new ArrayList<>();
-			double cost = 0.0;
-			for (ProductCart product : productCartList) {
-				String name = product.getProduct().getProductName();
-				productDetails.add(new ProductDTO(name, product.getNrItems(), product.getProductPrice()));
+		Cart cart = cartRepository.findByUser(user);
+		List<ProductCart> productCartList = productCartRepository.findByCart(cart);
+		List<ProductDTO> productDetails = new ArrayList<>();
+		double cost = 0.0;
+		for (ProductCart product : productCartList) {
+			String name = product.getProduct().getProductName();
+			productDetails.add(new ProductDTO(name, product.getNrItems(), product.getProductPrice()));
 
-				cost = cost + (product.getProductPrice() * product.getNrItems());
-			}
+			cost = cost + (product.getProductPrice() * product.getNrItems());
+		}
 
-			CartDetailsDTO cartDetails = new CartDetailsDTO();
-			cartDetails.setNrProducts(productDetails.size());
-			cartDetails.setProducts(productDetails);
-			cartDetails.setTotalCost(cost);
+		CartDetailsDTO cartDetails = new CartDetailsDTO();
+		cartDetails.setNrProducts(productDetails.size());
+		cartDetails.setProducts(productDetails);
+		cartDetails.setTotalCost(cost);
 
-			return cartDetails;
+		return cartDetails;
 		}
 	}

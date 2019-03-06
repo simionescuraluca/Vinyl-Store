@@ -18,40 +18,40 @@ import com.vinyl.service.UserService;
 @RestController
 public class UserController {
 
-    @Autowired
-    UserService userService;
+	@Autowired
+	UserService userService;
 
-    @RequestMapping(value = "/users", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO) {
+	@RequestMapping(value = "/users", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO) {
 
-        User user = new User();
-        user.setFirstName(userDTO.getFirstName());
-        user.setSecondName(userDTO.getSecondName());
-        user.setEmail(userDTO.getEmail());
-        user.setPass(userDTO.getPass());
+		User user = new User();
+		user.setFirstName(userDTO.getFirstName());
+		user.setSecondName(userDTO.getSecondName());
+		user.setEmail(userDTO.getEmail());
+		user.setPass(userDTO.getPass());
 
-        userService.addUser(user);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
+		userService.addUser(user);
+		return new ResponseEntity<>(HttpStatus.CREATED);
+	}
 
-    @RequestMapping(value = "/users", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<?> deleteUser(@RequestBody EmailPassDTO credentials) {
+	@RequestMapping(value = "/users", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> deleteUser(@RequestBody EmailPassDTO credentials) {
 
-        userService.deleteUser(credentials);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+		userService.deleteUser(credentials);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
 
-    @RequestMapping(value = "/users/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<?> userLogin(@RequestBody EmailPassDTO loginInfo) {
+	@RequestMapping(value="/users/login", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<?> userLogin(@RequestBody EmailPassDTO loginInfo) {
 
-        Token token = userService.loginUser(loginInfo);
+		 Token token=userService.loginUser(loginInfo);
 
-        TokenDTO tokenDTO = new TokenDTO();
-        tokenDTO.setHash(token.getHash());
-        tokenDTO.setValidUntil(token.getValidUntil());
+		 TokenDTO tokenDTO = new TokenDTO();
+		 tokenDTO.setHash(token.getHash());
+		 tokenDTO.setValidUntil(token.getValidUntil());
 
-        return new ResponseEntity<>(tokenDTO, HttpStatus.OK);
-    }
+		return new ResponseEntity<>(tokenDTO,HttpStatus.OK);
+	}
 
     @RequestMapping(value = "/users/cart", method = RequestMethod.GET)
     public ResponseEntity<?> getCartDetails(@RequestHeader(value = "Authorization", required = false) String auth) {
