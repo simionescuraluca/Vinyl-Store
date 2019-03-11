@@ -43,19 +43,13 @@ public class AddProductToCartTest extends BaseIntegration {
         request.setQuantity(3);
     }
 
-    public ResponseEntity<?> setUpHeaderAndGetTheResponse(Token token){
-        HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<?> response = trt.exchange("/products/" + product.getId()+ "/cart",HttpMethod.POST,new HttpEntity<>(request,headers),Void.class);
-
-        return response;
-    }
-
     @Test
     public void testWhenUserLoggedInAndItemExistsInCart(){
         Token token = defaultEntitiesHelper.createToken(user);
         Cart cart =defaultEntitiesHelper.createCart(user);
         ProductCart pc=defaultEntitiesHelper.createProductCart(cart, product);
         cart.setProducts(Lists.newArrayList(pc));
+        cartRepository.save(cart);
 
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse(token);
 
@@ -113,9 +107,9 @@ public class AddProductToCartTest extends BaseIntegration {
     @Test
     public void testWhenProductIsInvalid() {
         Token token = defaultEntitiesHelper.createToken(user);
-        product.setId(0000);
 
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse(token);
+        HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
+        ResponseEntity<?> response = trt.exchange("/products/" + 000 + "/cart",HttpMethod.POST,new HttpEntity<>(request,headers),Void.class);
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -128,5 +122,12 @@ public class AddProductToCartTest extends BaseIntegration {
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse(token);
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    private ResponseEntity<?> setUpHeaderAndGetTheResponse(Token token){
+        HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
+        ResponseEntity<?> response = trt.exchange("/products/" + product.getId()+ "/cart",HttpMethod.POST,new HttpEntity<>(request,headers),Void.class);
+
+        return response;
     }
 }

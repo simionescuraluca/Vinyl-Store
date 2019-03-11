@@ -42,9 +42,7 @@ public class ProductService {
 
         Token token = tokenRepository.findByHash(tokenHash);
         Cart cart = findOrCreateCart(token.getUser());
-        ProductCart productCart = createOrUpdateProductCart(product, cart, addProductToCartDTO.getQuantity());
-
-        productCartRepository.save(productCart);
+        createOrUpdateProductCart(product, cart, addProductToCartDTO.getQuantity());
     }
 
     private Cart findOrCreateCart(User user) {

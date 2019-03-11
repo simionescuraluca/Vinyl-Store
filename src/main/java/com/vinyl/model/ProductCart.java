@@ -38,6 +38,9 @@ public class ProductCart {
 	@Column(nullable=false)
 	private Double productPrice;
 
+	public ProductCart() {
+	}
+
 	public ProductCart(Product product, Cart cart) {
 		this.product=product;
 		this.cart=cart;

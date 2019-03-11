@@ -24,13 +24,6 @@ public class GetCartDetailsTest extends BaseIntegration {
     @Autowired
     TokenHeaderHelper tokenHeaderHelper;
 
-    public ResponseEntity<?> setUpHeaderAndGetTheResponse(Token token){
-        HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<CartDetailsDTO> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), CartDetailsDTO.class);
-
-        return cdo;
-    }
-
     @Test
     public void testWhenUserLoggedIn() {
         Token token = defaultEntitiesHelper.createToken(user);
@@ -76,5 +69,12 @@ public class GetCartDetailsTest extends BaseIntegration {
         ResponseEntity<String> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), String.class);
 
         Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    private ResponseEntity<?> setUpHeaderAndGetTheResponse(Token token){
+        HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
+        ResponseEntity<CartDetailsDTO> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), CartDetailsDTO.class);
+
+        return cdo;
     }
 }
