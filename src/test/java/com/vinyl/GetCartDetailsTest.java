@@ -26,13 +26,12 @@ public class GetCartDetailsTest extends BaseIntegration {
 
     @Test
     public void testWhenUserLoggedIn() {
-        Token token = defaultEntitiesHelper.createToken(user);
         Product product = defaultEntitiesHelper.createProduct();
         Cart cart =defaultEntitiesHelper.createCart(user);
         ProductCart pc=defaultEntitiesHelper.createProductCart(cart, product);
         cart.setProducts(Lists.newArrayList(pc));
 
-        ResponseEntity<?> cdo=setUpHeaderAndGetTheResponse(token);
+        ResponseEntity<?> cdo=setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -52,26 +51,23 @@ public class GetCartDetailsTest extends BaseIntegration {
 
     @Test
     public void testWhenTokenIsExpired() {
-        Token token = defaultEntitiesHelper.createToken(user);
         token.setValidUntil(LocalDate.now().minusMonths(3));
         tokenRepository.save(token);
 
-        ResponseEntity<?> cdo=setUpHeaderAndGetTheResponse(token);
+        ResponseEntity<?> cdo=setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
     public void testWhenNoItemsInCart() {
-        Token token = defaultEntitiesHelper.createToken(user);
-
         HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
         ResponseEntity<String> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), String.class);
 
         Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    private ResponseEntity<?> setUpHeaderAndGetTheResponse(Token token){
+    private ResponseEntity<?> setUpHeaderAndGetTheResponse(){
         HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
         ResponseEntity<CartDetailsDTO> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), CartDetailsDTO.class);
 

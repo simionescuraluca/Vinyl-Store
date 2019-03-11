@@ -3,6 +3,7 @@ package com.vinyl;
 import com.vinyl.helper.DefaultEntitiesHelper;
 import com.vinyl.model.Address;
 import com.vinyl.model.Role;
+import com.vinyl.model.Token;
 import com.vinyl.model.User;
 import com.vinyl.repository.AddressRepository;
 import com.vinyl.repository.RoleRepository;
@@ -36,12 +37,15 @@ public abstract class BaseIntegration {
 
     protected User user;
 
+    protected Token token;
+
     @Autowired
     protected DefaultEntitiesHelper defaultEntitiesHelper;
 
     @Before
     public void setUp() {
         user = createUser();
+        token = defaultEntitiesHelper.createToken(user);
     }
 
     @After

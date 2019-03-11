@@ -40,7 +40,6 @@ public class DefaultEntitiesHelper {
         userRepository.deleteAll();
         addressRepository.deleteAll();
         roleRepository.deleteAll();
-
     }
 
     public Token createToken(User user) {

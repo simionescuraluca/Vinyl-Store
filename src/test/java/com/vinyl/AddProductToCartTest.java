@@ -4,7 +4,6 @@ import com.vinyl.helper.TokenHeaderHelper;
 import com.vinyl.model.Cart;
 import com.vinyl.model.Product;
 import com.vinyl.model.ProductCart;
-import com.vinyl.model.Token;
 import com.vinyl.modelDTO.AddProductToCartDTO;
 import com.vinyl.repository.CartRepository;
 import com.vinyl.repository.ProductCartRepository;
@@ -45,13 +44,12 @@ public class AddProductToCartTest extends BaseIntegration {
 
     @Test
     public void testWhenUserLoggedInAndItemExistsInCart(){
-        Token token = defaultEntitiesHelper.createToken(user);
         Cart cart =defaultEntitiesHelper.createCart(user);
         ProductCart pc=defaultEntitiesHelper.createProductCart(cart, product);
         cart.setProducts(Lists.newArrayList(pc));
         cartRepository.save(cart);
 
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse(token);
+        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Assertions.assertThat(productCartRepository.findByProductAndCart(product,cart).getNrItems()).isEqualTo(pc.getNrItems() + request.getQuantity());
@@ -59,9 +57,7 @@ public class AddProductToCartTest extends BaseIntegration {
 
     @Test
     public void testWhenUserLoggedInAndItemDoesNotExistInCart() {
-        Token token = defaultEntitiesHelper.createToken(user);
-
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse(token);
+        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Cart cart = cartRepository.findByUser(user);
@@ -78,36 +74,31 @@ public class AddProductToCartTest extends BaseIntegration {
     public void testWhenTokenIsInvalid() {
         HttpHeaders headers=tokenHeaderHelper.setupToken("INVALID_TOKEN");
         ResponseEntity<?> response = trt.exchange("/products/" + product.getId()+ "/cart",HttpMethod.POST,new HttpEntity<>(request,headers),Void.class);
-
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
     public void testWhenTokenIsExpired() {
-        Token token = defaultEntitiesHelper.createToken(user);
         token.setValidUntil(LocalDate.now().minusMonths(3));
         tokenRepository.save(token);
 
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse(token);
+        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
     public void testWhenQuantityIsTooLarge() {
-        Token token = defaultEntitiesHelper.createToken(user);
         product.setStock(900);
         request.setQuantity(100000);
 
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse(token);
+        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
     public void testWhenProductIsInvalid() {
-        Token token = defaultEntitiesHelper.createToken(user);
-
         HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
         ResponseEntity<?> response = trt.exchange("/products/" + 000 + "/cart",HttpMethod.POST,new HttpEntity<>(request,headers),Void.class);
 
@@ -116,15 +107,19 @@ public class AddProductToCartTest extends BaseIntegration {
 
     @Test
     public void testWhenQuantityIsNull(){
-        Token token = defaultEntitiesHelper.createToken(user);
         request.setQuantity(null);
-
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse(token);
-
+        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<?> setUpHeaderAndGetTheResponse(Token token){
+    @Test
+    public void testWhenQuantityIsZero(){
+        request.setQuantity(0);
+        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    private ResponseEntity<?> setUpHeaderAndGetTheResponse(){
         HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
         ResponseEntity<?> response = trt.exchange("/products/" + product.getId()+ "/cart",HttpMethod.POST,new HttpEntity<>(request,headers),Void.class);
 
