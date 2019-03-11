@@ -4,6 +4,8 @@ import com.vinyl.helper.DefaultEntitiesHelper;
 import com.vinyl.helper.TokenHeaderHelper;
 import com.vinyl.model.*;
 import com.vinyl.modelDTO.CartDetailsDTO;
+import com.vinyl.repository.CartRepository;
+import com.vinyl.repository.ProductCartRepository;
 import com.vinyl.repository.TokenRepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
@@ -24,16 +26,26 @@ public class GetCartDetailsTest extends BaseIntegration {
     @Autowired
     TokenHeaderHelper tokenHeaderHelper;
 
+    @Autowired
+    ProductCartRepository productCartRepository;
+
+    @Autowired
+    CartRepository cartRepository;
+
     @Test
     public void testWhenUserLoggedIn() {
         Product product = defaultEntitiesHelper.createProduct();
         Cart cart =defaultEntitiesHelper.createCart(user);
         ProductCart pc=defaultEntitiesHelper.createProductCart(cart, product);
         cart.setProducts(Lists.newArrayList(pc));
+        cartRepository.save(cart);
 
-        ResponseEntity<?> cdo=setUpHeaderAndGetTheResponse();
+        ResponseEntity<CartDetailsDTO> cdo=setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(cdo.getBody().getNrProducts()).isEqualTo(productCartRepository.findByCart(cart).size());
+        Assertions.assertThat(cdo.getBody().getProducts().contains(pc));
+        Assertions.assertThat(cdo.getBody().getTotalCost()).isEqualTo(productCartRepository.findByProductAndCart(product,cart).getProductPrice()*pc.getNrItems());
     }
 
     @Test
@@ -65,9 +77,10 @@ public class GetCartDetailsTest extends BaseIntegration {
         ResponseEntity<String> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), String.class);
 
         Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(cdo.getBody()).isEqualTo("No items in cart!");
     }
 
-    private ResponseEntity<?> setUpHeaderAndGetTheResponse(){
+    private ResponseEntity<CartDetailsDTO> setUpHeaderAndGetTheResponse(){
         HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
         ResponseEntity<CartDetailsDTO> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), CartDetailsDTO.class);
 
