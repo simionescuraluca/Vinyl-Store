@@ -9,7 +9,6 @@ import com.vinyl.model.*;
 import com.vinyl.modelDTO.CartDetailsDTO;
 import com.vinyl.modelDTO.ProductDTO;
 import com.vinyl.repository.*;
-import com.vinyl.service.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
