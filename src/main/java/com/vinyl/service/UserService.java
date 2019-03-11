@@ -97,14 +97,8 @@ public class UserService {
 
 	public CartDetailsDTO getCartDetails(String tokenHash) {
 
+		validatorFactory.getTokenValidator().validate(tokenHash);
 		Token token = tokenRepository.findByHash(tokenHash);
-		if (token == null) {
-			throw new UnauthorizedException("Token is invalid!");
-		}
-		if (LocalDate.now().compareTo(token.getValidUntil()) > 0) {
-			throw new UnauthorizedException("Token is expired!");
-		}
-
 		User user = token.getUser();
 
 		Cart cart = cartRepository.findByUser(user);

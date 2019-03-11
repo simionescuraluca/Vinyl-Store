@@ -54,7 +54,7 @@ public class GetCartDetailsTest extends BaseIntegration {
     public void testWhenTokenIsInvalid() {
         HttpHeaders headers=tokenHeaderHelper.setupToken("INVALID TOKEN");
         ResponseEntity<CartDetailsDTO> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), CartDetailsDTO.class);
-        Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
