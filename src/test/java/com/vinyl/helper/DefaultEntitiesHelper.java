@@ -57,7 +57,7 @@ public class DefaultEntitiesHelper {
         product.setArtist("Beyonce");
         product.setCategory("Pop Music");
         product.setDescription("Best Seller");
-        product.setPrice(100);
+        product.setPrice(100.0);
         product.setProductName("Beyonce Vinyl");
         product.setStock(10);
 

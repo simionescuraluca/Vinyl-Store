@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @AutoConfigureTestDatabase
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
-public class BaseTest {
+public abstract class BaseIntegration {
     @Autowired
     protected TestRestTemplate trt;
 

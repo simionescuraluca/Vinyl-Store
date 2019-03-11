@@ -60,7 +60,6 @@ public class UserService {
 
 		user.setPass(passwordEncoder.encode(user.getPass()));
 		return userRepository.save(user);
-
 	}
 
 	public void deleteUser(EmailPassDTO credentials) {
@@ -96,13 +95,17 @@ public class UserService {
 		return tokenRepository.save(token);
 	}
 
-	public CartDetailsDTO getCartDetails(String tokenHash){
+	public CartDetailsDTO getCartDetails(String tokenHash) {
 
 		Token token = tokenRepository.findByHash(tokenHash);
-		if(token==null) { throw new UnauthorizedException("Token is invalid!"); }
-		if (LocalDate.now().compareTo(token.getValidUntil()) > 0) { throw new UnauthorizedException("Token is expired!"); }
+		if (token == null) {
+			throw new UnauthorizedException("Token is invalid!");
+		}
+		if (LocalDate.now().compareTo(token.getValidUntil()) > 0) {
+			throw new UnauthorizedException("Token is expired!");
+		}
 
-		User user=token.getUser();
+		User user = token.getUser();
 
 		Cart cart = cartRepository.findByUser(user);
 		List<ProductCart> productCartList = productCartRepository.findByCart(cart);
@@ -114,12 +117,11 @@ public class UserService {
 
 			cost = cost + (product.getProductPrice() * product.getNrItems());
 		}
-
 		CartDetailsDTO cartDetails = new CartDetailsDTO();
 		cartDetails.setNrProducts(productDetails.size());
 		cartDetails.setProducts(productDetails);
 		cartDetails.setTotalCost(cost);
 
 		return cartDetails;
-		}
 	}
+}

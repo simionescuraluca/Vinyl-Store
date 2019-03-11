@@ -30,7 +30,7 @@ public class Product {
 
 	@NotNull
 	@Column(nullable = false)
-	private Integer price;
+	private Double price;
 
 	@NotNull
 	@Column(nullable = false)
@@ -68,11 +68,11 @@ public class Product {
 		this.description = description;
 	}
 
-	public Integer getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 
