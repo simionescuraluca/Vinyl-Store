@@ -16,7 +16,7 @@ import com.vinyl.modelDTO.TokenDTO;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
-public class LoginTest extends BaseTest {
+public class LoginTest extends BaseIntegration {
 
 	@Autowired
 	private TokenRepository tokenRepository;
@@ -47,7 +47,7 @@ public class LoginTest extends BaseTest {
 
 	@Test
 	public void loginWithValidEmailAndPasswordWhenTokenExists() {
-		Token token = defaultentitiesHelper.createToken(user);
+		Token token = defaultEntitiesHelper.createToken(user);
 		setRequest(request);
 
 		ResponseEntity<TokenDTO> tdo = trt.postForEntity("/users/login", request, TokenDTO.class);

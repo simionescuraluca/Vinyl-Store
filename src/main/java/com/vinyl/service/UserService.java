@@ -9,7 +9,6 @@ import com.vinyl.model.*;
 import com.vinyl.modelDTO.CartDetailsDTO;
 import com.vinyl.modelDTO.ProductDTO;
 import com.vinyl.repository.*;
-import com.vinyl.service.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -60,7 +59,6 @@ public class UserService {
 
 		user.setPass(passwordEncoder.encode(user.getPass()));
 		return userRepository.save(user);
-
 	}
 
 	public void deleteUser(EmailPassDTO credentials) {
@@ -96,13 +94,11 @@ public class UserService {
 		return tokenRepository.save(token);
 	}
 
-	public CartDetailsDTO getCartDetails(String tokenHash){
+	public CartDetailsDTO getCartDetails(String tokenHash) {
 
+		validatorFactory.getTokenValidator().validate(tokenHash);
 		Token token = tokenRepository.findByHash(tokenHash);
-		if(token==null) { throw new UnauthorizedException("Token is invalid!"); }
-		if (LocalDate.now().compareTo(token.getValidUntil()) > 0) { throw new UnauthorizedException("Token is expired!"); }
-
-		User user=token.getUser();
+		User user = token.getUser();
 
 		Cart cart = cartRepository.findByUser(user);
 		List<ProductCart> productCartList = productCartRepository.findByCart(cart);
@@ -114,12 +110,11 @@ public class UserService {
 
 			cost = cost + (product.getProductPrice() * product.getNrItems());
 		}
-
 		CartDetailsDTO cartDetails = new CartDetailsDTO();
 		cartDetails.setNrProducts(productDetails.size());
 		cartDetails.setProducts(productDetails);
 		cartDetails.setTotalCost(cost);
 
 		return cartDetails;
-		}
 	}
+}

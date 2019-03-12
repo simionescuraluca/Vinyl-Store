@@ -19,11 +19,18 @@ public class Cart {
 
 	@NotNull
 	@OneToOne
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "user_id", nullable = false, unique = true)
 	private User user;
 
 	@OneToMany(mappedBy = "product")
 	public List<ProductCart> products = new ArrayList<>();
+
+	public Cart(@NotNull User user) {
+		this.user = user;
+	}
+
+	public Cart() {
+	}
 
 	public Integer getId() {
 		return id;

@@ -1,5 +1,6 @@
 package com.vinyl.service.validation;
 
+import com.vinyl.repository.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -13,11 +14,13 @@ public class ValidatorFactory {
 
 	private final UserRepository userRepository;
 	private BCryptPasswordEncoder passwordEncoder;
+	private final TokenRepository tokenRepository;
 	
 	@Autowired
-	public ValidatorFactory(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+	public ValidatorFactory(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, TokenRepository tokenRepository) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.tokenRepository = tokenRepository;
 	}
 
 	public Validator<User> getUserNameValidator() {
@@ -39,4 +42,6 @@ public class ValidatorFactory {
 	public void setPasswordEncoder(BCryptPasswordEncoder passwordEncoder) {
 		this.passwordEncoder = passwordEncoder;
 	}
+
+	public Validator<String>  getTokenValidator() { return new TokenValidator(tokenRepository); }
 }

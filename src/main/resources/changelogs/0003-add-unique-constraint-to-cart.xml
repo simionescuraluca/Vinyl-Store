@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="1_delete_duplicate_carts" author="raluca">
+        <sql>
+        <![CDATA[
+	            DELETE
+            t1.*
+            FROM
+            cart t1,
+            cart t2
+            WHERE
+            t1.id < t2.id
+                    AND t1.user_id = t2.user_id
+                    AND t1.id != t2.id;
+  ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="2_add_uq_constr_to_cart_on_user" author="raluca">
+        <preConditions>
+            <sqlCheck expectedResult="0">
+                select count(*)
+                from
+                information_schema.table_constraints
+                where table_name='cart'and
+                table_schema='vinylstore' and
+                constraint_type='UNIQUE';
+            </sqlCheck>
+        </preConditions>
+        <addUniqueConstraint tableName="cart" columnNames="user_id"
+                             schemaName="vinylstore" constraintName="uq_user_cart"/>
+    </changeSet>
+</databaseChangeLog>

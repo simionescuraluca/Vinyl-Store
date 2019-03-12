@@ -1,7 +1,7 @@
 package com.vinyl.controller;
 
+import com.vinyl.helper.AuthenticationHeaderHelper;
 import com.vinyl.modelDTO.CartDetailsDTO;
-import com.vinyl.service.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -56,11 +56,9 @@ public class UserController {
     @RequestMapping(value = "/users/cart", method = RequestMethod.GET)
     public ResponseEntity<?> getCartDetails(@RequestHeader(value = "Authorization", required = false) String auth) {
 
-        if(auth==null) { throw new UnauthorizedException("Missing token!"); }
-        if(!auth.contains("Bearer ")) { throw new UnauthorizedException("Invalid Token!"); }
-        String token = auth.replace("Bearer ", "");
+		String token = AuthenticationHeaderHelper.getTokenHashOrNull(auth);
 
-        CartDetailsDTO cartDetails = userService.getCartDetails(token);
+		CartDetailsDTO cartDetails = userService.getCartDetails(token);
         if (cartDetails.getNrProducts() == 0) {
             return new ResponseEntity<>("No items in cart!", HttpStatus.OK);
         }
