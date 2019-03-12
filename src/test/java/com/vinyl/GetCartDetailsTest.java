@@ -44,7 +44,7 @@ public class GetCartDetailsTest extends BaseIntegration {
 
         Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(cdo.getBody().getNrProducts()).isEqualTo(productCartRepository.findByCart(cart).size());
-        Assertions.assertThat(cdo.getBody().getProducts().get(0).getProductPrice()).isEqualTo(pc.getProductPrice());
+        Assertions.assertThat(cdo.getBody().getProducts().get(0).getName()).isEqualTo(pc.getProduct().getProductName());
         Assertions.assertThat(cdo.getBody().getTotalCost()).isEqualTo(productCartRepository.findByProductAndCart(product,cart).getProductPrice()*pc.getNrItems());
     }
 
