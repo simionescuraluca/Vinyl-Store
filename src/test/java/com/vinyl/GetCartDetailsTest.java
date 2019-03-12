@@ -4,7 +4,6 @@ import com.vinyl.helper.DefaultEntitiesHelper;
 import com.vinyl.helper.TokenHeaderHelper;
 import com.vinyl.model.*;
 import com.vinyl.modelDTO.CartDetailsDTO;
-import com.vinyl.modelDTO.ProductDTO;
 import com.vinyl.repository.CartRepository;
 import com.vinyl.repository.ProductCartRepository;
 import com.vinyl.repository.TokenRepository;
