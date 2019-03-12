@@ -4,6 +4,7 @@ import com.vinyl.helper.DefaultEntitiesHelper;
 import com.vinyl.helper.TokenHeaderHelper;
 import com.vinyl.model.*;
 import com.vinyl.modelDTO.CartDetailsDTO;
+import com.vinyl.modelDTO.ProductDTO;
 import com.vinyl.repository.CartRepository;
 import com.vinyl.repository.ProductCartRepository;
 import com.vinyl.repository.TokenRepository;
@@ -44,7 +45,7 @@ public class GetCartDetailsTest extends BaseIntegration {
 
         Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(cdo.getBody().getNrProducts()).isEqualTo(productCartRepository.findByCart(cart).size());
-        Assertions.assertThat(cdo.getBody().getProducts().contains(pc));
+        Assertions.assertThat(cdo.getBody().getProducts().get(0).getProductPrice()).isEqualTo(pc.getProductPrice());
         Assertions.assertThat(cdo.getBody().getTotalCost()).isEqualTo(productCartRepository.findByProductAndCart(product,cart).getProductPrice()*pc.getNrItems());
     }
 
