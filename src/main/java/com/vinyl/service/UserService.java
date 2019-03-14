@@ -1,20 +1,21 @@
 package com.vinyl.service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import com.vinyl.model.*;
 import com.vinyl.modelDTO.CartDetailsDTO;
+import com.vinyl.modelDTO.EmailPassDTO;
 import com.vinyl.modelDTO.ProductDTO;
 import com.vinyl.repository.*;
+import com.vinyl.service.exception.BadRequestException;
+import com.vinyl.service.exception.UnauthorizedException;
+import com.vinyl.service.validation.ValidatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.vinyl.modelDTO.EmailPassDTO;
-import com.vinyl.service.validation.ValidatorFactory;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service("userService")
 public class UserService {
@@ -42,6 +43,9 @@ public class UserService {
 
 	@Autowired
 	private CartRepository cartRepository;
+
+	@Autowired
+	private ProductRepository productRepository;
 
 	public User addUser(User user) {
 
@@ -116,5 +120,26 @@ public class UserService {
 		cartDetails.setTotalCost(cost);
 
 		return cartDetails;
+	}
+
+	public void deleteProductFromCart(String tokenHash, Integer productId, Integer userId){
+
+		validatorFactory.getTokenValidator().validate(tokenHash);
+		Token token = tokenRepository.findByHash(tokenHash);
+		User user = token.getUser();
+		if(userId!=tokenRepository.findByHash(tokenHash).getUser().getId()){
+			throw new UnauthorizedException("You cannot access the cart of another user!");
+		}
+
+		Cart cart=cartRepository.findByUser(user);
+		if(cart==null){
+			throw new BadRequestException("You don't have a cart!");
+		}
+		ProductCart toDelete = productCartRepository.findByCartIdAndProductId(cart.getId(),productId);
+		if(toDelete==null){
+			throw new BadRequestException("The item you want to delete is invalid!");
+		}
+
+		productCartRepository.delete(toDelete);
 	}
 }
