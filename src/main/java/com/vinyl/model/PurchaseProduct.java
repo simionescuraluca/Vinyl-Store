@@ -1,17 +1,10 @@
 package com.vinyl.model;
 
-import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-
 import com.vinyl.model.PurchaseProduct.PurchaseProductId;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Entity
 @IdClass(PurchaseProductId.class)
@@ -33,6 +26,15 @@ public class PurchaseProduct {
 	@ManyToOne
 	@JoinColumn(name = "product_id", nullable = false)
 	private Product product;
+
+	public PurchaseProduct() {
+	}
+
+	public PurchaseProduct(@NotNull Integer nrItems, @NotNull Purchase purchase, @NotNull Product product) {
+		this.nrItems = nrItems;
+		this.purchase = purchase;
+		this.product = product;
+	}
 
 	public Purchase getPurchase() {
 		return purchase;

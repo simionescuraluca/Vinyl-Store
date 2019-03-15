@@ -20,13 +20,16 @@ import com.vinyl.service.UserService;
 @RestController
 public class UserController {
 
+	public static final String BAD_REQUEST_MESSAGE = "You made a bad request!";
+	public static final String NOT_AUTHORIZED_MESSAGE = "You made a bad request!";
+
 	@Autowired
 	UserService userService;
 
 	@ApiOperation(value = "Create an account", response = ResponseEntity.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Successfully created user"),
-			@ApiResponse(code = 400, message = "You made a bad request")
+			@ApiResponse(code = 400, message = BAD_REQUEST_MESSAGE)
 	})
 	@RequestMapping(value = "/users", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> addUser(@ApiParam(value = "UserDTO object to send in the request body", required = true)@RequestBody UserDTO userDTO) {
@@ -44,7 +47,7 @@ public class UserController {
 	@ApiOperation(value = "Delete an account", response = ResponseEntity.class)
 	@ApiResponses(value = {
 			@ApiResponse(code = 204, message = "Successfully deleted user"),
-			@ApiResponse(code = 400, message = "You made a bad request")
+			@ApiResponse(code = 400, message = BAD_REQUEST_MESSAGE)
 	})
 	@RequestMapping(value = "/users", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<?> deleteUser(@ApiParam(value = "EmailPassDTO object to send in the request body", required = true) @RequestBody EmailPassDTO credentials) {
@@ -55,8 +58,8 @@ public class UserController {
 
 	@ApiOperation(value = "User logs in", response = ResponseEntity.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = 401, message = "You are not authorized to make this request"),
-			@ApiResponse(code = 400, message = "You made a bad request"),
+			@ApiResponse(code = 401, message = NOT_AUTHORIZED_MESSAGE),
+			@ApiResponse(code = 400, message = BAD_REQUEST_MESSAGE),
 			@ApiResponse(code = 200, message = "You successfully logged in")
 
 	})
@@ -72,10 +75,10 @@ public class UserController {
 		return new ResponseEntity<>(tokenDTO,HttpStatus.OK);
 	}
 
-	@ApiOperation(value = "User gets cart details", response = ResponseEntity.class)
+	@ApiOperation(value = "User gets cart details", response = String.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = 401, message = "You are not authorized to make this request"),
-			@ApiResponse(code = 400, message = "You made a bad request"),
+			@ApiResponse(code = 401, message = NOT_AUTHORIZED_MESSAGE),
+			@ApiResponse(code = 400, message = BAD_REQUEST_MESSAGE),
 			@ApiResponse(code = 200, message = "You successfully retrieved cart details")
 
 	})

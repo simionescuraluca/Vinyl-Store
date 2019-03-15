@@ -44,6 +44,19 @@ public class Product {
 	@Column(nullable = false)
 	private String category;
 
+	public Product() {
+
+	}
+
+	public Product(@NotEmpty String productName, @NotEmpty String description, @NotNull Double price, @NotNull Integer stock, @NotEmpty String artist, @NotEmpty String category) {
+		this.productName = productName;
+		this.description = description;
+		this.price = price;
+		this.stock = stock;
+		this.artist = artist;
+		this.category = category;
+	}
+
 	public Integer getId() {
 		return id;
 	}

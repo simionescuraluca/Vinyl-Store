@@ -1,29 +1,20 @@
 package com.vinyl.model;
 
-import java.time.LocalDate;
-import java.util.List;
+import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "PURCHASE")
 public class Purchase {
 
 	@Id
-	@NotNull
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+	@GenericGenerator(name = "native", strategy = "native")
 	private Integer id;
 
 	@NotNull
@@ -39,15 +30,18 @@ public class Purchase {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@ManyToMany(cascade =
-        {
-                CascadeType.DETACH,
-                CascadeType.MERGE,
-                CascadeType.REFRESH,
-                CascadeType.PERSIST
-        })
-	@JoinTable(name = "PURCHASE_PRODUCT", joinColumns = @JoinColumn(name = "purchase_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
-	public List<Product> products;
+	@OneToMany(mappedBy = "product")
+	public List<PurchaseProduct> products;
+
+	public Purchase() {
+	}
+
+	public Purchase(@NotNull LocalDate dateCreated, @NotEmpty String status, @NotNull User user, List<PurchaseProduct> products) {
+		this.dateCreated = dateCreated;
+		this.status = status;
+		this.user = user;
+		this.products = products;
+	}
 
 	public Integer getId() {
 		return id;
@@ -81,12 +75,11 @@ public class Purchase {
 		this.user = user;
 	}
 
-	public List<Product> getProducts() {
+	public List<PurchaseProduct> getPurchaseProducts() {
 		return products;
 	}
 
-	public void setProducts(List<Product> products) {
+	public void sePurchasetProducts(List<PurchaseProduct> products) {
 		this.products = products;
 	}
-
 }

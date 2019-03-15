@@ -1,20 +1,19 @@
 package com.vinyl.service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import com.vinyl.model.*;
 import com.vinyl.modelDTO.CartDetailsDTO;
+import com.vinyl.modelDTO.EmailPassDTO;
 import com.vinyl.modelDTO.ProductDTO;
 import com.vinyl.repository.*;
+import com.vinyl.service.validation.ValidatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.vinyl.modelDTO.EmailPassDTO;
-import com.vinyl.service.validation.ValidatorFactory;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service("userService")
 public class UserService {
@@ -41,7 +40,13 @@ public class UserService {
 	private ProductCartRepository productCartRepository;
 
 	@Autowired
+	private PurchaseProductRepository purchaseProductRepository;
+
+	@Autowired
 	private CartRepository cartRepository;
+
+	@Autowired
+	private PurchaseRepository purchaseRepository;
 
 	public User addUser(User user) {
 
