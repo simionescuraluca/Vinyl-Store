@@ -16,12 +16,11 @@ import com.vinyl.modelDTO.TokenDTO;
 import com.vinyl.modelDTO.UserDTO;
 import com.vinyl.service.UserService;
 
+import static com.vinyl.controller.Consts.*;
+
 @Api(value="User Management", description="Operations pertaining to users in User Management System")
 @RestController
 public class UserController {
-
-	public static final String BAD_REQUEST_MESSAGE = "You made a bad request!";
-	public static final String NOT_AUTHORIZED_MESSAGE = "You made a bad request!";
 
 	@Autowired
 	UserService userService;
@@ -83,7 +82,7 @@ public class UserController {
 
 	})
     @RequestMapping(value = "/users/cart", method = RequestMethod.GET)
-    public ResponseEntity<?> getCartDetails(@ApiParam(value = "Token hash to sent in the request header", required = true) @RequestHeader(value = "Authorization", required = false) String auth) {
+    public ResponseEntity<?> getCartDetails(@ApiParam(value = "Token hash to send in the request header", required = true) @RequestHeader(value = "Authorization", required = false) String auth) {
 
 		String token = AuthenticationHeaderHelper.getTokenHashOrNull(auth);
 
