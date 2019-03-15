@@ -1,7 +1,5 @@
 package com.vinyl.model;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -13,8 +11,8 @@ import java.util.List;
 public class Purchase {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-	@GenericGenerator(name = "native", strategy = "native")
+	@NotNull
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@NotNull
@@ -30,13 +28,22 @@ public class Purchase {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
-	@OneToMany(mappedBy = "product")
-	public List<PurchaseProduct> products;
+
+
+	@ManyToMany(cascade =
+			{
+					CascadeType.DETACH,
+					CascadeType.MERGE,
+					CascadeType.REFRESH,
+					CascadeType.PERSIST
+			})
+	@JoinTable(name = "PURCHASE_PRODUCT", joinColumns = @JoinColumn(name = "purchase_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
+	public List<Product> products;
 
 	public Purchase() {
 	}
 
-	public Purchase(@NotNull LocalDate dateCreated, @NotEmpty String status, @NotNull User user, List<PurchaseProduct> products) {
+	public Purchase(@NotNull LocalDate dateCreated, @NotEmpty String status, @NotNull User user, List<Product> products) {
 		this.dateCreated = dateCreated;
 		this.status = status;
 		this.user = user;
@@ -75,11 +82,11 @@ public class Purchase {
 		this.user = user;
 	}
 
-	public List<PurchaseProduct> getPurchaseProducts() {
+	public List<Product> getPurchaseProducts() {
 		return products;
 	}
 
-	public void sePurchasetProducts(List<PurchaseProduct> products) {
+	public void setProducts(List<Product> products) {
 		this.products = products;
 	}
 }
