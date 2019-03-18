@@ -15,11 +15,11 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @RequestMapping(value="/products/{productId}/cart", method= RequestMethod.POST, consumes= MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<?> addProductToCart(@RequestBody AddProductToCartDTO info, @PathVariable Integer productId, @RequestHeader(value = "Authorization", required = false) String auth ){
+    @RequestMapping(value = "/products/{productId}/cart", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<?> addProductToCart(@RequestBody AddProductToCartDTO info, @PathVariable Integer productId, @RequestHeader(value = "Authorization", required = false) String auth) {
 
         String token = AuthenticationHeaderHelper.getTokenHashOrNull(auth);
-        productService.addProductToCart(info,productId,token);
+        productService.addProductToCart(info, productId, token);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

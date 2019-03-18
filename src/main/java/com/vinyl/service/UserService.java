@@ -5,8 +5,6 @@ import com.vinyl.modelDTO.CartDetailsDTO;
 import com.vinyl.modelDTO.EmailPassDTO;
 import com.vinyl.modelDTO.ProductDTO;
 import com.vinyl.repository.*;
-import com.vinyl.service.exception.BadRequestException;
-import com.vinyl.service.exception.UnauthorizedException;
 import com.vinyl.service.validation.ValidatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,104 +18,102 @@ import java.util.Optional;
 @Service("userService")
 public class UserService {
 
-	@Autowired
-	private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-	@Autowired
-	private RoleRepository roleRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
-	@Autowired
-	private AddressRepository addressRepository;
+    @Autowired
+    private AddressRepository addressRepository;
 
-	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
-	@Autowired
-	private ValidatorFactory validatorFactory;
+    @Autowired
+    private ValidatorFactory validatorFactory;
 
-	@Autowired
-	private TokenRepository tokenRepository;
+    @Autowired
+    private TokenRepository tokenRepository;
 
-	@Autowired
-	private ProductCartRepository productCartRepository;
+    @Autowired
+    private ProductCartRepository productCartRepository;
 
-	@Autowired
-	private CartRepository cartRepository;
+    @Autowired
+    private CartRepository cartRepository;
 
 	@Autowired
 	private ProductRepository productRepository;
 
 	public User addUser(User user) {
 
-		Role r = new Role("BASIC_USER");
-		r = roleRepository.save(r);
-		user.setRole(r);
+        Role r = new Role("BASIC_USER");
+        r = roleRepository.save(r);
+        user.setRole(r);
 
-		Address defaultAddress = addressRepository.findByCountryAndCityAndStreetAndNumber("Romania", "Iasi",
-				"Strada Palat", 1);
-		user.setAddress(defaultAddress);
+        Address defaultAddress = addressRepository.findByCountryAndCityAndStreetAndNumber("Romania", "Iasi",
+                "Strada Palat", 1);
+        user.setAddress(defaultAddress);
 
-		validatorFactory.getUserNameValidator().validate(user);
-		validatorFactory.getUserEmailValidator().validate(user);
-		validatorFactory.getUserPasswordValidator().validate(user);
+        validatorFactory.getUserNameValidator().validate(user);
+        validatorFactory.getUserEmailValidator().validate(user);
+        validatorFactory.getUserPasswordValidator().validate(user);
 
-		user.setPass(passwordEncoder.encode(user.getPass()));
-		return userRepository.save(user);
-	}
+        user.setPass(passwordEncoder.encode(user.getPass()));
+        return userRepository.save(user);
+    }
 
-	public void deleteUser(EmailPassDTO credentials) {
+    public void deleteUser(EmailPassDTO credentials) {
 
-		validatorFactory.getEmailAndPasswordValidator().validate(credentials);
-		Optional<User> user = userRepository.findByEmail(credentials.getEmail());
-		user.ifPresent(userRepository::delete);
-	}
+        validatorFactory.getEmailAndPasswordValidator().validate(credentials);
+        Optional<User> user = userRepository.findByEmail(credentials.getEmail());
+        user.ifPresent(userRepository::delete);
+    }
 
-	public Token loginUser(EmailPassDTO info) {
+    public Token loginUser(EmailPassDTO info) {
 
-		validatorFactory.getEmailAndPasswordValidator().validate(info);
+        validatorFactory.getEmailAndPasswordValidator().validate(info);
 
-		User user=userRepository.findByEmail(info.getEmail()).get();
-		Token token = tokenRepository.findFirstByUserOrderByValidUntilDesc(user);
-		
-		if (token == null) {
-			token=new Token();
-			token.setUser(userRepository.findByEmail(info.getEmail()).get());
-			token.setHash(String.valueOf(Math.abs(info.hashCode())));
+        User user = userRepository.findByEmail(info.getEmail()).get();
+        Token token = tokenRepository.findFirstByUserOrderByValidUntilDesc(user);
 
-			LocalDate tokenCreateDate = LocalDate.now();
-			LocalDate tokenValidUntil = tokenCreateDate.plusMonths(1);
-			token.setValidUntil(tokenValidUntil);
-		}
-		else
-		{
-			if (LocalDate.now().compareTo(token.getValidUntil()) < 0) {
-				return token;
-			}
-		}
-		
-		return tokenRepository.save(token);
-	}
+        if (token == null) {
+            token = new Token();
+            token.setUser(userRepository.findByEmail(info.getEmail()).get());
+            token.setHash(String.valueOf(Math.abs(info.hashCode())));
 
-	public CartDetailsDTO getCartDetails(String tokenHash) {
+            LocalDate tokenCreateDate = LocalDate.now();
+            LocalDate tokenValidUntil = tokenCreateDate.plusMonths(1);
+            token.setValidUntil(tokenValidUntil);
+        } else {
+            if (LocalDate.now().compareTo(token.getValidUntil()) < 0) {
+                return token;
+            }
+        }
 
-		validatorFactory.getTokenValidator().validate(tokenHash);
-		Token token = tokenRepository.findByHash(tokenHash);
-		User user = token.getUser();
+        return tokenRepository.save(token);
+    }
 
-		Cart cart = cartRepository.findByUser(user);
-		List<ProductCart> productCartList = productCartRepository.findByCart(cart);
-		List<ProductDTO> productDetails = new ArrayList<>();
-		double cost = 0.0;
-		for (ProductCart product : productCartList) {
-			String name = product.getProduct().getProductName();
-			productDetails.add(new ProductDTO(name, product.getNrItems(), product.getProductPrice()));
+    public CartDetailsDTO getCartDetails(String tokenHash) {
 
-			cost = cost + (product.getProductPrice() * product.getNrItems());
-		}
-		CartDetailsDTO cartDetails = new CartDetailsDTO();
-		cartDetails.setNrProducts(productDetails.size());
-		cartDetails.setProducts(productDetails);
-		cartDetails.setTotalCost(cost);
+        validatorFactory.getTokenValidator().validate(tokenHash);
+        Token token = tokenRepository.findByHash(tokenHash);
+        User user = token.getUser();
+
+        Cart cart = cartRepository.findByUser(user);
+        List<ProductCart> productCartList = productCartRepository.findByCart(cart);
+        List<ProductDTO> productDetails = new ArrayList<>();
+        double cost = 0.0;
+        for (ProductCart product : productCartList) {
+            String name = product.getProduct().getProductName();
+            productDetails.add(new ProductDTO(name, product.getNrItems(), product.getProductPrice()));
+
+            cost = cost + (product.getProductPrice() * product.getNrItems());
+        }
+        CartDetailsDTO cartDetails = new CartDetailsDTO();
+        cartDetails.setNrProducts(productDetails.size());
+        cartDetails.setProducts(productDetails);
+        cartDetails.setTotalCost(cost);
 
 		return cartDetails;
 	}

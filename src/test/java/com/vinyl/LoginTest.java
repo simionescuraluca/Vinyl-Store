@@ -1,5 +1,8 @@
 package com.vinyl;
 
+import com.vinyl.model.Token;
+import com.vinyl.modelDTO.EmailPassDTO;
+import com.vinyl.modelDTO.TokenDTO;
 import com.vinyl.repository.TokenRepository;
 import com.vinyl.service.validation.ValidatorFactory;
 import org.assertj.core.api.Assertions;
@@ -10,85 +13,77 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.vinyl.model.Token;
-import com.vinyl.modelDTO.EmailPassDTO;
-import com.vinyl.modelDTO.TokenDTO;
-
 import static org.mockito.ArgumentMatchers.anyString;
 
 public class LoginTest extends BaseIntegration {
 
-	@Autowired
-	private TokenRepository tokenRepository;
+    EmailPassDTO request = new EmailPassDTO();
+    @Autowired
+    private TokenRepository tokenRepository;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private ValidatorFactory validatorFactory;
+    private BCryptPasswordEncoder mockedPasswordEncoder;
 
-	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
+    @Override
+    public void setUp() {
+        super.setUp();
+        mockedPasswordEncoder = Mockito.mock(BCryptPasswordEncoder.class);
+        Mockito.when(mockedPasswordEncoder.matches(anyString(), anyString())).thenReturn(true);
+        validatorFactory.setPasswordEncoder(mockedPasswordEncoder);
+    }
 
-	@Autowired
-	private ValidatorFactory validatorFactory;
+    @Override
+    public void tearDown() {
+        validatorFactory.setPasswordEncoder(passwordEncoder);
+        super.tearDown();
+    }
 
-	private BCryptPasswordEncoder mockedPasswordEncoder;
+    @Test
+    public void loginWithValidEmailAndPasswordWhenTokenExists() {
+        Token token = defaultEntitiesHelper.createToken(user);
+        setRequest(request);
 
-	EmailPassDTO request = new EmailPassDTO();
+        ResponseEntity<TokenDTO> tdo = trt.postForEntity("/users/login", request, TokenDTO.class);
 
-	@Override
-	public void setUp() {
-		super.setUp();
-		mockedPasswordEncoder = Mockito.mock(BCryptPasswordEncoder.class);
-		Mockito.when(mockedPasswordEncoder.matches(anyString(), anyString())).thenReturn(true);
-		validatorFactory.setPasswordEncoder(mockedPasswordEncoder);
-	}
+        Assertions.assertThat(tdo.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(tdo.getBody().getHash()).isEqualTo(token.getHash());
+    }
 
-	@Override
-	public void tearDown() {
-		validatorFactory.setPasswordEncoder(passwordEncoder);
-		super.tearDown();
-	}
+    @Test
+    public void loginWithValidEmailAndPasswordWhenTokenDoesNotExist() {
+        setRequest(request);
 
-	@Test
-	public void loginWithValidEmailAndPasswordWhenTokenExists() {
-		Token token = defaultEntitiesHelper.createToken(user);
-		setRequest(request);
+        ResponseEntity<TokenDTO> tdo = trt.postForEntity("/users/login", request, TokenDTO.class);
 
-		ResponseEntity<TokenDTO> tdo = trt.postForEntity("/users/login", request, TokenDTO.class);
+        Assertions.assertThat(tdo.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(tokenRepository.findFirstByUserOrderByValidUntilDesc(user)).isNotNull();
+    }
 
-		Assertions.assertThat(tdo.getStatusCode()).isEqualTo(HttpStatus.OK);
-		Assertions.assertThat(tdo.getBody().getHash()).isEqualTo(token.getHash());
-	}
+    @Test
+    public void loginWithInvalidEmail() {
+        EmailPassDTO request = new EmailPassDTO();
+        request.setEmail("thisisnottheemail@yahoo.com");
+        request.setPass(user.getPass());
 
-	@Test
-	public void loginWithValidEmailAndPasswordWhenTokenDoesNotExist() {
-		setRequest(request);
+        ResponseEntity<TokenDTO> tdo = trt.postForEntity("/users/login", request, TokenDTO.class);
+        Assertions.assertThat(tdo.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
 
-		ResponseEntity<TokenDTO> tdo = trt.postForEntity("/users/login", request, TokenDTO.class);
+    @Test
+    public void loginWithInvalidPass() {
+        validatorFactory.setPasswordEncoder(passwordEncoder);
+        EmailPassDTO request = new EmailPassDTO();
+        request.setEmail(user.getEmail());
+        request.setPass("thisisnotthepassword");
 
-		Assertions.assertThat(tdo.getStatusCode()).isEqualTo(HttpStatus.OK);
-		Assertions.assertThat(tokenRepository.findFirstByUserOrderByValidUntilDesc(user)).isNotNull();
-	}
+        ResponseEntity<TokenDTO> tdo = trt.postForEntity("/users/login", request, TokenDTO.class);
+        Assertions.assertThat(tdo.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
 
-	@Test
-	public void loginWithInvalidEmail()  {
-		EmailPassDTO request = new EmailPassDTO();
-		request.setEmail("thisisnottheemail@yahoo.com");
-		request.setPass(user.getPass());
-
-		ResponseEntity<TokenDTO> tdo = trt.postForEntity("/users/login", request, TokenDTO.class);
-		Assertions.assertThat(tdo.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-	}
-
-	@Test
-	public void loginWithInvalidPass() {
-		validatorFactory.setPasswordEncoder(passwordEncoder);
-		EmailPassDTO request = new EmailPassDTO();
-		request.setEmail(user.getEmail());
-		request.setPass("thisisnotthepassword");
-
-		ResponseEntity<TokenDTO> tdo = trt.postForEntity("/users/login", request, TokenDTO.class);
-		Assertions.assertThat(tdo.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-	}
-
-	public void setRequest(EmailPassDTO request){
-		request.setEmail(user.getEmail());
-		request.setPass(user.getPass());
-	}
+    public void setRequest(EmailPassDTO request) {
+        request.setEmail(user.getEmail());
+        request.setPass(user.getPass());
+    }
 }

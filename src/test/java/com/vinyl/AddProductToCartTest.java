@@ -43,16 +43,16 @@ public class AddProductToCartTest extends BaseIntegration {
     }
 
     @Test
-    public void testWhenUserLoggedInAndItemExistsInCart(){
-        Cart cart =defaultEntitiesHelper.createCart(user);
-        ProductCart pc=defaultEntitiesHelper.createProductCart(cart, product);
+    public void testWhenUserLoggedInAndItemExistsInCart() {
+        Cart cart = defaultEntitiesHelper.createCart(user);
+        ProductCart pc = defaultEntitiesHelper.createProductCart(cart, product);
         cart.setProducts(Lists.newArrayList(pc));
         cartRepository.save(cart);
 
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        Assertions.assertThat(productCartRepository.findByProductAndCart(product,cart).getNrItems()).isEqualTo(pc.getNrItems() + request.getQuantity());
+        Assertions.assertThat(productCartRepository.findByProductAndCart(product, cart).getNrItems()).isEqualTo(pc.getNrItems() + request.getQuantity());
     }
 
     @Test
@@ -65,15 +65,15 @@ public class AddProductToCartTest extends BaseIntegration {
     }
 
     @Test
-    public void testWhenTokenIsMissing(){
-        ResponseEntity<?> response = trt.exchange("/products/" + product.getId()+ "/cart",HttpMethod.POST,new HttpEntity<>(request),Void.class);
+    public void testWhenTokenIsMissing() {
+        ResponseEntity<?> response = trt.exchange("/products/" + product.getId() + "/cart", HttpMethod.POST, new HttpEntity<>(request), Void.class);
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
     public void testWhenTokenIsInvalid() {
-        HttpHeaders headers=tokenHeaderHelper.setupToken("INVALID_TOKEN");
-        ResponseEntity<?> response = trt.exchange("/products/" + product.getId()+ "/cart",HttpMethod.POST,new HttpEntity<>(request,headers),Void.class);
+        HttpHeaders headers = tokenHeaderHelper.setupToken("INVALID_TOKEN");
+        ResponseEntity<?> response = trt.exchange("/products/" + product.getId() + "/cart", HttpMethod.POST, new HttpEntity<>(request, headers), Void.class);
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -99,29 +99,29 @@ public class AddProductToCartTest extends BaseIntegration {
 
     @Test
     public void testWhenProductIsInvalid() {
-        HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<?> response = trt.exchange("/products/" + 000 + "/cart",HttpMethod.POST,new HttpEntity<>(request,headers),Void.class);
+        HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
+        ResponseEntity<?> response = trt.exchange("/products/" + 000 + "/cart", HttpMethod.POST, new HttpEntity<>(request, headers), Void.class);
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void testWhenQuantityIsNull(){
+    public void testWhenQuantityIsNull() {
         request.setQuantity(null);
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void testWhenQuantityIsZero(){
+    public void testWhenQuantityIsZero() {
         request.setQuantity(0);
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<?> setUpHeaderAndGetTheResponse(){
-        HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<?> response = trt.exchange("/products/" + product.getId()+ "/cart",HttpMethod.POST,new HttpEntity<>(request,headers),Void.class);
+    private ResponseEntity<?> setUpHeaderAndGetTheResponse() {
+        HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
+        ResponseEntity<?> response = trt.exchange("/products/" + product.getId() + "/cart", HttpMethod.POST, new HttpEntity<>(request, headers), Void.class);
 
         return response;
     }

@@ -1,92 +1,77 @@
 package com.vinyl.model;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "PURCHASE")
 public class Purchase {
 
-	@Id
-	@NotNull
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+    @ManyToMany(cascade =
+            {
+                    CascadeType.DETACH,
+                    CascadeType.MERGE,
+                    CascadeType.REFRESH,
+                    CascadeType.PERSIST
+            })
+    @JoinTable(name = "PURCHASE_PRODUCT", joinColumns = @JoinColumn(name = "purchase_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
+    public List<Product> products;
+    @Id
+    @NotNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @NotNull
+    @Column(nullable = false)
+    private LocalDate dateCreated;
+    @NotEmpty
+    @Column(nullable = false)
+    private String status;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-	@NotNull
-	@Column(nullable = false)
-	private LocalDate dateCreated;
+    public Integer getId() {
+        return id;
+    }
 
-	@NotEmpty
-	@Column(nullable = false)
-	private String status;
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
+    public LocalDate getDateCreated() {
+        return dateCreated;
+    }
 
-	@ManyToMany(cascade =
-        {
-                CascadeType.DETACH,
-                CascadeType.MERGE,
-                CascadeType.REFRESH,
-                CascadeType.PERSIST
-        })
-	@JoinTable(name = "PURCHASE_PRODUCT", joinColumns = @JoinColumn(name = "purchase_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
-	public List<Product> products;
+    public void setDateCreated(LocalDate dateCreated) {
+        this.dateCreated = dateCreated;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public LocalDate getDateCreated() {
-		return dateCreated;
-	}
+    public User getUser() {
+        return user;
+    }
 
-	public void setDateCreated(LocalDate dateCreated) {
-		this.dateCreated = dateCreated;
-	}
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    public List<Product> getProducts() {
+        return products;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public List<Product> getProducts() {
-		return products;
-	}
-
-	public void setProducts(List<Product> products) {
-		this.products = products;
-	}
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
 
 }

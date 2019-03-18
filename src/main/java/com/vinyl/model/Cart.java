@@ -2,58 +2,55 @@ package com.vinyl.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "CART")
 public class Cart {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-	@GenericGenerator(name = "native", strategy = "native")
-	private Integer id;
+    @OneToMany(mappedBy = "product")
+    public List<ProductCart> products = new ArrayList<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
+    private Integer id;
+    @NotNull
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
 
-	@NotNull
-	@OneToOne
-	@JoinColumn(name = "user_id", nullable = false, unique = true)
-	private User user;
+    public Cart(@NotNull User user) {
+        this.user = user;
+    }
 
-	@OneToMany(mappedBy = "product")
-	public List<ProductCart> products = new ArrayList<>();
+    public Cart() {
+    }
 
-	public Cart(@NotNull User user) {
-		this.user = user;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public Cart() {
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public User getUser() {
+        return user;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-	public User getUser() {
-		return user;
-	}
+    public List<ProductCart> getProducts() {
+        return products;
+    }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public List<ProductCart> getProducts() {
-		return products;
-	}
-
-	public void setProducts(List<ProductCart> products) {
-		this.products = products;
-	}
+    public void setProducts(List<ProductCart> products) {
+        this.products = products;
+    }
 
 }

@@ -2,7 +2,9 @@ package com.vinyl;
 
 import com.vinyl.helper.DefaultEntitiesHelper;
 import com.vinyl.helper.TokenHeaderHelper;
-import com.vinyl.model.*;
+import com.vinyl.model.Cart;
+import com.vinyl.model.Product;
+import com.vinyl.model.ProductCart;
 import com.vinyl.modelDTO.CartDetailsDTO;
 import com.vinyl.repository.CartRepository;
 import com.vinyl.repository.ProductCartRepository;
@@ -35,17 +37,17 @@ public class GetCartDetailsTest extends BaseIntegration {
     @Test
     public void testWhenUserLoggedIn() {
         Product product = defaultEntitiesHelper.createProduct();
-        Cart cart =defaultEntitiesHelper.createCart(user);
-        ProductCart pc=defaultEntitiesHelper.createProductCart(cart, product);
+        Cart cart = defaultEntitiesHelper.createCart(user);
+        ProductCart pc = defaultEntitiesHelper.createProductCart(cart, product);
         cart.setProducts(Lists.newArrayList(pc));
         cartRepository.save(cart);
 
-        ResponseEntity<CartDetailsDTO> cdo=setUpHeaderAndGetTheResponse();
+        ResponseEntity<CartDetailsDTO> cdo = setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(cdo.getBody().getNrProducts()).isEqualTo(productCartRepository.findByCart(cart).size());
         Assertions.assertThat(cdo.getBody().getProducts().get(0).getName()).isEqualTo(pc.getProduct().getProductName());
-        Assertions.assertThat(cdo.getBody().getTotalCost()).isEqualTo(productCartRepository.findByProductAndCart(product,cart).getProductPrice()*pc.getNrItems());
+        Assertions.assertThat(cdo.getBody().getTotalCost()).isEqualTo(productCartRepository.findByProductAndCart(product, cart).getProductPrice() * pc.getNrItems());
     }
 
     @Test
@@ -56,7 +58,7 @@ public class GetCartDetailsTest extends BaseIntegration {
 
     @Test
     public void testWhenTokenIsInvalid() {
-        HttpHeaders headers=tokenHeaderHelper.setupToken("INVALID TOKEN");
+        HttpHeaders headers = tokenHeaderHelper.setupToken("INVALID TOKEN");
         ResponseEntity<CartDetailsDTO> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), CartDetailsDTO.class);
         Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -66,22 +68,22 @@ public class GetCartDetailsTest extends BaseIntegration {
         token.setValidUntil(LocalDate.now().minusMonths(3));
         tokenRepository.save(token);
 
-        ResponseEntity<?> cdo=setUpHeaderAndGetTheResponse();
+        ResponseEntity<?> cdo = setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
     public void testWhenNoItemsInCart() {
-        HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
+        HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
         ResponseEntity<String> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), String.class);
 
         Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(cdo.getBody()).isEqualTo("No items in cart!");
     }
 
-    private ResponseEntity<CartDetailsDTO> setUpHeaderAndGetTheResponse(){
-        HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
+    private ResponseEntity<CartDetailsDTO> setUpHeaderAndGetTheResponse() {
+        HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
         ResponseEntity<CartDetailsDTO> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), CartDetailsDTO.class);
 
         return cdo;
