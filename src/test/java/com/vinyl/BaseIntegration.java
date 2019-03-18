@@ -1,7 +1,10 @@
 package com.vinyl;
 
 import com.vinyl.helper.DefaultEntitiesHelper;
-import com.vinyl.model.*;
+import com.vinyl.model.Address;
+import com.vinyl.model.Role;
+import com.vinyl.model.Token;
+import com.vinyl.model.User;
 import com.vinyl.repository.AddressRepository;
 import com.vinyl.repository.ProductRepository;
 import com.vinyl.repository.RoleRepository;
@@ -39,13 +42,10 @@ public abstract class BaseIntegration {
 
     @Autowired
     protected DefaultEntitiesHelper defaultEntitiesHelper;
-
-    private Address address;
-
-    private Role role;
-
     @Autowired
     ProductRepository productRepository;
+    private Address address;
+    private Role role;
 
     @Before
     public void setUp() {
@@ -60,21 +60,21 @@ public abstract class BaseIntegration {
         defaultEntitiesHelper.tearDown();
     }
 
-   public void createAddress(){
+    public void createAddress() {
         address = new Address();
         address.setCity("Iasi");
         address.setCountry("Romaniaa");
         address.setNumber(1);
         address.setStreet("Strada Palat");
-        address=addressRepository.save(address);
+        address = addressRepository.save(address);
     }
 
-    public void createRole(){
+    public void createRole() {
         role = new Role("BASIC_USER");
-        role=roleRepository.save(role);
+        role = roleRepository.save(role);
     }
 
-    public User createUser(String email){
+    public User createUser(String email) {
         User user = new User();
         user.setEmail(email);
         user.setFirstName("Raluca");

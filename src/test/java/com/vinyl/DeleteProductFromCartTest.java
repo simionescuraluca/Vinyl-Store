@@ -1,7 +1,10 @@
 package com.vinyl;
 
 import com.vinyl.helper.TokenHeaderHelper;
-import com.vinyl.model.*;
+import com.vinyl.model.Cart;
+import com.vinyl.model.Product;
+import com.vinyl.model.ProductCart;
+import com.vinyl.model.User;
 import com.vinyl.repository.CartRepository;
 import com.vinyl.repository.ProductCartRepository;
 import com.vinyl.repository.TokenRepository;
@@ -37,12 +40,12 @@ public class DeleteProductFromCartTest extends BaseIntegration {
 
     @Test
     public void testWhenUserIsLoggedInAndCartExists() {
-        Cart cart =cartSetup();
+        Cart cart = cartSetup();
 
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Assertions.assertThat(productCartRepository.findByProductAndCart(product,cart)).isNull();
+        Assertions.assertThat(productCartRepository.findByProductAndCart(product, cart)).isNull();
     }
 
     @Test
@@ -56,8 +59,8 @@ public class DeleteProductFromCartTest extends BaseIntegration {
         cartSetup();
 
         User otherUser = createUser("otheruser@email.com");
-        HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<?> response = trt.exchange("/users/" + otherUser.getId() + "/" + product.getId(), HttpMethod.POST,new HttpEntity<>(headers),Void.class);
+        HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
+        ResponseEntity<?> response = trt.exchange("/users/" + otherUser.getId() + "/" + product.getId(), HttpMethod.POST, new HttpEntity<>(headers), Void.class);
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
@@ -65,29 +68,29 @@ public class DeleteProductFromCartTest extends BaseIntegration {
     @Test
     public void testWhenProductToDeleteIsInvalid() {
         defaultEntitiesHelper.createCart(user);
-        HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
+        HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
 
         Product otherProduct = createOtherProduct();
-        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() + "/" + otherProduct.getId(), HttpMethod.POST,new HttpEntity<>(headers),Void.class);
+        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() + "/" + otherProduct.getId(), HttpMethod.POST, new HttpEntity<>(headers), Void.class);
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void testWhenTokenIsMissing(){
-        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() + "/" +product.getId(), HttpMethod.POST,HttpEntity.EMPTY,Void.class);
+    public void testWhenTokenIsMissing() {
+        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() + "/" + product.getId(), HttpMethod.POST, HttpEntity.EMPTY, Void.class);
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
-    public void testWhenTokenIsInvalid(){
-        HttpHeaders headers=tokenHeaderHelper.setupToken("INVALID_TOKEN");
-        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() +"/"+product.getId(), HttpMethod.POST,new HttpEntity<>(headers),Void.class);
+    public void testWhenTokenIsInvalid() {
+        HttpHeaders headers = tokenHeaderHelper.setupToken("INVALID_TOKEN");
+        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() + "/" + product.getId(), HttpMethod.POST, new HttpEntity<>(headers), Void.class);
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void testWhenTokenIsExpired(){
+    public void testWhenTokenIsExpired() {
         token.setValidUntil(LocalDate.now().minusMonths(3));
         tokenRepository.save(token);
 
@@ -96,14 +99,14 @@ public class DeleteProductFromCartTest extends BaseIntegration {
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
-    private ResponseEntity<?> setUpHeaderAndGetTheResponse(){
-        HttpHeaders headers=tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() +"/"+product.getId(), HttpMethod.POST,new HttpEntity<>(headers),Void.class);
+    private ResponseEntity<?> setUpHeaderAndGetTheResponse() {
+        HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
+        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() + "/" + product.getId(), HttpMethod.POST, new HttpEntity<>(headers), Void.class);
 
         return response;
     }
 
-    private Product createOtherProduct(){
+    private Product createOtherProduct() {
         Product product = new Product();
         product.setArtist("MJ");
         product.setCategory("Pop Music");
@@ -115,9 +118,9 @@ public class DeleteProductFromCartTest extends BaseIntegration {
         return productRepository.save(product);
     }
 
-    private Cart cartSetup(){
-        Cart cart =defaultEntitiesHelper.createCart(user);
-        ProductCart pc=defaultEntitiesHelper.createProductCart(cart, product);
+    private Cart cartSetup() {
+        Cart cart = defaultEntitiesHelper.createCart(user);
+        ProductCart pc = defaultEntitiesHelper.createProductCart(cart, product);
         cart.setProducts(Lists.newArrayList(pc));
 
         return cartRepository.save(cart);
