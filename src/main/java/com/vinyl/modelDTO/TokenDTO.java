@@ -14,18 +14,21 @@ public class TokenDTO {
 	@ApiModelProperty(notes = "Expiring date of the token")
 	private LocalDate validUntil;
 
-	public String getHash() {
-		return hash;
-	}
-	public void setHash(String hash) {
-		this.hash = hash;
-	}
-	public LocalDate getValidUntil() {
-		return validUntil;
-	}
-	public void setValidUntil(LocalDate validUntil) {
-		this.validUntil = validUntil;
-	}
-	
-	
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public LocalDate getValidUntil() {
+        return validUntil;
+    }
+
+    public void setValidUntil(LocalDate validUntil) {
+        this.validUntil = validUntil;
+    }
+
+
 }

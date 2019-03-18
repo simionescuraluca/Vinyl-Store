@@ -46,7 +46,7 @@ public class ProductService {
     }
 
     private Cart findOrCreateCart(User user) {
-        Cart cart = cartRepository.findByUserId(user.getId());
+        Cart cart = cartRepository.findByUser(user);
         if (cart == null) {
             cart = new Cart(user);
         }

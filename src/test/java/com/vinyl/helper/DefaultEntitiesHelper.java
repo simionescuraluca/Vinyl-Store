@@ -11,25 +11,19 @@ import java.time.LocalDate;
 public class DefaultEntitiesHelper {
 
     @Autowired
-    TokenRepository tokenRepository;
-
-    @Autowired
-    ProductRepository productRepository;
-
-    @Autowired
-    CartRepository cartRepository;
-
-    @Autowired
-    ProductCartRepository productCartRepository;
-
-    @Autowired
     protected RoleRepository roleRepository;
-
     @Autowired
     protected AddressRepository addressRepository;
-
     @Autowired
     protected UserRepository userRepository;
+    @Autowired
+    TokenRepository tokenRepository;
+    @Autowired
+    ProductRepository productRepository;
+    @Autowired
+    CartRepository cartRepository;
+    @Autowired
+    ProductCartRepository productCartRepository;
 
     public void tearDown() {
         productCartRepository.deleteAll();
@@ -51,7 +45,7 @@ public class DefaultEntitiesHelper {
         return tokenRepository.save(token);
     }
 
-    public Product createProduct(){
+    public Product createProduct() {
         Product product = new Product();
         product.setArtist("Beyonce");
         product.setCategory("Pop Music");

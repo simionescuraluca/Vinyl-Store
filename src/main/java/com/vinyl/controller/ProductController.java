@@ -31,7 +31,7 @@ public class ProductController {
                                               @ApiParam(value = "Token hash to send in the request header", required = true) @RequestHeader(value = "Authorization", required = false) String auth ){
 
         String token = AuthenticationHeaderHelper.getTokenHashOrNull(auth);
-        productService.addProductToCart(info,productId,token);
+        productService.addProductToCart(info, productId, token);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

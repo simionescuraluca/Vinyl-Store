@@ -1,10 +1,10 @@
 package com.vinyl.repository;
 
 import com.vinyl.model.Cart;
+import com.vinyl.model.Product;
+import com.vinyl.model.ProductCart;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-
-import com.vinyl.model.ProductCart;
 
 import java.util.List;
 
@@ -12,4 +12,6 @@ import java.util.List;
 public interface ProductCartRepository extends CrudRepository<ProductCart, Integer> {
 
     List<ProductCart> findByCart(Cart cart);
+
+    ProductCart findByProductAndCart(Product product, Cart cart);
 }

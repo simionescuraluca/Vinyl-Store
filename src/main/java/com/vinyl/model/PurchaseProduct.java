@@ -11,108 +11,99 @@ import java.io.Serializable;
 @Table(name = "PURCHASE_PRODUCT")
 public class PurchaseProduct {
 
-	@NotNull
-	@Column(nullable = false)
-	private Integer nrItems;
+    @NotNull
+    @Column(nullable = false)
+    private Integer nrItems;
 
-	@Id
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "purchase_id", nullable = false)
-	private Purchase purchase;
+    @Id
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "purchase_id", nullable = false)
+    private Purchase purchase;
 
-	@Id
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "product_id", nullable = false)
-	private Product product;
+    @Id
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
-	public PurchaseProduct() {
-	}
+    public Purchase getPurchase() {
+        return purchase;
+    }
 
-	public PurchaseProduct(@NotNull Integer nrItems, @NotNull Purchase purchase, @NotNull Product product) {
-		this.nrItems = nrItems;
-		this.purchase = purchase;
-		this.product = product;
-	}
+    public void setPurchase(Purchase purchase) {
+        this.purchase = purchase;
+    }
 
-	public Purchase getPurchase() {
-		return purchase;
-	}
+    public Product getProduct() {
+        return product;
+    }
 
-	public void setPurchase(Purchase purchase) {
-		this.purchase = purchase;
-	}
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 
-	public Product getProduct() {
-		return product;
-	}
+    @SuppressWarnings("serial")
+    public static class PurchaseProductId implements Serializable {
 
-	public void setProduct(Product product) {
-		this.product = product;
-	}
+        private Purchase purchase;
+        private Product product;
 
-	@SuppressWarnings("serial")
-	public static class PurchaseProductId implements Serializable {
+        public PurchaseProductId(Purchase purchase, Product product) {
+            this.purchase = purchase;
+            this.product = product;
+        }
 
-		private Purchase purchase;
-		private Product product;
+        public PurchaseProductId() {
 
-		public PurchaseProductId(Purchase purchase, Product product) {
-			this.purchase = purchase;
-			this.product = product;
-		}
+        }
 
-		public PurchaseProductId() {
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((product == null) ? 0 : product.hashCode());
+            result = prime * result + ((purchase == null) ? 0 : purchase.hashCode());
+            return result;
+        }
 
-		}
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            PurchaseProductId other = (PurchaseProductId) obj;
+            if (product == null) {
+                if (other.product != null)
+                    return false;
+            } else if (!product.equals(other.product))
+                return false;
+            if (purchase == null) {
+                if (other.purchase != null)
+                    return false;
+            } else if (!purchase.equals(other.purchase))
+                return false;
+            return true;
+        }
 
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((product == null) ? 0 : product.hashCode());
-			result = prime * result + ((purchase == null) ? 0 : purchase.hashCode());
-			return result;
-		}
+        public Purchase getPurchase() {
+            return purchase;
+        }
 
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			PurchaseProductId other = (PurchaseProductId) obj;
-			if (product == null) {
-				if (other.product != null)
-					return false;
-			} else if (!product.equals(other.product))
-				return false;
-			if (purchase == null) {
-				if (other.purchase != null)
-					return false;
-			} else if (!purchase.equals(other.purchase))
-				return false;
-			return true;
-		}
+        public void setPurchase(Purchase purchase) {
+            this.purchase = purchase;
+        }
 
-		public Purchase getPurchase() {
-			return purchase;
-		}
+        public Product getProduct() {
+            return product;
+        }
 
-		public void setPurchase(Purchase purchase) {
-			this.purchase = purchase;
-		}
+        public void setProduct(Product product) {
+            this.product = product;
+        }
 
-		public Product getProduct() {
-			return product;
-		}
-
-		public void setProduct(Product product) {
-			this.product = product;
-		}
-
-	}
+    }
 }

@@ -53,7 +53,7 @@ public abstract class BaseIntegration {
         defaultEntitiesHelper.tearDown();
     }
 
-   public Address createAddress(){
+    public Address createAddress() {
         Address address = new Address();
         address.setCity("Iasi");
         address.setCountry("Romaniaa");
@@ -62,11 +62,12 @@ public abstract class BaseIntegration {
         return addressRepository.save(address);
     }
 
-    public Role createRole(){
+    public Role createRole() {
         Role role = new Role("BASIC_USER");
         return roleRepository.save(role);
     }
-    public User createUser(){
+
+    public User createUser() {
         User user = new User();
         user.setEmail("ralucaioana@yahoo.com");
         user.setFirstName("Raluca");

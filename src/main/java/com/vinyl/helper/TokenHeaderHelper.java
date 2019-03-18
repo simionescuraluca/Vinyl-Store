@@ -1,7 +1,5 @@
 package com.vinyl.helper;
 
-import com.vinyl.model.Token;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 

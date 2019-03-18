@@ -2,12 +2,7 @@ package com.vinyl.model;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -15,101 +10,88 @@ import javax.validation.constraints.NotNull;
 @Table(name = "PRODUCT")
 public class Product {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-	@GenericGenerator(name = "native", strategy = "native")
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
+    private Integer id;
 
-	@NotEmpty
-	@Column(nullable = false)
-	private String productName;
+    @NotEmpty
+    @Column(nullable = false)
+    private String productName;
 
-	@NotEmpty
-	@Column(nullable = false)
-	private String description;
+    @NotEmpty
+    @Column(nullable = false)
+    private String description;
 
-	@NotNull
-	@Column(nullable = false)
-	private Double price;
+    @NotNull
+    @Column(nullable = false)
+    private Double price;
 
-	@NotNull
-	@Column(nullable = false)
-	private Integer stock;
+    @NotNull
+    @Column(nullable = false)
+    private Integer stock;
 
-	@NotEmpty
-	@Column(nullable = false)
-	private String artist;
+    @NotEmpty
+    @Column(nullable = false)
+    private String artist;
 
-	@NotEmpty
-	@Column(nullable = false)
-	private String category;
+    @NotEmpty
+    @Column(nullable = false)
+    private String category;
 
-	public Product() {
+    public Integer getId() {
+        return id;
+    }
 
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Product(@NotEmpty String productName, @NotEmpty String description, @NotNull Double price, @NotNull Integer stock, @NotEmpty String artist, @NotEmpty String category) {
-		this.productName = productName;
-		this.description = description;
-		this.price = price;
-		this.stock = stock;
-		this.artist = artist;
-		this.category = category;
-	}
+    public String getProductName() {
+        return productName;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public String getProductName() {
-		return productName;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
+    public Double getPrice() {
+        return price;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public void setPrice(Double price) {
+        this.price = price;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public Integer getStock() {
+        return stock;
+    }
 
-	public Double getPrice() {
-		return price;
-	}
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
 
-	public void setPrice(Double price) {
-		this.price = price;
-	}
+    public String getArtist() {
+        return artist;
+    }
 
-	public Integer getStock() {
-		return stock;
-	}
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
 
-	public void setStock(Integer stock) {
-		this.stock = stock;
-	}
+    public String getCategory() {
+        return category;
+    }
 
-	public String getArtist() {
-		return artist;
-	}
-
-	public void setArtist(String artist) {
-		this.artist = artist;
-	}
-
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
-	}
+    public void setCategory(String category) {
+        this.category = category;
+    }
 }

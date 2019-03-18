@@ -10,83 +10,68 @@ import java.util.List;
 @Table(name = "PURCHASE")
 public class Purchase {
 
-	@Id
-	@NotNull
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+    @ManyToMany(cascade =
+            {
+                    CascadeType.DETACH,
+                    CascadeType.MERGE,
+                    CascadeType.REFRESH,
+                    CascadeType.PERSIST
+            })
+    @JoinTable(name = "PURCHASE_PRODUCT", joinColumns = @JoinColumn(name = "purchase_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
+    public List<Product> products;
+    @Id
+    @NotNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @NotNull
+    @Column(nullable = false)
+    private LocalDate dateCreated;
+    @NotEmpty
+    @Column(nullable = false)
+    private String status;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-	@NotNull
-	@Column(nullable = false)
-	private LocalDate dateCreated;
+    public Integer getId() {
+        return id;
+    }
 
-	@NotEmpty
-	@Column(nullable = false)
-	private String status;
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
+    public LocalDate getDateCreated() {
+        return dateCreated;
+    }
 
+    public void setDateCreated(LocalDate dateCreated) {
+        this.dateCreated = dateCreated;
+    }
 
+    public String getStatus() {
+        return status;
+    }
 
-	@ManyToMany(cascade =
-			{
-					CascadeType.DETACH,
-					CascadeType.MERGE,
-					CascadeType.REFRESH,
-					CascadeType.PERSIST
-			})
-	@JoinTable(name = "PURCHASE_PRODUCT", joinColumns = @JoinColumn(name = "purchase_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
-	public List<Product> products;
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public Purchase() {
-	}
+    public User getUser() {
+        return user;
+    }
 
-	public Purchase(@NotNull LocalDate dateCreated, @NotEmpty String status, @NotNull User user, List<Product> products) {
-		this.dateCreated = dateCreated;
-		this.status = status;
-		this.user = user;
-		this.products = products;
-	}
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public List<Product> getProducts() {
+        return products;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
 
-	public LocalDate getDateCreated() {
-		return dateCreated;
-	}
-
-	public void setDateCreated(LocalDate dateCreated) {
-		this.dateCreated = dateCreated;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public List<Product> getPurchaseProducts() {
-		return products;
-	}
-
-	public void setProducts(List<Product> products) {
-		this.products = products;
-	}
 }
