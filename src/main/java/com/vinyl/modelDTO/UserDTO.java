@@ -1,10 +1,21 @@
 package com.vinyl.modelDTO;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel(description = "Details about user")
 public class UserDTO {
 
+    @ApiModelProperty(notes = "User first name")
     private String firstName;
+
+    @ApiModelProperty(notes = "User second name")
     private String secondName;
+
+    @ApiModelProperty(notes = "User email")
     private String email;
+
+    @ApiModelProperty(notes = "User Password")
     private String pass;
 
     public String getFirstName() {

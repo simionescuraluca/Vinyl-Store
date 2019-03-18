@@ -1,5 +1,8 @@
 package com.vinyl.modelDTO;
 
+import io.swagger.annotations.ApiModel;
+
+@ApiModel(description = "User Credentials")
 public class EmailPassDTO {
 
     private String email;

@@ -1,11 +1,20 @@
 package com.vinyl.modelDTO;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.List;
 
+@ApiModel(description = "All the details about the cart")
 public class CartDetailsDTO {
 
+    @ApiModelProperty(notes = "Nr. of vinyls in cart")
     private Integer nrProducts;
+
+    @ApiModelProperty(notes = "Total cost")
     private Double totalCost;
+
+    @ApiModelProperty(notes = "The list of existing vinyls in cart")
     private List<ProductDTO> products;
 
     public Integer getNrProducts() {
