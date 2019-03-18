@@ -8,11 +8,11 @@ import java.time.LocalDate;
 @ApiModel(description = "Details about the token")
 public class TokenDTO {
 
-	@ApiModelProperty(notes = "The hash of the token")
-	private String hash;
+    @ApiModelProperty(notes = "The hash of the token")
+    private String hash;
 
-	@ApiModelProperty(notes = "Expiring date of the token")
-	private LocalDate validUntil;
+    @ApiModelProperty(notes = "Expiring date of the token")
+    private LocalDate validUntil;
 
     public String getHash() {
         return hash;

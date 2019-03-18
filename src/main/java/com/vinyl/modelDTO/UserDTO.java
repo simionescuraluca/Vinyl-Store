@@ -6,17 +6,17 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(description = "Details about user")
 public class UserDTO {
 
-	@ApiModelProperty(notes = "User first name")
-	private String firstName;
+    @ApiModelProperty(notes = "User first name")
+    private String firstName;
 
-	@ApiModelProperty(notes = "User second name")
-	private String secondName;
+    @ApiModelProperty(notes = "User second name")
+    private String secondName;
 
-	@ApiModelProperty(notes = "User email")
-	private String email;
+    @ApiModelProperty(notes = "User email")
+    private String email;
 
-	@ApiModelProperty(notes = "User Password")
-	private String pass;
+    @ApiModelProperty(notes = "User Password")
+    private String pass;
 
     public String getFirstName() {
         return firstName;
