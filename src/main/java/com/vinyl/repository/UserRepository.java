@@ -1,14 +1,13 @@
 package com.vinyl.repository;
 
-import java.util.Optional;
-
+import com.vinyl.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.vinyl.model.User;
+import java.util.Optional;
 
 @Repository("userRepository")
 public interface UserRepository extends CrudRepository<User, Integer> {
 
-	Optional<User> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 }
