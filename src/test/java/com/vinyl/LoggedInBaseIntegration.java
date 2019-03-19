@@ -51,5 +51,4 @@ public abstract class LoggedInBaseIntegration extends BaseIntegration {
     }
 
     abstract String getUrl();
-
 }
