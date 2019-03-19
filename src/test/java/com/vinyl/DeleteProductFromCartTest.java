@@ -39,14 +39,9 @@ public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
         cart = cartSetup();
     }
 
-    @Override
-    String getUrl() {
-        return "/users/" + user.getId() + "/" + product.getId();
-    }
-
     @Test
-    public void testWhenUserIsLoggedInAndCartExists() {
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
+    public void testWhenOk() {
+        ResponseEntity<?> response = setUpHeaderAndGetTheResponse(getUrl());
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(productCartRepository.findByProductAndCart(product, cart)).isNull();
@@ -56,7 +51,7 @@ public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
     public void testWhenUserIsLoggedInAndCartDoesNotExist() {
         deleteCart();
 
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
+        ResponseEntity<?> response = setUpHeaderAndGetTheResponse(getUrl());
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -65,9 +60,8 @@ public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
         User otherUser = createUser("otheruser@email.com");
         Cart otherCart = defaultEntitiesHelper.createCart(otherUser);
         defaultEntitiesHelper.createProductCart(otherCart,product);
-        HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
 
-        ResponseEntity<?> response = trt.exchange("/users/" + otherUser.getId() + "/" + product.getId(), HttpMethod.POST, new HttpEntity<>(headers), Void.class);
+        ResponseEntity<?> response = setUpHeaderAndGetTheResponse("/users/" + otherUser.getId() + "/" + product.getId());
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         Assertions.assertThat(productCartRepository.findByProductAndCart(product,otherCart)).isNotNull();
@@ -77,10 +71,9 @@ public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
     public void testWhenProductNotInCart() {
         deleteCart();
         defaultEntitiesHelper.createCart(user);
-        HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
-
         Product otherProduct = createOtherProduct();
-        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() + "/" + otherProduct.getId(), HttpMethod.POST, new HttpEntity<>(headers), Void.class);
+
+        ResponseEntity<?> response = setUpHeaderAndGetTheResponse("/users/" + user.getId() + "/" + otherProduct.getId());
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -89,14 +82,12 @@ public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
     public void testWhenProductIsInvalid() {
         deleteCart();
         defaultEntitiesHelper.createCart(user);
-        HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
         Integer invalidProductId=000;
 
-        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() + "/" + invalidProductId, HttpMethod.POST, new HttpEntity<>(headers), Void.class);
+        ResponseEntity<?> response = setUpHeaderAndGetTheResponse("/users/" + user.getId() + "/" + invalidProductId);
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
-
 
     private Product createOtherProduct() {
         Product product = new Product();
@@ -120,14 +111,18 @@ public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
 
     private void deleteCart() {
         productCartRepository.deleteAll();
-        productRepository.deleteAll();
         cartRepository.deleteAll();
     }
 
-    private ResponseEntity<?> setUpHeaderAndGetTheResponse() {
+    private ResponseEntity<?> setUpHeaderAndGetTheResponse(String url) {
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() + "/" + product.getId(), HttpMethod.POST, new HttpEntity<>(headers), Void.class);
+        ResponseEntity<?> response = trt.exchange(url, HttpMethod.POST, new HttpEntity<>(headers), Void.class);
 
         return response;
+    }
+
+    @Override
+    String getUrl() {
+        return "/users/" + user.getId() + "/" + product.getId();
     }
 }

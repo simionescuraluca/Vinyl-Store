@@ -44,9 +44,6 @@ public class UserService {
     @Autowired
     private CartRepository cartRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
-
     public User addUser(User user) {
 
         Role r = new Role("BASIC_USER");
