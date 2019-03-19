@@ -51,7 +51,7 @@ public class GetCartDetailsTest extends LoggedInBaseIntegration {
     @Test
     public void testWhenNoItemsInCart() {
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<String> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), String.class);
+        ResponseEntity<String> cdo = trt.exchange("/users/cart", getMethod(), new HttpEntity<>(headers), String.class);
 
         Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(cdo.getBody()).isEqualTo("No items in cart!");
@@ -59,7 +59,7 @@ public class GetCartDetailsTest extends LoggedInBaseIntegration {
 
     private ResponseEntity<CartDetailsDTO> setUpHeaderAndGetTheResponse() {
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<CartDetailsDTO> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), CartDetailsDTO.class);
+        ResponseEntity<CartDetailsDTO> cdo = trt.exchange("/users/cart", getMethod(), new HttpEntity<>(headers), CartDetailsDTO.class);
 
         return cdo;
     }
@@ -67,5 +67,10 @@ public class GetCartDetailsTest extends LoggedInBaseIntegration {
     @Override
     String getUrl() {
         return "/users/cart";
+    }
+
+    @Override
+    HttpMethod getMethod(){
+        return HttpMethod.GET;
     }
 }

@@ -116,7 +116,7 @@ public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
 
     private ResponseEntity<?> setUpHeaderAndGetTheResponse(String url) {
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<?> response = trt.exchange(url, HttpMethod.POST, new HttpEntity<>(headers), Void.class);
+        ResponseEntity<?> response = trt.exchange(url, getMethod(), new HttpEntity<>(headers), Void.class);
 
         return response;
     }
@@ -124,5 +124,10 @@ public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
     @Override
     String getUrl() {
         return "/users/" + user.getId() + "/" + product.getId();
+    }
+
+    @Override
+    HttpMethod getMethod(){
+        return HttpMethod.POST;
     }
 }
