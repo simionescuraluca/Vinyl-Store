@@ -125,7 +125,7 @@ public class UserService {
         validatorFactory.getTokenValidator().validate(tokenHash);
         Token token = tokenRepository.findByHash(tokenHash);
         User user = token.getUser();
-        if (userId != tokenRepository.findByHash(tokenHash).getUser().getId()) {
+        if (userId != user.getId()) {
             throw new UnauthorizedException("You cannot access the cart of another user!");
         }
 

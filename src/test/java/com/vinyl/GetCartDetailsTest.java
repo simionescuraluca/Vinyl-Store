@@ -15,9 +15,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 
-import java.time.LocalDate;
-
-public class GetCartDetailsTest extends BaseIntegration {
+public class GetCartDetailsTest extends LoggedInBaseIntegration {
 
     @Autowired
     TokenRepository tokenRepository;
@@ -51,29 +49,6 @@ public class GetCartDetailsTest extends BaseIntegration {
     }
 
     @Test
-    public void testWhenTokenIsMissing() {
-        ResponseEntity<CartDetailsDTO> cdo = trt.exchange("/users/cart", HttpMethod.GET, HttpEntity.EMPTY, CartDetailsDTO.class);
-        Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
-
-    @Test
-    public void testWhenTokenIsInvalid() {
-        HttpHeaders headers = tokenHeaderHelper.setupToken("INVALID TOKEN");
-        ResponseEntity<CartDetailsDTO> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), CartDetailsDTO.class);
-        Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    public void testWhenTokenIsExpired() {
-        token.setValidUntil(LocalDate.now().minusMonths(3));
-        tokenRepository.save(token);
-
-        ResponseEntity<?> cdo = setUpHeaderAndGetTheResponse();
-
-        Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
-
-    @Test
     public void testWhenNoItemsInCart() {
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
         ResponseEntity<String> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), String.class);
@@ -87,5 +62,10 @@ public class GetCartDetailsTest extends BaseIntegration {
         ResponseEntity<CartDetailsDTO> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), CartDetailsDTO.class);
 
         return cdo;
+    }
+
+    @Override
+    String getUrl() {
+        return "/users/cart";
     }
 }

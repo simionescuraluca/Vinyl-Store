@@ -14,9 +14,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 
-import java.time.LocalDate;
-
-public class DeleteProductFromCartTest extends BaseIntegration {
+public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
 
     @Autowired
     private CartRepository cartRepository;
@@ -32,16 +30,22 @@ public class DeleteProductFromCartTest extends BaseIntegration {
 
     private Product product;
 
+    private Cart cart;
+
     @Override
     public void setUp() {
         super.setUp();
         product = defaultEntitiesHelper.createProduct();
+        cart = cartSetup();
+    }
+
+    @Override
+    String getUrl() {
+        return "/users/" + user.getId() + "/" + product.getId();
     }
 
     @Test
     public void testWhenUserIsLoggedInAndCartExists() {
-        Cart cart = cartSetup();
-
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -50,23 +54,28 @@ public class DeleteProductFromCartTest extends BaseIntegration {
 
     @Test
     public void testWhenUserIsLoggedInAndCartDoesNotExist() {
+        deleteCart();
+
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
     public void testWhenUserIsLoggedInAndTriesToDeleteFromAnotherCart() {
-        cartSetup();
-
         User otherUser = createUser("otheruser@email.com");
+        Cart otherCart = defaultEntitiesHelper.createCart(otherUser);
+        defaultEntitiesHelper.createProductCart(otherCart,product);
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
+
         ResponseEntity<?> response = trt.exchange("/users/" + otherUser.getId() + "/" + product.getId(), HttpMethod.POST, new HttpEntity<>(headers), Void.class);
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        Assertions.assertThat(productCartRepository.findByProductAndCart(product,otherCart)).isNotNull();
     }
 
     @Test
-    public void testWhenProductToDeleteIsInvalid() {
+    public void testWhenProductNotInCart() {
+        deleteCart();
         defaultEntitiesHelper.createCart(user);
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
 
@@ -77,34 +86,17 @@ public class DeleteProductFromCartTest extends BaseIntegration {
     }
 
     @Test
-    public void testWhenTokenIsMissing() {
-        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() + "/" + product.getId(), HttpMethod.POST, HttpEntity.EMPTY, Void.class);
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
+    public void testWhenProductIsInvalid() {
+        deleteCart();
+        defaultEntitiesHelper.createCart(user);
+        HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
+        Integer invalidProductId=000;
 
-    @Test
-    public void testWhenTokenIsInvalid() {
-        HttpHeaders headers = tokenHeaderHelper.setupToken("INVALID_TOKEN");
-        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() + "/" + product.getId(), HttpMethod.POST, new HttpEntity<>(headers), Void.class);
+        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() + "/" + invalidProductId, HttpMethod.POST, new HttpEntity<>(headers), Void.class);
+
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
-    @Test
-    public void testWhenTokenIsExpired() {
-        token.setValidUntil(LocalDate.now().minusMonths(3));
-        tokenRepository.save(token);
-
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
-
-    private ResponseEntity<?> setUpHeaderAndGetTheResponse() {
-        HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() + "/" + product.getId(), HttpMethod.POST, new HttpEntity<>(headers), Void.class);
-
-        return response;
-    }
 
     private Product createOtherProduct() {
         Product product = new Product();
@@ -124,5 +116,18 @@ public class DeleteProductFromCartTest extends BaseIntegration {
         cart.setProducts(Lists.newArrayList(pc));
 
         return cartRepository.save(cart);
+    }
+
+    private void deleteCart() {
+        productCartRepository.deleteAll();
+        productRepository.deleteAll();
+        cartRepository.deleteAll();
+    }
+
+    private ResponseEntity<?> setUpHeaderAndGetTheResponse() {
+        HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
+        ResponseEntity<?> response = trt.exchange("/users/" + user.getId() + "/" + product.getId(), HttpMethod.POST, new HttpEntity<>(headers), Void.class);
+
+        return response;
     }
 }
