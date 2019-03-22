@@ -5,6 +5,8 @@ import com.vinyl.modelDTO.CartDetailsDTO;
 import com.vinyl.modelDTO.EmailPassDTO;
 import com.vinyl.modelDTO.ProductDTO;
 import com.vinyl.repository.*;
+import com.vinyl.service.exception.BadRequestException;
+import com.vinyl.service.exception.UnauthorizedException;
 import com.vinyl.service.validation.ValidatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -113,5 +115,26 @@ public class UserService {
         cartDetails.setTotalCost(cost);
 
         return cartDetails;
+    }
+
+    public void deleteProductFromCart(String tokenHash, Integer productId, Integer userId) {
+
+        validatorFactory.getTokenValidator().validate(tokenHash);
+        Token token = tokenRepository.findByHash(tokenHash);
+        User user = token.getUser();
+        if (userId != user.getId()) {
+            throw new UnauthorizedException("You cannot access the cart of another user!");
+        }
+
+        Cart cart = cartRepository.findByUser(user);
+        if (cart == null) {
+            throw new BadRequestException("You don't have a cart!");
+        }
+        ProductCart toDelete = productCartRepository.findByCartIdAndProductId(cart.getId(), productId);
+        if (toDelete == null) {
+            throw new BadRequestException("The item you want to delete is invalid!");
+        }
+
+        productCartRepository.delete(toDelete);
     }
 }

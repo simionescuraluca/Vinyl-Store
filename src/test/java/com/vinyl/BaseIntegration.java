@@ -6,6 +6,7 @@ import com.vinyl.model.Role;
 import com.vinyl.model.Token;
 import com.vinyl.model.User;
 import com.vinyl.repository.AddressRepository;
+import com.vinyl.repository.ProductRepository;
 import com.vinyl.repository.RoleRepository;
 import com.vinyl.repository.UserRepository;
 import org.junit.After;
@@ -42,9 +43,14 @@ public abstract class BaseIntegration {
     @Autowired
     protected DefaultEntitiesHelper defaultEntitiesHelper;
 
+    private Address address;
+    private Role role;
+
     @Before
     public void setUp() {
-        user = createUser();
+        createAddress();
+        createRole();
+        user = createUser("defaultuser@email.com");
         token = defaultEntitiesHelper.createToken(user);
     }
 
@@ -53,28 +59,28 @@ public abstract class BaseIntegration {
         defaultEntitiesHelper.tearDown();
     }
 
-    public Address createAddress() {
-        Address address = new Address();
+    public void createAddress() {
+        address = new Address();
         address.setCity("Iasi");
         address.setCountry("Romaniaa");
         address.setNumber(1);
         address.setStreet("Strada Palat");
-        return addressRepository.save(address);
+        address = addressRepository.save(address);
     }
 
-    public Role createRole() {
-        Role role = new Role("BASIC_USER");
-        return roleRepository.save(role);
+    public void createRole() {
+        role = new Role("BASIC_USER");
+        role = roleRepository.save(role);
     }
 
-    public User createUser() {
+    public User createUser(String email) {
         User user = new User();
-        user.setEmail("ralucaioana@yahoo.com");
+        user.setEmail(email);
         user.setFirstName("Raluca");
         user.setSecondName("Ioana");
         user.setPass("Raluca1@");
-        user.setRole(createRole());
-        user.setAddress(createAddress());
+        user.setRole(role);
+        user.setAddress(address);
         return userRepository.save(user);
     }
 }

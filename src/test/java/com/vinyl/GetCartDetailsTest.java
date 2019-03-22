@@ -1,32 +1,22 @@
 package com.vinyl;
 
 import com.vinyl.helper.DefaultEntitiesHelper;
-import com.vinyl.helper.TokenHeaderHelper;
 import com.vinyl.model.Cart;
 import com.vinyl.model.Product;
 import com.vinyl.model.ProductCart;
 import com.vinyl.modelDTO.CartDetailsDTO;
 import com.vinyl.repository.CartRepository;
 import com.vinyl.repository.ProductCartRepository;
-import com.vinyl.repository.TokenRepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 
-import java.time.LocalDate;
-
-public class GetCartDetailsTest extends BaseIntegration {
-
-    @Autowired
-    TokenRepository tokenRepository;
+public class GetCartDetailsTest extends LoggedInBaseIntegration {
 
     @Autowired
     DefaultEntitiesHelper defaultEntitiesHelper;
-
-    @Autowired
-    TokenHeaderHelper tokenHeaderHelper;
 
     @Autowired
     ProductCartRepository productCartRepository;
@@ -51,32 +41,9 @@ public class GetCartDetailsTest extends BaseIntegration {
     }
 
     @Test
-    public void testWhenTokenIsMissing() {
-        ResponseEntity<CartDetailsDTO> cdo = trt.exchange("/users/cart", HttpMethod.GET, HttpEntity.EMPTY, CartDetailsDTO.class);
-        Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
-
-    @Test
-    public void testWhenTokenIsInvalid() {
-        HttpHeaders headers = tokenHeaderHelper.setupToken("INVALID TOKEN");
-        ResponseEntity<CartDetailsDTO> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), CartDetailsDTO.class);
-        Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    public void testWhenTokenIsExpired() {
-        token.setValidUntil(LocalDate.now().minusMonths(3));
-        tokenRepository.save(token);
-
-        ResponseEntity<?> cdo = setUpHeaderAndGetTheResponse();
-
-        Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
-
-    @Test
     public void testWhenNoItemsInCart() {
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<String> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), String.class);
+        ResponseEntity<String> cdo = trt.exchange(getUrl(), getMethod(), new HttpEntity<>(headers), String.class);
 
         Assertions.assertThat(cdo.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions.assertThat(cdo.getBody()).isEqualTo("No items in cart!");
@@ -84,8 +51,18 @@ public class GetCartDetailsTest extends BaseIntegration {
 
     private ResponseEntity<CartDetailsDTO> setUpHeaderAndGetTheResponse() {
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<CartDetailsDTO> cdo = trt.exchange("/users/cart", HttpMethod.GET, new HttpEntity<>(headers), CartDetailsDTO.class);
+        ResponseEntity<CartDetailsDTO> cdo = trt.exchange(getUrl(), getMethod(), new HttpEntity<>(headers), CartDetailsDTO.class);
 
         return cdo;
+    }
+
+    @Override
+    protected String getUrl() {
+        return "/users/cart";
+    }
+
+    @Override
+    protected HttpMethod getMethod(){
+        return HttpMethod.GET;
     }
 }

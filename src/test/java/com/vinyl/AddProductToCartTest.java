@@ -7,6 +7,7 @@ import com.vinyl.model.ProductCart;
 import com.vinyl.modelDTO.AddProductToCartDTO;
 import com.vinyl.repository.CartRepository;
 import com.vinyl.repository.ProductCartRepository;
+import com.vinyl.repository.ProductRepository;
 import com.vinyl.repository.TokenRepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
@@ -29,6 +30,10 @@ public class AddProductToCartTest extends BaseIntegration {
 
     @Autowired
     private TokenRepository tokenRepository;
+
+
+    @Autowired
+    ProductRepository productRepository;
 
     private AddProductToCartDTO request;
 

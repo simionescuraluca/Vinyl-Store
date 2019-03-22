@@ -93,4 +93,13 @@ public class UserController {
 
         return new ResponseEntity<>(cartDetails, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/users/{userId}/{productId}", method = RequestMethod.POST)
+    public ResponseEntity<?> deleteProductFromCart(@RequestHeader(value = "Authorization", required = false) String auth, @PathVariable Integer userId, @PathVariable Integer productId) {
+
+        String token = AuthenticationHeaderHelper.getTokenHashOrNull(auth);
+        userService.deleteProductFromCart(token, productId, userId);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

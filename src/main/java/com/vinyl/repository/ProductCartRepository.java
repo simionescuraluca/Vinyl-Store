@@ -14,4 +14,6 @@ public interface ProductCartRepository extends CrudRepository<ProductCart, Integ
     List<ProductCart> findByCart(Cart cart);
 
     ProductCart findByProductAndCart(Product product, Cart cart);
+
+    ProductCart findByCartIdAndProductId(Integer id, Integer productId);
 }
