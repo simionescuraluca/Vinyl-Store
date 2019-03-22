@@ -6,7 +6,7 @@ import com.vinyl.model.ProductCart;
 import com.vinyl.model.User;
 import com.vinyl.repository.CartRepository;
 import com.vinyl.repository.ProductCartRepository;
-import com.vinyl.repository.TokenRepository;
+import com.vinyl.repository.ProductRepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
 import org.junit.Test;
@@ -22,7 +22,7 @@ public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
     private ProductCartRepository productCartRepository;
 
     @Autowired
-    private TokenRepository tokenRepository;
+    ProductRepository productRepository;
 
     private Product product;
 
@@ -65,8 +65,6 @@ public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
 
     @Test
     public void testWhenProductNotInCart() {
-        deleteCart();
-        defaultEntitiesHelper.createCart(user);
         Product otherProduct = createOtherProduct();
 
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse("/users/" + user.getId() + "/" + otherProduct.getId());

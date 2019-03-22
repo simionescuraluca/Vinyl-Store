@@ -42,8 +42,7 @@ public abstract class BaseIntegration {
 
     @Autowired
     protected DefaultEntitiesHelper defaultEntitiesHelper;
-    @Autowired
-    ProductRepository productRepository;
+
     private Address address;
     private Role role;
 
