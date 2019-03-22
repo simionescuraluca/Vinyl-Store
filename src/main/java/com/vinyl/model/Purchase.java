@@ -4,21 +4,15 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "PURCHASE")
 public class Purchase {
 
-    @ManyToMany(cascade =
-            {
-                    CascadeType.DETACH,
-                    CascadeType.MERGE,
-                    CascadeType.REFRESH,
-                    CascadeType.PERSIST
-            })
-    @JoinTable(name = "PURCHASE_PRODUCT", joinColumns = @JoinColumn(name = "purchase_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
-    public List<Product> products;
+    @OneToMany(mappedBy = "purchase")
+    public List<PurchaseProduct> products = new ArrayList<>();
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,12 +60,11 @@ public class Purchase {
         this.user = user;
     }
 
-    public List<Product> getProducts() {
+    public List<PurchaseProduct> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(List<PurchaseProduct> products) {
         this.products = products;
     }
-
 }
