@@ -1,14 +1,12 @@
 package com.vinyl;
 
 import com.vinyl.helper.DefaultEntitiesHelper;
-import com.vinyl.helper.TokenHeaderHelper;
 import com.vinyl.model.Cart;
 import com.vinyl.model.Product;
 import com.vinyl.model.ProductCart;
 import com.vinyl.modelDTO.CartDetailsDTO;
 import com.vinyl.repository.CartRepository;
 import com.vinyl.repository.ProductCartRepository;
-import com.vinyl.repository.TokenRepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
 import org.junit.Test;
@@ -18,13 +16,7 @@ import org.springframework.http.*;
 public class GetCartDetailsTest extends LoggedInBaseIntegration {
 
     @Autowired
-    TokenRepository tokenRepository;
-
-    @Autowired
     DefaultEntitiesHelper defaultEntitiesHelper;
-
-    @Autowired
-    TokenHeaderHelper tokenHeaderHelper;
 
     @Autowired
     ProductCartRepository productCartRepository;
@@ -65,12 +57,12 @@ public class GetCartDetailsTest extends LoggedInBaseIntegration {
     }
 
     @Override
-    String getUrl() {
+    protected String getUrl() {
         return "/users/cart";
     }
 
     @Override
-    HttpMethod getMethod(){
+    protected HttpMethod getMethod(){
         return HttpMethod.GET;
     }
 }

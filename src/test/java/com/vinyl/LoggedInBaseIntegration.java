@@ -15,10 +15,10 @@ public abstract class LoggedInBaseIntegration extends BaseIntegration {
     Product product;
 
     @Autowired
-    TokenHeaderHelper tokenHeaderHelper;
+    protected TokenHeaderHelper tokenHeaderHelper;
 
     @Autowired
-    TokenRepository tokenRepository;
+    protected TokenRepository tokenRepository;
 
     @Override
     public void setUp() {
@@ -50,6 +50,6 @@ public abstract class LoggedInBaseIntegration extends BaseIntegration {
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
-    abstract String getUrl();
-    abstract HttpMethod getMethod();
+    protected abstract String getUrl();
+    protected abstract HttpMethod getMethod();
 }

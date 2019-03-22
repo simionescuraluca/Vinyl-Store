@@ -1,6 +1,5 @@
 package com.vinyl;
 
-import com.vinyl.helper.TokenHeaderHelper;
 import com.vinyl.model.Cart;
 import com.vinyl.model.Product;
 import com.vinyl.model.ProductCart;
@@ -18,9 +17,6 @@ public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
 
     @Autowired
     private CartRepository cartRepository;
-
-    @Autowired
-    private TokenHeaderHelper tokenHeaderHelper;
 
     @Autowired
     private ProductCartRepository productCartRepository;
@@ -122,12 +118,12 @@ public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
     }
 
     @Override
-    String getUrl() {
+    protected String getUrl() {
         return "/users/" + user.getId() + "/" + product.getId();
     }
 
     @Override
-    HttpMethod getMethod(){
+    protected HttpMethod getMethod(){
         return HttpMethod.POST;
     }
 }
