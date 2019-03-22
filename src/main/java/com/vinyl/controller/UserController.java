@@ -94,6 +94,13 @@ public class UserController {
         return new ResponseEntity<>(cartDetails, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "User deletes a product from cart", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 401, message = NOT_AUTHORIZED_MESSAGE),
+            @ApiResponse(code = 400, message = BAD_REQUEST_MESSAGE),
+            @ApiResponse(code = 200, message = "You successfully deleted a product from the shopping cart")
+
+    })
     @RequestMapping(value = "/users/{userId}/{productId}", method = RequestMethod.POST)
     public ResponseEntity<?> deleteProductFromCart(@RequestHeader(value = "Authorization", required = false) String auth, @PathVariable Integer userId, @PathVariable Integer productId) {
 
