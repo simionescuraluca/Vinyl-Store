@@ -3,10 +3,8 @@ package com.vinyl;
 import com.vinyl.model.Cart;
 import com.vinyl.model.Product;
 import com.vinyl.model.ProductCart;
-import com.vinyl.repository.CartRepository;
-import com.vinyl.repository.ProductCartRepository;
-import com.vinyl.repository.ProductRepository;
-import com.vinyl.repository.PurchaseRepository;
+import com.vinyl.model.Purchase;
+import com.vinyl.repository.*;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
 import org.junit.Test;
@@ -27,6 +25,9 @@ public class PlaceOrderTest extends LoggedInBaseIntegration {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private PurchaseProductRepository purchaseProductRepository;
+
     private Cart cart;
     private Product product;
 
@@ -42,7 +43,9 @@ public class PlaceOrderTest extends LoggedInBaseIntegration {
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Assertions.assertThat(purchaseRepository.findByUser(user)).isNotNull();
+        Purchase purchase = purchaseRepository.findByUser(user);
+        Assertions.assertThat(purchase).isNotNull();
+        Assertions.assertThat(purchaseProductRepository.findByPurchase(purchase).getProduct().getProductName()).isEqualTo(product.getProductName());
     }
 
     @Test
@@ -61,6 +64,7 @@ public class PlaceOrderTest extends LoggedInBaseIntegration {
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        Assertions.assertThat(purchaseRepository.findByUser(user)).isNull();
     }
 
     private ResponseEntity setUpHeaderAndGetTheResponse() {
