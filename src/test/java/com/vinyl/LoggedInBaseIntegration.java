@@ -1,7 +1,6 @@
 package com.vinyl;
 
 import com.vinyl.helper.TokenHeaderHelper;
-import com.vinyl.model.Product;
 import com.vinyl.repository.TokenRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -12,19 +11,11 @@ import java.time.LocalDate;
 
 public abstract class LoggedInBaseIntegration extends BaseIntegration {
 
-    Product product;
-
     @Autowired
     protected TokenHeaderHelper tokenHeaderHelper;
 
     @Autowired
     protected TokenRepository tokenRepository;
-
-    @Override
-    public void setUp() {
-        super.setUp();
-        product = defaultEntitiesHelper.createProduct();
-    }
 
     @Test
     public void testWhenTokenIsMissing() {

@@ -109,4 +109,20 @@ public class UserController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @ApiOperation(value = "User places an order", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 401, message = NOT_AUTHORIZED_MESSAGE),
+            @ApiResponse(code = 400, message = BAD_REQUEST_MESSAGE),
+            @ApiResponse(code = 200, message = "You successfully placed the order")
+
+    })
+    @RequestMapping(value="/users/orders", method = RequestMethod.PUT)
+    public ResponseEntity<?> placeOrder(@ApiParam(value = "Token hash to send in the request header", required = true) @RequestHeader(value = "Authorization", required = false) String auth){
+
+        String token = AuthenticationHeaderHelper.getTokenHashOrNull(auth);
+        userService.placeOrder(token);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
