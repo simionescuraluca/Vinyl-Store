@@ -24,9 +24,12 @@ public class DefaultEntitiesHelper {
     CartRepository cartRepository;
     @Autowired
     ProductCartRepository productCartRepository;
+    @Autowired
+    private PurchaseProductRepository purchaseProductRepository;
 
     public void tearDown() {
         productCartRepository.deleteAll();
+        purchaseProductRepository.deleteAll();
         productRepository.deleteAll();
         cartRepository.deleteAll();
 

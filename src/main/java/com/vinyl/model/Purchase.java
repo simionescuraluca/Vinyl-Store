@@ -1,5 +1,7 @@
 package com.vinyl.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -11,11 +13,11 @@ import java.util.List;
 @Table(name = "PURCHASE")
 public class Purchase {
 
-    @OneToMany(mappedBy = "purchase")
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.PERSIST)
     public List<PurchaseProduct> products = new ArrayList<>();
     @Id
-    @NotNull
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private Integer id;
     @NotNull
     @Column(nullable = false)

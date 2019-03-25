@@ -44,6 +44,15 @@ public class UserService {
     @Autowired
     private CartRepository cartRepository;
 
+    @Autowired
+    private PurchaseRepository purchaseRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private PurchaseProductRepository purchaseProductRepository;
+
     public User addUser(User user) {
 
         Role r = new Role("BASIC_USER");
@@ -95,8 +104,7 @@ public class UserService {
 
     public CartDetailsDTO getCartDetails(String tokenHash) {
 
-        validatorFactory.getTokenValidator().validate(tokenHash);
-        Token token = tokenRepository.findByHash(tokenHash);
+        Token token = getToken(tokenHash);
         User user = token.getUser();
 
         Cart cart = cartRepository.findByUser(user);
@@ -119,8 +127,7 @@ public class UserService {
 
     public void deleteProductFromCart(String tokenHash, Integer productId, Integer userId) {
 
-        validatorFactory.getTokenValidator().validate(tokenHash);
-        Token token = tokenRepository.findByHash(tokenHash);
+        Token token = getToken(tokenHash);
         User user = token.getUser();
         if (userId != user.getId()) {
             throw new UnauthorizedException("You cannot access the cart of another user!");
@@ -136,5 +143,63 @@ public class UserService {
         }
 
         productCartRepository.delete(toDelete);
+    }
+
+    public void placeOrder(String tokenHash) {
+        Token token = getToken(tokenHash);
+
+        Purchase purchase = createPurchase(token.getUser());
+        List<PurchaseProduct> orderedProducts = getPurchaseProducts(token.getUser(), purchase);
+        purchase.setProducts(orderedProducts);
+        purchaseRepository.save(purchase);
+        updateStocks(orderedProducts);
+    }
+
+    private List<PurchaseProduct> getPurchaseProducts(User user, Purchase purchase) {
+        List<ProductCart> productCartList = getProductList(user);
+        List<PurchaseProduct> orderedProducts = new ArrayList<>();
+        for (ProductCart productCart : productCartList) {
+            validateStock(productCart);
+            PurchaseProduct pp = new PurchaseProduct();
+            pp.setProduct(productCart.getProduct());
+            pp.setNrItems(productCart.getNrItems());
+            pp.setPurchase(purchase);
+            orderedProducts.add(pp);
+        }
+        return orderedProducts;
+    }
+
+    private List<ProductCart> getProductList(User user) {
+        Cart cart = cartRepository.findByUser(user);
+        if(cart == null) {
+            throw new BadRequestException("The cart is empty!");
+        }
+        return productCartRepository.findByCart(cart);
+    }
+
+    private void validateStock(ProductCart productCart) {
+        if (productCart.getNrItems() > productCart.getProduct().getStock()) {
+            throw new BadRequestException("The stock is limited!");
+        }
+    }
+
+    private Purchase createPurchase(User user) {
+        Purchase purchase = new Purchase();
+        purchase.setDateCreated(LocalDate.now());
+        purchase.setStatus("PROCESSED");
+        purchase.setUser(user);
+        return purchase;
+    }
+
+    private void updateStocks(List<PurchaseProduct> orderedProducts) {
+        for (PurchaseProduct pp : orderedProducts) {
+            pp.getProduct().setStock(pp.getProduct().getStock() - pp.getNrItems());
+            productRepository.save(pp.getProduct());
+        }
+    }
+
+    private Token getToken(String tokenHash) {
+        validatorFactory.getTokenValidator().validate(tokenHash);
+        return tokenRepository.findByHash(tokenHash);
     }
 }

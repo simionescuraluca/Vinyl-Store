@@ -43,13 +43,21 @@ public class PurchaseProduct {
         this.product = product;
     }
 
+    public Integer getNrItems() {
+        return nrItems;
+    }
+
+    public void setNrItems(Integer nrItems) {
+        this.nrItems = nrItems;
+    }
+
     @SuppressWarnings("serial")
     public static class PurchaseProductId implements Serializable {
 
-        private Purchase purchase;
-        private Product product;
+        private int purchase;
+        private int product;
 
-        public PurchaseProductId(Purchase purchase, Product product) {
+        public PurchaseProductId(int purchase, int product) {
             this.purchase = purchase;
             this.product = product;
         }
@@ -58,52 +66,20 @@ public class PurchaseProduct {
 
         }
 
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((product == null) ? 0 : product.hashCode());
-            result = prime * result + ((purchase == null) ? 0 : purchase.hashCode());
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            PurchaseProductId other = (PurchaseProductId) obj;
-            if (product == null) {
-                if (other.product != null)
-                    return false;
-            } else if (!product.equals(other.product))
-                return false;
-            if (purchase == null) {
-                if (other.purchase != null)
-                    return false;
-            } else if (!purchase.equals(other.purchase))
-                return false;
-            return true;
-        }
-
-        public Purchase getPurchase() {
+        public int getPurchase() {
             return purchase;
         }
 
-        public void setPurchase(Purchase purchase) {
+        public void setPurchase(int purchase) {
             this.purchase = purchase;
         }
 
-        public Product getProduct() {
+        public int getProduct() {
             return product;
         }
 
-        public void setProduct(Product product) {
+        public void setProduct(int product) {
             this.product = product;
         }
-
     }
 }
