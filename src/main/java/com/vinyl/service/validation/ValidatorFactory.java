@@ -1,7 +1,9 @@
 package com.vinyl.service.validation;
 
+import com.vinyl.model.Token;
 import com.vinyl.model.User;
 import com.vinyl.modelDTO.EmailPassDTO;
+import com.vinyl.modelDTO.ProductManagementDTO;
 import com.vinyl.repository.TokenRepository;
 import com.vinyl.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +46,13 @@ public class ValidatorFactory {
 
     public Validator<String> getTokenValidator() {
         return new TokenValidator(tokenRepository);
+    }
+
+    public Validator<ProductManagementDTO> getProductManagementValidator() {
+        return new ProductManagementValidator();
+    }
+
+    public Validator<Token> getAdminValidator() {
+        return new AdminValidator(tokenRepository);
     }
 }

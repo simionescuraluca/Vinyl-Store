@@ -1,54 +1,13 @@
-package com.vinyl.model;
+package com.vinyl.modelDTO;
 
-import org.hibernate.annotations.GenericGenerator;
+public class ProductManagementDTO {
 
-import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
-@Entity
-@Table(name = "PRODUCT")
-public class Product {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
-    private Integer id;
-
-    @NotEmpty
-    @Column(nullable = false)
     private String productName;
-
-    @NotEmpty
-    @Column(nullable = false)
     private String description;
-
-    @NotNull
-    @Column(nullable = false)
     private Double price;
-
-    @NotNull
-    @Column(nullable = false)
     private Integer stock;
-
-    @NotEmpty
-    @Column(nullable = false)
     private String artist;
-
-    @NotEmpty
-    @Column(nullable = false)
     private String category;
-
-    public Product() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getProductName() {
         return productName;
