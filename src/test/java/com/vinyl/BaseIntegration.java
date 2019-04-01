@@ -6,7 +6,6 @@ import com.vinyl.model.Role;
 import com.vinyl.model.Token;
 import com.vinyl.model.User;
 import com.vinyl.repository.AddressRepository;
-import com.vinyl.repository.ProductRepository;
 import com.vinyl.repository.RoleRepository;
 import com.vinyl.repository.UserRepository;
 import org.junit.After;

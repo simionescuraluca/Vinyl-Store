@@ -2,6 +2,7 @@ package com.vinyl.service;
 
 import com.vinyl.model.*;
 import com.vinyl.modelDTO.AddProductToCartDTO;
+import com.vinyl.modelDTO.ProductManagementDTO;
 import com.vinyl.repository.CartRepository;
 import com.vinyl.repository.ProductCartRepository;
 import com.vinyl.repository.ProductRepository;
@@ -65,5 +66,46 @@ public class ProductService {
         productCart.setProductPrice(product.getPrice());
 
         return productCartRepository.save(productCart);
+    }
+
+    public void addProductToStore(ProductManagementDTO productToAdd, String tokenHash) {
+        validateAdminToken(tokenHash);
+        validatorFactory.getProductManagementValidator().validate(productToAdd);
+        Product newProduct = new Product();
+        populateProduct(productToAdd, newProduct);
+        productRepository.save(newProduct);
+    }
+
+    public void updateProduct(ProductManagementDTO updatedProduct, String tokenHash, Integer productId) {
+        validateAdminToken(tokenHash);
+        validatorFactory.getProductManagementValidator().validate(updatedProduct);
+        validateProductId(productId);
+        Product product = productRepository.findById(productId).get();
+        populateProduct(updatedProduct, product);
+        productRepository.save(product);
+    }
+
+    public void removeProductFromStore(String tokenHash, Integer productId) {
+        validateAdminToken(tokenHash);
+        validateProductId(productId);
+        productRepository.delete(productRepository.findById(productId).get());
+    }
+
+    private void validateProductId(Integer productId) {
+        productRepository.findById(productId).orElseThrow(() -> new BadRequestException("Product not found!"));
+    }
+
+    private void populateProduct(ProductManagementDTO requestProduct, Product product) {
+        product.setStock(requestProduct.getStock());
+        product.setPrice(requestProduct.getPrice());
+        product.setProductName(requestProduct.getProductName());
+        product.setArtist(requestProduct.getArtist());
+        product.setCategory(requestProduct.getCategory());
+        product.setDescription(requestProduct.getDescription());
+    }
+
+    public void validateAdminToken(String tokenHash) {
+        validatorFactory.getTokenValidator().validate(tokenHash);
+        validatorFactory.getAdminValidator().validate(tokenRepository.findByHash(tokenHash));
     }
 }
