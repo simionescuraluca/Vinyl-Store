@@ -15,16 +15,16 @@ import org.springframework.http.*;
 public class ChangeOrderStatusTest extends ManagerBaseIntegration {
 
     @Autowired
-    protected TokenHeaderHelper tokenHeaderHelper;
+    private TokenHeaderHelper tokenHeaderHelper;
 
     @Autowired
-    protected PurchaseRepository purchaseRepository;
+    private PurchaseRepository purchaseRepository;
 
-    protected Purchase order;
+    private Purchase order;
 
-    protected Product product;
+    private Product product;
 
-    protected StatusDTO status;
+    private StatusDTO status;
 
     @Override
     public void setUp() {
@@ -58,7 +58,7 @@ public class ChangeOrderStatusTest extends ManagerBaseIntegration {
 
     public ResponseEntity<?> setUpHeaderAndGetTheResponse() {
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<?> response = trt.exchange("/orders/" + order.getId(), HttpMethod.PUT, new HttpEntity<>(status, headers), Void.class);
+        ResponseEntity<?> response = trt.exchange(getUrl(), getMethod(), getHttpEntity(headers), Void.class);
 
         return response;
     }
@@ -69,5 +69,20 @@ public class ChangeOrderStatusTest extends ManagerBaseIntegration {
         purchase.setProducts(Lists.newArrayList(pp));
 
         return purchaseRepository.save(purchase);
+    }
+
+    @Override
+    protected String getUrl() {
+        return "/orders/" + order.getId();
+    }
+
+    @Override
+    protected HttpEntity getHttpEntity(HttpHeaders headers) {
+        return new HttpEntity<>(status, headers);
+    }
+
+    @Override
+    protected HttpMethod getMethod() {
+        return HttpMethod.PUT;
     }
 }
