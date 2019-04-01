@@ -19,14 +19,14 @@ public abstract class LoggedInBaseIntegration extends BaseIntegration {
 
     @Test
     public void testWhenTokenIsMissing() {
-        ResponseEntity<?> response = trt.exchange(getUrl(), getMethod(), HttpEntity.EMPTY, Void.class);
+        ResponseEntity<?> response = trt.exchange(getUrl(), getMethod(), getHttpEntity(HttpHeaders.EMPTY), Void.class);
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
     public void testWhenTokenIsInvalid() {
         HttpHeaders headers = tokenHeaderHelper.setupToken("INVALID_TOKEN");
-        ResponseEntity<?> response = trt.exchange(getUrl(), getMethod(), new HttpEntity<>(headers), Void.class);
+        ResponseEntity<?> response = trt.exchange(getUrl(), getMethod(), getHttpEntity(headers), Void.class);
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -36,9 +36,13 @@ public abstract class LoggedInBaseIntegration extends BaseIntegration {
         tokenRepository.save(token);
 
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<?> response = trt.exchange(getUrl(), getMethod(), new HttpEntity<>(headers), Void.class);
+        ResponseEntity<?> response = trt.exchange(getUrl(), getMethod(), getHttpEntity(headers), Void.class);
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
+
+    protected HttpEntity getHttpEntity(HttpHeaders headers) {
+        return new HttpEntity<>(headers);
     }
 
     protected abstract String getUrl();

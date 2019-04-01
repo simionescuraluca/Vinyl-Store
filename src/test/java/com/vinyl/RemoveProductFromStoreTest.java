@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 
@@ -47,26 +46,14 @@ public class RemoveProductFromStoreTest extends ManagerBaseIntegration {
 
     }
 
-    @Test
-    public void testWhenTokenIsMissing() {
-        ResponseEntity<?> response = trt.exchange("/products/" + product.getId(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    @Override
+    protected String getUrl() {
+        return "/products/" + product.getId();
     }
 
-    @Test
-    public void testWhenTokenIsInvalid() {
-        HttpHeaders headers = tokenHeaderHelper.setupToken("INVALID_TOKEN");
-        ResponseEntity<?> response = trt.exchange("/products/" + product.getId(), HttpMethod.DELETE, new HttpEntity<>(headers), Void.class);
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    public void testWhenTokenIsExpired() {
-        token.setValidUntil(LocalDate.now().minusMonths(3));
-        tokenRepository.save(token);
-
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    @Override
+    protected HttpMethod getMethod() {
+        return HttpMethod.DELETE;
     }
 
     @Override
