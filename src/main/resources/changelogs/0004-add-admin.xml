@@ -6,23 +6,29 @@
 
     <changeSet id="1_add_admin_role" author="raluca">
         <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0"><![CDATA[
+            <sqlCheck expectedResult="0">
+                <![CDATA[
                 select COUNT(*) from role where role_name='ADMIN';
-            ]]></sqlCheck>
+            ]]>
+            </sqlCheck>
         </preConditions>
         <sql>
-            insert into role(id,role_name) values(79,'ADMIN');
+            <![CDATA[
+            insert into role(role_name) values('ADMIN');
+        ]]>
         </sql>
     </changeSet>
 
     <changeSet id="2_add_admin" author="raluca">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0"><![CDATA[
-                select COUNT(*) from user where role_id=79;
+                select COUNT(*) from user where role_id=(select id from role where role_name='ADMIN');
             ]]></sqlCheck>
         </preConditions>
         <sql>
-            insert into user (first_name, second_name, email, pass, role_id, address_id) values('Admin', 'Admin', 'admin_ralu@email.com', '$2a$10$YykPDQX4JuDTVvEM.86jfeb13FebTX6/rK29ihj7XIyeKhZQfq4Vq', 79, 1);
+            <![CDATA[
+            insert into user (first_name, second_name, email, pass, role_id, address_id) values('Admin', 'Admin', 'admin_ralu@email.com', '$2a$10$YykPDQX4JuDTVvEM.86jfeb13FebTX6/rK29ihj7XIyeKhZQfq4Vq',(select id from role where role_name='ADMIN'), 1);
+        ]]>
         </sql>
     </changeSet>
 </databaseChangeLog>

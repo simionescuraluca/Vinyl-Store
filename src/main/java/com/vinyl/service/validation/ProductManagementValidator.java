@@ -18,7 +18,7 @@ public class ProductManagementValidator implements Validator<ProductManagementDT
             throw new BadRequestException("The product name is invalid!");
         }
 
-        if (product.getStock() <= 0) {
+        if (product.getStock() < 0) {
             LOGGER.error("Invalid stock error!");
             throw new BadRequestException("The stock is invalid!");
         }

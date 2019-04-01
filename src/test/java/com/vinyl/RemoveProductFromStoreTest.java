@@ -8,17 +8,18 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 
-import java.time.LocalDate;
+import java.util.Optional;
+
 
 public class RemoveProductFromStoreTest extends ManagerBaseIntegration {
 
     @Autowired
-    protected TokenHeaderHelper tokenHeaderHelper;
+    private TokenHeaderHelper tokenHeaderHelper;
 
     @Autowired
-    protected ProductRepository productRepository;
+    private ProductRepository productRepository;
 
-    protected Product product;
+    private Product product;
 
     @Override
     public void setUp() {
@@ -30,6 +31,7 @@ public class RemoveProductFromStoreTest extends ManagerBaseIntegration {
     public void testWhenOK() {
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        Assertions.assertThat(productRepository.findById(product.getId())).isEqualTo(Optional.empty());
     }
 
     @Test
@@ -39,56 +41,30 @@ public class RemoveProductFromStoreTest extends ManagerBaseIntegration {
         productRepository.save(product);
 
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    }
-
-    @Test
-    public void testWhenProductNameIsInvalid() {
-        request.setProductName("");
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    }
-
-    @Test
-    public void testWhenProductPriceIsInvalid() {
-        request.setPrice(-1.2);
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    }
-
-    @Test
-    public void testWhenProductStockIsInvalid() {
-        request.setStock(0);
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    }
-
-    @Test
-    public void testWhenTokenIsMissing() {
-        ResponseEntity<?> response = trt.exchange("/products/" + product.getId(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
-
-    @Test
-    public void testWhenTokenIsInvalid() {
-        HttpHeaders headers = tokenHeaderHelper.setupToken("INVALID_TOKEN");
-        ResponseEntity<?> response = trt.exchange("/products/" + product.getId(), HttpMethod.DELETE, new HttpEntity<>(headers), Void.class);
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        Assertions.assertThat(productRepository.findById(product.getId())).isNotNull();
+
     }
 
-    @Test
-    public void testWhenTokenIsExpired() {
-        token.setValidUntil(LocalDate.now().minusMonths(3));
-        tokenRepository.save(token);
+    @Override
+    protected String getUrl() {
+        return "/products/" + product.getId();
+    }
 
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+    @Override
+    protected HttpMethod getMethod() {
+        return HttpMethod.DELETE;
     }
 
     @Override
     public ResponseEntity<?> setUpHeaderAndGetTheResponse() {
+        ResponseEntity<?> response = setUpHeaderAndGetTheResponse(product.getId());
+        return response;
+    }
+
+    public ResponseEntity<?> setUpHeaderAndGetTheResponse(Integer id){
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<?> response = trt.exchange("/products/" + product.getId(), HttpMethod.DELETE, new HttpEntity<>(headers), Void.class);
+        ResponseEntity<?> response = trt.exchange("/products/" + id, HttpMethod.DELETE, new HttpEntity<>(headers), Void.class);
 
         return response;
     }
