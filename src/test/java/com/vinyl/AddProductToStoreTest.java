@@ -1,70 +1,14 @@
 package com.vinyl;
 
 import com.vinyl.helper.TokenHeaderHelper;
-import com.vinyl.repository.TokenRepository;
-import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import com.vinyl.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 
-import java.time.LocalDate;
-
-public class AddProductToStoreTest extends ManagerBaseIntegration {
+public class AddProductToStoreTest extends ProductManagementBaseIntegration {
 
     @Autowired
     protected TokenHeaderHelper tokenHeaderHelper;
-
-    @Autowired
-    protected TokenRepository tokenRepository;
-
-    @Test
-    public void testWhenOK() {
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-    }
-
-    @Test
-    public void testWhenProductNameIsInvalid() {
-        request.setProductName("");
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    public void testWhenProductPriceIsInvalid() {
-        request.setPrice(-1.2);
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    public void testWhenProductStockIsInvalid() {
-        request.setStock(0);
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    public void testWhenTokenIsMissing() {
-        ResponseEntity<?> response = trt.exchange("/products", HttpMethod.POST, new HttpEntity<>(request), Void.class);
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
-
-    @Test
-    public void testWhenTokenIsInvalid() {
-        HttpHeaders headers = tokenHeaderHelper.setupToken("INVALID_TOKEN");
-        ResponseEntity<?> response = trt.exchange("/products", HttpMethod.POST, new HttpEntity<>(request, headers), Void.class);
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    public void testWhenTokenIsExpired() {
-        token.setValidUntil(LocalDate.now().minusMonths(3));
-        tokenRepository.save(token);
-
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
 
     @Override
     public ResponseEntity<?> setUpHeaderAndGetTheResponse() {
@@ -72,5 +16,30 @@ public class AddProductToStoreTest extends ManagerBaseIntegration {
         ResponseEntity<?> response = trt.exchange("/products", HttpMethod.POST, new HttpEntity<>(request, headers), Void.class);
 
         return response;
+    }
+
+    @Override
+    protected HttpStatus getExpectedStatus() {
+        return HttpStatus.CREATED;
+    }
+
+    @Override
+    protected HttpEntity getHttpEntity(HttpHeaders headers) {
+        return new HttpEntity(request, headers);
+    }
+
+    @Override
+    protected Product getActualProduct() {
+        return productRepository.findAll().iterator().next();
+    }
+
+    @Override
+    protected String getUrl() {
+        return "/products";
+    }
+
+    @Override
+    protected HttpMethod getMethod() {
+        return  HttpMethod.POST;
     }
 }

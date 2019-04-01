@@ -2,23 +2,17 @@ package com.vinyl;
 
 import com.vinyl.helper.TokenHeaderHelper;
 import com.vinyl.model.Product;
-import com.vinyl.repository.ProductRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 
-import java.time.LocalDate;
-
-public class UpdateProductTest extends ManagerBaseIntegration {
+public class UpdateProductTest extends ProductManagementBaseIntegration {
 
     @Autowired
-    protected TokenHeaderHelper tokenHeaderHelper;
+    private TokenHeaderHelper tokenHeaderHelper;
 
-    @Autowired
-    protected ProductRepository productRepository;
-
-    protected Product product;
+    private Product product;
 
     @Override
     public void setUp() {
@@ -27,74 +21,45 @@ public class UpdateProductTest extends ManagerBaseIntegration {
     }
 
     @Test
-    public void testWhenOK() {
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        Product p = productRepository.findById(product.getId()).get();
-        Assertions.assertThat(p.getProductName()).isEqualTo(request.getProductName());
-        Assertions.assertThat(p.getStock()).isEqualTo(request.getStock());
-        Assertions.assertThat(p.getPrice()).isEqualTo(request.getPrice());
-    }
-
-    @Test
-    public void testWhenProductNameIsInvalid() {
-        request.setProductName("");
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    public void testWhenProductPriceIsInvalid() {
-        request.setPrice(-1.2);
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    public void testWhenProductStockIsInvalid() {
-        request.setStock(-2);
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
     public void testWhenProductIdIsInvalid() {
-        Integer invalidId = 00;
-        product.setId(invalidId);
-        productRepository.save(product);
-
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
+        ResponseEntity<?> response = setUpHeaderAndGetTheResponse(-1);
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
-    @Test
-    public void testWhenTokenIsMissing() {
-        ResponseEntity<?> response = trt.exchange("/products/" + product.getId(), HttpMethod.PUT, new HttpEntity<>(request), Void.class);
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
-
-    @Test
-    public void testWhenTokenIsInvalid() {
-        HttpHeaders headers = tokenHeaderHelper.setupToken("INVALID_TOKEN");
-        ResponseEntity<?> response = trt.exchange("/products/" + product.getId(), HttpMethod.PUT, new HttpEntity<>(request, headers), Void.class);
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    public void testWhenTokenIsExpired() {
-        token.setValidUntil(LocalDate.now().minusMonths(3));
-        tokenRepository.save(token);
-
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
-
+    @Override
     public ResponseEntity<?> setUpHeaderAndGetTheResponse() {
+        return setUpHeaderAndGetTheResponse(product.getId());
+    }
+
+    protected ResponseEntity<?> setUpHeaderAndGetTheResponse(Integer productId) {
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<?> response = trt.exchange("/products/" + product.getId(), HttpMethod.PUT, new HttpEntity<>(request, headers), Void.class);
+        ResponseEntity<?> response = trt.exchange("/products/" + productId, HttpMethod.PUT, getHttpEntity(headers), Void.class);
 
         return response;
+    }
+
+    @Override
+    protected String getUrl() {
+        return "/products/" + product.getId();
+    }
+
+    @Override
+    protected HttpMethod getMethod() {
+        return HttpMethod.PUT;
+    }
+
+    @Override
+    protected Product getActualProduct() {
+        return productRepository.findById(product.getId()).get();
+    }
+
+    @Override
+    protected HttpStatus getExpectedStatus() {
+        return HttpStatus.OK;
+    }
+
+    @Override
+    protected HttpEntity getHttpEntity(HttpHeaders headers) {
+        return new HttpEntity<>(request, headers);
     }
 }

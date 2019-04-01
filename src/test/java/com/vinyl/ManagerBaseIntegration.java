@@ -1,7 +1,6 @@
 package com.vinyl;
 
 import com.vinyl.model.Role;
-import com.vinyl.modelDTO.ProductManagementDTO;
 import com.vinyl.repository.RoleRepository;
 import com.vinyl.repository.TokenRepository;
 import org.assertj.core.api.Assertions;
@@ -10,15 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public abstract class ManagerBaseIntegration extends BaseIntegration {
+public abstract class ManagerBaseIntegration extends LoggedInBaseIntegration {
 
     @Autowired
     protected TokenRepository tokenRepository;
 
     @Autowired
-    protected RoleRepository roleRepository;
-
-    protected ProductManagementDTO request;
+    private RoleRepository roleRepository;
 
     @Override
     public void setUp() {
@@ -27,8 +24,6 @@ public abstract class ManagerBaseIntegration extends BaseIntegration {
         roleRepository.save(r);
         user.setRole(r);
         userRepository.save(user);
-
-        setUpRequest();
     }
 
     @Test
@@ -42,15 +37,5 @@ public abstract class ManagerBaseIntegration extends BaseIntegration {
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
-    public void setUpRequest() {
-        request = new ProductManagementDTO();
-        request.setStock(30);
-        request.setProductName("Test Product");
-        request.setDescription("Best Test Product");
-        request.setCategory("Test");
-        request.setArtist("Raluca Simionescu");
-        request.setPrice(150.25);
-    }
-
-    public abstract ResponseEntity<?> setUpHeaderAndGetTheResponse();
+    protected abstract ResponseEntity<?> setUpHeaderAndGetTheResponse();
 }
