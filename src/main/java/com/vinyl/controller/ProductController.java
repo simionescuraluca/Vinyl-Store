@@ -2,6 +2,7 @@ package com.vinyl.controller;
 
 import com.vinyl.helper.AuthenticationHeaderHelper;
 import com.vinyl.modelDTO.AddProductToCartDTO;
+import com.vinyl.modelDTO.InventoryListDTO;
 import com.vinyl.modelDTO.ProductManagementDTO;
 import com.vinyl.service.ProductService;
 import io.swagger.annotations.*;
@@ -53,7 +54,7 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-   @ApiOperation(value = "As a manager, update a vinyl", response = ResponseEntity.class)
+    @ApiOperation(value = "As a manager, update a vinyl", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successfully updated vinyl"),
             @ApiResponse(code = 401, message = NOT_AUTHORIZED_MESSAGE),
@@ -79,8 +80,22 @@ public class ProductController {
     public ResponseEntity<?> removeProductFromStore(@ApiParam(value = "Token hash to send in the request header", required = true) @RequestHeader(value = "Authorization", required = false) String auth,
                                                     @ApiParam(value = "Vinyl id of the vinyl which will be removed", required = true) @PathVariable Integer productId) {
         String token = AuthenticationHeaderHelper.getTokenHashOrNull(auth);
-        productService.removeProductFromStore(token,productId);
+        productService.removeProductFromStore(token, productId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @ApiOperation(value = "As a manager, get vinyls inventory", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Successfully got vinyl inventory"),
+            @ApiResponse(code = 401, message = NOT_AUTHORIZED_MESSAGE),
+            @ApiResponse(code = 400, message = BAD_REQUEST_MESSAGE)
+    })
+    @RequestMapping(value = "/products/inventory", method = RequestMethod.GET)
+    public ResponseEntity<?> getInventory(@ApiParam(value = "Token hash to send in the request header", required = true) @RequestHeader(value = "Authorization", required = false) String auth) {
+        String token = AuthenticationHeaderHelper.getTokenHashOrNull(auth);
+        InventoryListDTO inventory = productService.getInventory(token);
+
+        return new ResponseEntity<>(inventory, HttpStatus.OK);
     }
 }
