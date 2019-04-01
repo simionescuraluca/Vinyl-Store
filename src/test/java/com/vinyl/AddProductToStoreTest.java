@@ -66,6 +66,7 @@ public class AddProductToStoreTest extends ManagerBaseIntegration {
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
+    @Override
     public ResponseEntity<?> setUpHeaderAndGetTheResponse() {
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
         ResponseEntity<?> response = trt.exchange("/products", HttpMethod.POST, new HttpEntity<>(request, headers), Void.class);

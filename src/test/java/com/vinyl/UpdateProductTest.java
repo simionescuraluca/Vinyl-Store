@@ -29,8 +29,13 @@ public class UpdateProductTest extends ManagerBaseIntegration {
     @Test
     public void testWhenOK() {
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
+
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Assertions.assertThat(productRepository.findAll()).doesNotContain(product);
+
+        Product p = productRepository.findById(product.getId()).get();
+        Assertions.assertThat(p.getProductName()).isEqualTo(request.getProductName());
+        Assertions.assertThat(p.getStock()).isEqualTo(request.getStock());
+        Assertions.assertThat(p.getPrice()).isEqualTo(request.getPrice());
     }
 
     @Test
@@ -49,7 +54,7 @@ public class UpdateProductTest extends ManagerBaseIntegration {
 
     @Test
     public void testWhenProductStockIsInvalid() {
-        request.setStock(0);
+        request.setStock(-2);
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -61,7 +66,7 @@ public class UpdateProductTest extends ManagerBaseIntegration {
         productRepository.save(product);
 
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test

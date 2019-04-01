@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 public abstract class ManagerBaseIntegration extends BaseIntegration {
 
     @Autowired
-    TokenRepository tokenRepository;
+    protected TokenRepository tokenRepository;
 
     @Autowired
     protected RoleRepository roleRepository;

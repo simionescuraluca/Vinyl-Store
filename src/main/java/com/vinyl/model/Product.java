@@ -39,9 +39,6 @@ public class Product {
     @Column(nullable = false)
     private String category;
 
-    public Product() {
-    }
-
     public Integer getId() {
         return id;
     }

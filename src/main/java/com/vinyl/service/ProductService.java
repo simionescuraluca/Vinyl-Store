@@ -8,7 +8,6 @@ import com.vinyl.repository.ProductCartRepository;
 import com.vinyl.repository.ProductRepository;
 import com.vinyl.repository.TokenRepository;
 import com.vinyl.service.exception.BadRequestException;
-import com.vinyl.service.exception.NotFoundException;
 import com.vinyl.service.validation.ValidatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,19 +71,18 @@ public class ProductService {
     public void addProductToStore(ProductManagementDTO productToAdd, String tokenHash) {
         validateAdminToken(tokenHash);
         validatorFactory.getProductManagementValidator().validate(productToAdd);
-
-        Product product = setAndGetProduct(productToAdd);
-        productRepository.save(product);
+        Product newProduct = new Product();
+        populateProduct(productToAdd, newProduct);
+        productRepository.save(newProduct);
     }
 
     public void updateProduct(ProductManagementDTO updatedProduct, String tokenHash, Integer productId) {
         validateAdminToken(tokenHash);
         validatorFactory.getProductManagementValidator().validate(updatedProduct);
         validateProductId(productId);
-
-        Product newProduct = setAndGetProduct(updatedProduct);
-        productRepository.delete(productRepository.findById(productId).get());
-        productRepository.save(newProduct);
+        Product product = productRepository.findById(productId).get();
+        populateProduct(updatedProduct, product);
+        productRepository.save(product);
     }
 
     public void removeProductFromStore(String tokenHash, Integer productId) {
@@ -94,19 +92,16 @@ public class ProductService {
     }
 
     private void validateProductId(Integer productId) {
-        productRepository.findById(productId).orElseThrow(() -> new NotFoundException("Product not found!"));
+        productRepository.findById(productId).orElseThrow(() -> new BadRequestException("Product not found!"));
     }
 
-    private Product setAndGetProduct(ProductManagementDTO requestProduct) {
-        Product newProduct = new Product();
-        newProduct.setStock(requestProduct.getStock());
-        newProduct.setPrice(requestProduct.getPrice());
-        newProduct.setProductName(requestProduct.getProductName());
-        newProduct.setArtist(requestProduct.getArtist());
-        newProduct.setCategory(requestProduct.getCategory());
-        newProduct.setDescription(requestProduct.getDescription());
-
-        return newProduct;
+    private void populateProduct(ProductManagementDTO requestProduct, Product product) {
+        product.setStock(requestProduct.getStock());
+        product.setPrice(requestProduct.getPrice());
+        product.setProductName(requestProduct.getProductName());
+        product.setArtist(requestProduct.getArtist());
+        product.setCategory(requestProduct.getCategory());
+        product.setDescription(requestProduct.getDescription());
     }
 
     public void validateAdminToken(String tokenHash) {

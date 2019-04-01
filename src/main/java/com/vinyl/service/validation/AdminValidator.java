@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class AdminValidator implements Validator<Token> {
 
     @Autowired
-    protected TokenRepository tokenRepository;
+    private TokenRepository tokenRepository;
 
     public AdminValidator(TokenRepository tokenRepository) {
         this.tokenRepository = tokenRepository;

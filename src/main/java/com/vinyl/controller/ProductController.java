@@ -71,7 +71,7 @@ public class ProductController {
 
     @ApiOperation(value = "As a manager, update a vinyl", response = ResponseEntity.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successfully updated vinyl"),
+            @ApiResponse(code = 201, message = "Successfully removed vinyl"),
             @ApiResponse(code = 401, message = NOT_AUTHORIZED_MESSAGE),
             @ApiResponse(code = 400, message = BAD_REQUEST_MESSAGE)
     })
