@@ -3,7 +3,6 @@ package com.vinyl.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,9 +21,9 @@ public class Purchase {
     @NotNull
     @Column(nullable = false)
     private LocalDate dateCreated;
-    @NotEmpty
+    
     @Column(nullable = false)
-    private String status;
+    private Status status;
     @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -46,14 +45,6 @@ public class Purchase {
         this.dateCreated = dateCreated;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public User getUser() {
         return user;
     }
@@ -68,5 +59,13 @@ public class Purchase {
 
     public void setProducts(List<PurchaseProduct> products) {
         this.products = products;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

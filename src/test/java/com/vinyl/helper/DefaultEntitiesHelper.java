@@ -85,7 +85,7 @@ public class DefaultEntitiesHelper {
     public Purchase createPurchase( User user){
         Purchase purchase = new Purchase();
         purchase.setUser(user);
-        purchase.setStatus("PROCESSED");
+        purchase.setStatus(Status.PROCESSED);
         purchase.setDateCreated(LocalDate.now());
 
         return purchaseRepository.save(purchase);

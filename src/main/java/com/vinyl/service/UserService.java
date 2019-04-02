@@ -186,7 +186,7 @@ public class UserService {
     private Purchase createPurchase(User user) {
         Purchase purchase = new Purchase();
         purchase.setDateCreated(LocalDate.now());
-        purchase.setStatus("PROCESSED");
+        purchase.setStatus(Status.PROCESSED);
         purchase.setUser(user);
         return purchase;
     }

@@ -46,6 +46,7 @@ public class ChangeOrderStatusTest extends ManagerBaseIntegration {
         status.setStatus("INVALID_STATUS");
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        Assertions.assertThat(purchaseRepository.findById(order.getId()).get().getStatus()).isNotEqualTo("SENT");
     }
 
     @Test
