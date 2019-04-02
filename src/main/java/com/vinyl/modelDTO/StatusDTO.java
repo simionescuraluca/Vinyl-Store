@@ -2,7 +2,7 @@ package com.vinyl.modelDTO;
 
 public class StatusDTO {
 
-    String status;
+    private String status;
 
     public String getStatus() {
         return status;

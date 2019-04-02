@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     @Autowired
-    OrderService orderService;
+    private OrderService orderService;
 
     @RequestMapping(value = "/orders/{orderId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> changeOrderStatus(@RequestBody StatusDTO newStatus, @PathVariable Integer orderId, @RequestHeader(value = "Authorization", required = false) String auth) {
         String token = AuthenticationHeaderHelper.getTokenHashOrNull(auth);
-        orderService.changeOrderStatus(newStatus,orderId,token);
+        orderService.changeOrderStatus(newStatus, orderId, token);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
