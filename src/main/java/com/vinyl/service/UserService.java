@@ -1,9 +1,7 @@
 package com.vinyl.service;
 
 import com.vinyl.model.*;
-import com.vinyl.modelDTO.CartDetailsDTO;
-import com.vinyl.modelDTO.EmailPassDTO;
-import com.vinyl.modelDTO.ProductDTO;
+import com.vinyl.modelDTO.*;
 import com.vinyl.repository.*;
 import com.vinyl.service.exception.BadRequestException;
 import com.vinyl.service.exception.UnauthorizedException;
@@ -171,7 +169,7 @@ public class UserService {
 
     private List<ProductCart> getProductList(User user) {
         Cart cart = cartRepository.findByUser(user);
-        if(cart == null) {
+        if (cart == null) {
             throw new BadRequestException("The cart is empty!");
         }
         return productCartRepository.findByCart(cart);
@@ -198,8 +196,28 @@ public class UserService {
         }
     }
 
+    public GetUserListDTO getAllCustomers(String tokenHash) {
+        validateAdminToken(tokenHash);
+
+        List<User> userList = userRepository.findAll();
+        List<GetUserDTO> customers = new ArrayList<>();
+
+        for (User u : userList) {
+            customers.add(new GetUserDTO(u.getEmail(), u.getFirstName(), u.getSecondName()));
+        }
+
+        GetUserListDTO allCustomers = new GetUserListDTO(customers);
+        return allCustomers;
+    }
+
     private Token getToken(String tokenHash) {
         validatorFactory.getTokenValidator().validate(tokenHash);
         return tokenRepository.findByHash(tokenHash);
+    }
+
+
+    public void validateAdminToken(String tokenHash) {
+        validatorFactory.getTokenValidator().validate(tokenHash);
+        validatorFactory.getAdminValidator().validate(tokenRepository.findByHash(tokenHash));
     }
 }

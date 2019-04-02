@@ -3,10 +3,7 @@ package com.vinyl.controller;
 import com.vinyl.helper.AuthenticationHeaderHelper;
 import com.vinyl.model.Token;
 import com.vinyl.model.User;
-import com.vinyl.modelDTO.CartDetailsDTO;
-import com.vinyl.modelDTO.EmailPassDTO;
-import com.vinyl.modelDTO.TokenDTO;
-import com.vinyl.modelDTO.UserDTO;
+import com.vinyl.modelDTO.*;
 import com.vinyl.service.UserService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,12 +114,28 @@ public class UserController {
             @ApiResponse(code = 200, message = "You successfully placed the order")
 
     })
-    @RequestMapping(value="/users/orders", method = RequestMethod.PUT)
-    public ResponseEntity<?> placeOrder(@ApiParam(value = "Token hash to send in the request header", required = true) @RequestHeader(value = "Authorization", required = false) String auth){
+    @RequestMapping(value = "/users/orders", method = RequestMethod.PUT)
+    public ResponseEntity<?> placeOrder(@ApiParam(value = "Token hash to send in the request header", required = true) @RequestHeader(value = "Authorization", required = false) String auth) {
 
         String token = AuthenticationHeaderHelper.getTokenHashOrNull(auth);
         userService.placeOrder(token);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Admin gets all customers", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 401, message = NOT_AUTHORIZED_MESSAGE),
+            @ApiResponse(code = 400, message = BAD_REQUEST_MESSAGE),
+            @ApiResponse(code = 200, message = "You successfully got the customers")
+
+    })
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllCustomers(@ApiParam(value = "Token hash to send in the request header", required = true) @RequestHeader(value = "Authorization", required = false) String auth) {
+        String token = AuthenticationHeaderHelper.getTokenHashOrNull(auth);
+
+        GetUserListDTO customers = userService.getAllCustomers(token);
+
+        return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 }
