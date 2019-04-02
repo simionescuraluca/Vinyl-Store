@@ -8,6 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends CrudRepository<Product, Integer> {
-   // List<InventoryDTO> getInventory();
     List<Product> findAll();
 }
