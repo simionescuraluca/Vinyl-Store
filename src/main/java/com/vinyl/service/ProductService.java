@@ -1,7 +1,10 @@
 package com.vinyl.service;
 
 import com.vinyl.model.*;
-import com.vinyl.modelDTO.*;
+import com.vinyl.modelDTO.AddProductToCartDTO;
+import com.vinyl.modelDTO.InventoryDTO;
+import com.vinyl.modelDTO.InventoryListDTO;
+import com.vinyl.modelDTO.ProductManagementDTO;
 import com.vinyl.repository.CartRepository;
 import com.vinyl.repository.ProductCartRepository;
 import com.vinyl.repository.ProductRepository;
@@ -11,8 +14,8 @@ import com.vinyl.service.validation.ValidatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("productService")
 public class ProductService {
@@ -93,18 +96,10 @@ public class ProductService {
         productRepository.delete(productRepository.findById(productId).get());
     }
 
-    public InventoryListDTO getInventory(String tokenHash){
-        validateAdminToken(tokenHash);
-
-        List<Product> productList = productRepository.findAll();
-        List<InventoryDTO> inventory = new ArrayList<>();
-
-        for(Product p : productList){
-            inventory.add(new InventoryDTO(p.getId(),p.getProductName(),p.getStock()));
-        }
-
-        InventoryListDTO inventoryListDTO = new InventoryListDTO(inventory);
-        return inventoryListDTO;
+    public InventoryListDTO getInventory(String tokenHash) {
+        validatorFactory.getAdminValidator().validate(tokenHash);
+        List<InventoryDTO> inventory = productRepository.findAll().stream().map(p -> new InventoryDTO(p.getId(), p.getProductName(), p.getStock())).collect(Collectors.toList());
+        return new InventoryListDTO(inventory);
     }
 
     private void validateProductId(Integer productId) {
