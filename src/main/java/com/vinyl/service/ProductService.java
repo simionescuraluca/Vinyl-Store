@@ -1,7 +1,10 @@
 package com.vinyl.service;
 
 import com.vinyl.model.*;
-import com.vinyl.modelDTO.*;
+import com.vinyl.modelDTO.AddProductToCartDTO;
+import com.vinyl.modelDTO.InventoryDTO;
+import com.vinyl.modelDTO.InventoryListDTO;
+import com.vinyl.modelDTO.ProductManagementDTO;
 import com.vinyl.repository.CartRepository;
 import com.vinyl.repository.ProductCartRepository;
 import com.vinyl.repository.ProductRepository;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service("productService")
 public class ProductService {
@@ -94,14 +98,13 @@ public class ProductService {
     }
 
     public InventoryListDTO getInventory(String tokenHash){
-        validateAdminToken(tokenHash);
+        validatorFactory.getAdminValidator().validate(tokenHash);
 
         List<Product> productList = productRepository.findAll();
         List<InventoryDTO> inventory = new ArrayList<>();
 
-        for(Product p : productList){
-            inventory.add(new InventoryDTO(p.getId(),p.getProductName(),p.getStock()));
-        }
+        Stream<Product> stream = productList.stream();
+        stream.forEach((Product p) -> inventory.add(new InventoryDTO(p.getId(),p.getProductName(),p.getStock())));
 
         InventoryListDTO inventoryListDTO = new InventoryListDTO(inventory);
         return inventoryListDTO;
