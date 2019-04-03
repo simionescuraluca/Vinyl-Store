@@ -23,7 +23,7 @@ public class GetAllCustomersTest extends ManagerBaseIntegration {
     @Override
     public ResponseEntity<CustomerListDTO> setUpHeaderAndGetTheResponse() {
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<CustomerListDTO> response = trt.exchange("/users", HttpMethod.GET, new HttpEntity<>(headers), CustomerListDTO.class);
+        ResponseEntity<CustomerListDTO> response = trt.exchange(getUrl(), getMethod(), new HttpEntity<>(headers), CustomerListDTO.class);
 
         return response;
     }
