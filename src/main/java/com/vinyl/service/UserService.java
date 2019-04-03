@@ -1,9 +1,7 @@
 package com.vinyl.service;
 
 import com.vinyl.model.*;
-import com.vinyl.modelDTO.CartDetailsDTO;
-import com.vinyl.modelDTO.EmailPassDTO;
-import com.vinyl.modelDTO.ProductDTO;
+import com.vinyl.modelDTO.*;
 import com.vinyl.repository.*;
 import com.vinyl.service.exception.BadRequestException;
 import com.vinyl.service.exception.UnauthorizedException;
@@ -16,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("userService")
 public class UserService {
@@ -171,7 +170,7 @@ public class UserService {
 
     private List<ProductCart> getProductList(User user) {
         Cart cart = cartRepository.findByUser(user);
-        if(cart == null) {
+        if (cart == null) {
             throw new BadRequestException("The cart is empty!");
         }
         return productCartRepository.findByCart(cart);
@@ -196,6 +195,12 @@ public class UserService {
             pp.getProduct().setStock(pp.getProduct().getStock() - pp.getNrItems());
             productRepository.save(pp.getProduct());
         }
+    }
+
+    public CustomerListDTO getAllCustomers(String tokenHash) {
+        validatorFactory.getAdminValidator().validate(tokenHash);
+        List<CustomerDTO> customers = userRepository.findAll().stream().map(u -> new CustomerDTO(u.getEmail(), u.getFirstName(), u.getSecondName())).collect(Collectors.toList());
+        return new CustomerListDTO(customers);
     }
 
     private Token getToken(String tokenHash) {
