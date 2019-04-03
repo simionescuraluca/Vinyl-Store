@@ -14,9 +14,8 @@ import com.vinyl.service.validation.ValidatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 @Service("productService")
 public class ProductService {
@@ -97,17 +96,10 @@ public class ProductService {
         productRepository.delete(productRepository.findById(productId).get());
     }
 
-    public InventoryListDTO getInventory(String tokenHash){
+    public InventoryListDTO getInventory(String tokenHash) {
         validatorFactory.getAdminValidator().validate(tokenHash);
-
-        List<Product> productList = productRepository.findAll();
-        List<InventoryDTO> inventory = new ArrayList<>();
-
-        Stream<Product> stream = productList.stream();
-        stream.forEach((Product p) -> inventory.add(new InventoryDTO(p.getId(),p.getProductName(),p.getStock())));
-
-        InventoryListDTO inventoryListDTO = new InventoryListDTO(inventory);
-        return inventoryListDTO;
+        List<InventoryDTO> inventory = productRepository.findAll().stream().map(p -> new InventoryDTO(p.getId(), p.getProductName(), p.getStock())).collect(Collectors.toList());
+        return new InventoryListDTO(inventory);
     }
 
     private void validateProductId(Integer productId) {
