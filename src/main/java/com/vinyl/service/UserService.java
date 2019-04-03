@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 @Service("userService")
 public class UserService {
@@ -199,15 +199,8 @@ public class UserService {
 
     public CustomerListDTO getAllCustomers(String tokenHash) {
         validatorFactory.getAdminValidator().validate(tokenHash);
-
-        List<User> userList = userRepository.findAll();
-        List<CustomerDTO> customers = new ArrayList<>();
-
-        Stream<User> stream = userList.stream();
-        stream.forEach((User u) -> customers.add(new CustomerDTO(u.getEmail(), u.getFirstName(), u.getSecondName())));
-
-        CustomerListDTO allCustomers = new CustomerListDTO(customers);
-        return allCustomers;
+        List<CustomerDTO> customers = userRepository.findAll().stream().map(u -> new CustomerDTO(u.getEmail(), u.getFirstName(), u.getSecondName())).collect(Collectors.toList());
+        return new CustomerListDTO(customers);
     }
 
     private Token getToken(String tokenHash) {
