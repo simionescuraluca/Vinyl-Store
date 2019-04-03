@@ -1,8 +1,7 @@
 package com.vinyl.service;
 
 import com.vinyl.model.*;
-import com.vinyl.modelDTO.AddProductToCartDTO;
-import com.vinyl.modelDTO.ProductManagementDTO;
+import com.vinyl.modelDTO.*;
 import com.vinyl.repository.CartRepository;
 import com.vinyl.repository.ProductCartRepository;
 import com.vinyl.repository.ProductRepository;
@@ -11,6 +10,9 @@ import com.vinyl.service.exception.BadRequestException;
 import com.vinyl.service.validation.ValidatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service("productService")
 public class ProductService {
@@ -89,6 +91,20 @@ public class ProductService {
         validatorFactory.getAdminValidator().validate(tokenHash);
         validateProductId(productId);
         productRepository.delete(productRepository.findById(productId).get());
+    }
+
+    public InventoryListDTO getInventory(String tokenHash){
+        validateAdminToken(tokenHash);
+
+        List<Product> productList = productRepository.findAll();
+        List<InventoryDTO> inventory = new ArrayList<>();
+
+        for(Product p : productList){
+            inventory.add(new InventoryDTO(p.getId(),p.getProductName(),p.getStock()));
+        }
+
+        InventoryListDTO inventoryListDTO = new InventoryListDTO(inventory);
+        return inventoryListDTO;
     }
 
     private void validateProductId(Integer productId) {
