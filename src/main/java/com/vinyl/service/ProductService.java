@@ -69,7 +69,7 @@ public class ProductService {
     }
 
     public void addProductToStore(ProductManagementDTO productToAdd, String tokenHash) {
-        validateAdminToken(tokenHash);
+        validatorFactory.getAdminValidator().validate(tokenHash);
         validatorFactory.getProductManagementValidator().validate(productToAdd);
         Product newProduct = new Product();
         populateProduct(productToAdd, newProduct);
@@ -77,7 +77,7 @@ public class ProductService {
     }
 
     public void updateProduct(ProductManagementDTO updatedProduct, String tokenHash, Integer productId) {
-        validateAdminToken(tokenHash);
+        validatorFactory.getAdminValidator().validate(tokenHash);
         validatorFactory.getProductManagementValidator().validate(updatedProduct);
         validateProductId(productId);
         Product product = productRepository.findById(productId).get();
@@ -86,7 +86,7 @@ public class ProductService {
     }
 
     public void removeProductFromStore(String tokenHash, Integer productId) {
-        validateAdminToken(tokenHash);
+        validatorFactory.getAdminValidator().validate(tokenHash);
         validateProductId(productId);
         productRepository.delete(productRepository.findById(productId).get());
     }
@@ -102,10 +102,5 @@ public class ProductService {
         product.setArtist(requestProduct.getArtist());
         product.setCategory(requestProduct.getCategory());
         product.setDescription(requestProduct.getDescription());
-    }
-
-    public void validateAdminToken(String tokenHash) {
-        validatorFactory.getTokenValidator().validate(tokenHash);
-        validatorFactory.getAdminValidator().validate(tokenRepository.findByHash(tokenHash));
     }
 }

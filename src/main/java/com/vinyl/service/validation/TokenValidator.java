@@ -13,7 +13,7 @@ public class TokenValidator implements Validator<String> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserNameValidator.class);
 
-    private final TokenRepository tokenRepository;
+    protected final TokenRepository tokenRepository;
 
     public TokenValidator(TokenRepository tokenRepository) {
 
