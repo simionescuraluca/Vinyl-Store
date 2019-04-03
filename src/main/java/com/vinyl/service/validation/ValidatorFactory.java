@@ -1,6 +1,5 @@
 package com.vinyl.service.validation;
 
-import com.vinyl.model.Token;
 import com.vinyl.model.User;
 import com.vinyl.modelDTO.EmailPassDTO;
 import com.vinyl.modelDTO.ProductManagementDTO;
@@ -52,7 +51,7 @@ public class ValidatorFactory {
         return new ProductManagementValidator();
     }
 
-    public Validator<Token> getAdminValidator() {
+    public Validator<String> getAdminValidator() {
         return new AdminValidator(tokenRepository);
     }
 }

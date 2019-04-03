@@ -1,8 +1,7 @@
 package com.vinyl.service;
 
 import com.vinyl.model.*;
-import com.vinyl.modelDTO.AddProductToCartDTO;
-import com.vinyl.modelDTO.ProductManagementDTO;
+import com.vinyl.modelDTO.*;
 import com.vinyl.repository.CartRepository;
 import com.vinyl.repository.ProductCartRepository;
 import com.vinyl.repository.ProductRepository;
@@ -11,6 +10,9 @@ import com.vinyl.service.exception.BadRequestException;
 import com.vinyl.service.validation.ValidatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service("productService")
 public class ProductService {
@@ -69,7 +71,7 @@ public class ProductService {
     }
 
     public void addProductToStore(ProductManagementDTO productToAdd, String tokenHash) {
-        validateAdminToken(tokenHash);
+        validatorFactory.getAdminValidator().validate(tokenHash);
         validatorFactory.getProductManagementValidator().validate(productToAdd);
         Product newProduct = new Product();
         populateProduct(productToAdd, newProduct);
@@ -77,7 +79,7 @@ public class ProductService {
     }
 
     public void updateProduct(ProductManagementDTO updatedProduct, String tokenHash, Integer productId) {
-        validateAdminToken(tokenHash);
+        validatorFactory.getAdminValidator().validate(tokenHash);
         validatorFactory.getProductManagementValidator().validate(updatedProduct);
         validateProductId(productId);
         Product product = productRepository.findById(productId).get();
@@ -86,9 +88,23 @@ public class ProductService {
     }
 
     public void removeProductFromStore(String tokenHash, Integer productId) {
-        validateAdminToken(tokenHash);
+        validatorFactory.getAdminValidator().validate(tokenHash);
         validateProductId(productId);
         productRepository.delete(productRepository.findById(productId).get());
+    }
+
+    public InventoryListDTO getInventory(String tokenHash){
+        validateAdminToken(tokenHash);
+
+        List<Product> productList = productRepository.findAll();
+        List<InventoryDTO> inventory = new ArrayList<>();
+
+        for(Product p : productList){
+            inventory.add(new InventoryDTO(p.getId(),p.getProductName(),p.getStock()));
+        }
+
+        InventoryListDTO inventoryListDTO = new InventoryListDTO(inventory);
+        return inventoryListDTO;
     }
 
     private void validateProductId(Integer productId) {
@@ -102,10 +118,5 @@ public class ProductService {
         product.setArtist(requestProduct.getArtist());
         product.setCategory(requestProduct.getCategory());
         product.setDescription(requestProduct.getDescription());
-    }
-
-    public void validateAdminToken(String tokenHash) {
-        validatorFactory.getTokenValidator().validate(tokenHash);
-        validatorFactory.getAdminValidator().validate(tokenRepository.findByHash(tokenHash));
     }
 }
