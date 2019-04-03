@@ -45,4 +45,6 @@ public class GetInventoryTest extends ManagerBaseIntegration {
 
         return response;
     }
+
+
 }
