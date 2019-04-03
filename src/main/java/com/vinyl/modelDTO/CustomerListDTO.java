@@ -5,22 +5,22 @@ import io.swagger.annotations.ApiModel;
 import java.util.List;
 
 @ApiModel(description = "List containing customers details")
-public class GetUserListDTO {
+public class CustomerListDTO {
 
-    private List<GetUserDTO> users;
+    private List<CustomerDTO> users;
 
-    public GetUserListDTO() {
+    public CustomerListDTO() {
     }
 
-    public GetUserListDTO(List<GetUserDTO> users) {
+    public CustomerListDTO(List<CustomerDTO> users) {
         this.users = users;
     }
 
-    public List<GetUserDTO> getUsers() {
+    public List<CustomerDTO> getUsers() {
         return users;
     }
 
-    public void setUsers(List<GetUserDTO> users) {
+    public void setUsers(List<CustomerDTO> users) {
         this.users = users;
     }
 }

@@ -134,7 +134,7 @@ public class UserController {
     public ResponseEntity<?> getAllCustomers(@ApiParam(value = "Token hash to send in the request header", required = true) @RequestHeader(value = "Authorization", required = false) String auth) {
         String token = AuthenticationHeaderHelper.getTokenHashOrNull(auth);
 
-        GetUserListDTO customers = userService.getAllCustomers(token);
+        CustomerListDTO customers = userService.getAllCustomers(token);
 
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }

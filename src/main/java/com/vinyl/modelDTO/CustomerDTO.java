@@ -3,16 +3,16 @@ package com.vinyl.modelDTO;
 import io.swagger.annotations.ApiModel;
 
 @ApiModel(description = "Details about customer")
-public class GetUserDTO {
+public class CustomerDTO {
 
     private String email;
     private String firstName;
     private String lastName;
 
-    public GetUserDTO() {
+    public CustomerDTO() {
     }
 
-    public GetUserDTO(String email, String firstName, String lastName) {
+    public CustomerDTO(String email, String firstName, String lastName) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;

@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service("userService")
 public class UserService {
@@ -196,28 +197,21 @@ public class UserService {
         }
     }
 
-    public GetUserListDTO getAllCustomers(String tokenHash) {
-        validateAdminToken(tokenHash);
+    public CustomerListDTO getAllCustomers(String tokenHash) {
+        validatorFactory.getAdminValidator().validate(tokenHash);
 
         List<User> userList = userRepository.findAll();
-        List<GetUserDTO> customers = new ArrayList<>();
+        List<CustomerDTO> customers = new ArrayList<>();
 
-        for (User u : userList) {
-            customers.add(new GetUserDTO(u.getEmail(), u.getFirstName(), u.getSecondName()));
-        }
+        Stream<User> stream = userList.stream();
+        stream.forEach((User u) -> customers.add(new CustomerDTO(u.getEmail(), u.getFirstName(), u.getSecondName())));
 
-        GetUserListDTO allCustomers = new GetUserListDTO(customers);
+        CustomerListDTO allCustomers = new CustomerListDTO(customers);
         return allCustomers;
     }
 
     private Token getToken(String tokenHash) {
         validatorFactory.getTokenValidator().validate(tokenHash);
         return tokenRepository.findByHash(tokenHash);
-    }
-
-
-    public void validateAdminToken(String tokenHash) {
-        validatorFactory.getTokenValidator().validate(tokenHash);
-        validatorFactory.getAdminValidator().validate(tokenRepository.findByHash(tokenHash));
     }
 }
