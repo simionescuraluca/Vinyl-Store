@@ -51,15 +51,17 @@ public class ChangeOrderStatusTest extends ManagerBaseIntegration {
 
     @Test
     public void testWhenOrderIdIsInvalid(){
-        order.setId(00);
-        purchaseRepository.save(order);
-        ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
+        ResponseEntity<?> response = setUpHeaderAndGetTheResponse("/orders/" + 00);
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<?> setUpHeaderAndGetTheResponse() {
+    protected ResponseEntity<?> setUpHeaderAndGetTheResponse() {
+        return setUpHeaderAndGetTheResponse(getUrl());
+    }
+
+    private ResponseEntity<?> setUpHeaderAndGetTheResponse(String url) {
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
-        ResponseEntity<?> response = trt.exchange(getUrl(), getMethod(), getHttpEntity(headers), Void.class);
+        ResponseEntity<?> response = trt.exchange(url, getMethod(), getHttpEntity(headers), Void.class);
 
         return response;
     }
