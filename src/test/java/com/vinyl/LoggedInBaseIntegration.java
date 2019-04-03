@@ -41,6 +41,7 @@ public abstract class LoggedInBaseIntegration extends BaseIntegration {
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
+
     protected HttpEntity getHttpEntity(HttpHeaders headers) {
         return new HttpEntity<>(headers);
     }

@@ -27,11 +27,16 @@ public class DefaultEntitiesHelper {
     @Autowired
     private PurchaseProductRepository purchaseProductRepository;
 
+    @Autowired
+    private PurchaseRepository purchaseRepository;
+
     public void tearDown() {
         productCartRepository.deleteAll();
         purchaseProductRepository.deleteAll();
         productRepository.deleteAll();
+        purchaseRepository.deleteAll();
         cartRepository.deleteAll();
+
 
         tokenRepository.deleteAll();
         userRepository.deleteAll();
@@ -75,5 +80,23 @@ public class DefaultEntitiesHelper {
         productCart.setProductPrice(15.25);
 
         return productCartRepository.save(productCart);
+    }
+
+    public Purchase createPurchase( User user){
+        Purchase purchase = new Purchase();
+        purchase.setUser(user);
+        purchase.setStatus(Status.PROCESSED);
+        purchase.setDateCreated(LocalDate.now());
+
+        return purchaseRepository.save(purchase);
+    }
+
+    public PurchaseProduct createPurchaseProduct(Purchase purchase, Product product ){
+        PurchaseProduct purchaseProduct = new PurchaseProduct();
+        purchaseProduct.setNrItems(2);
+        purchaseProduct.setProduct(product);
+        purchaseProduct.setPurchase(purchase);
+
+        return purchaseProductRepository.save(purchaseProduct);
     }
 }
