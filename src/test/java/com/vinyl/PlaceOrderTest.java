@@ -11,6 +11,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 
+import java.util.List;
+
 public class PlaceOrderTest extends LoggedInBaseIntegration {
 
     @Autowired
@@ -43,9 +45,9 @@ public class PlaceOrderTest extends LoggedInBaseIntegration {
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Purchase purchase = purchaseRepository.findByUser(user);
+        List<Purchase> purchase = purchaseRepository.findByUser(user);
         Assertions.assertThat(purchase).isNotNull();
-        Assertions.assertThat(purchaseProductRepository.findByPurchase(purchase).getProduct().getProductName()).isEqualTo(product.getProductName());
+        Assertions.assertThat(purchaseProductRepository.findByPurchase(purchase.get(0)).getProduct().getProductName()).isEqualTo(product.getProductName());
     }
 
     @Test
@@ -64,7 +66,7 @@ public class PlaceOrderTest extends LoggedInBaseIntegration {
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        Assertions.assertThat(purchaseRepository.findByUser(user)).isNull();
+        Assertions.assertThat(purchaseRepository.findByUser(user)).isEmpty();
     }
 
     private ResponseEntity setUpHeaderAndGetTheResponse() {

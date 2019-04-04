@@ -203,6 +203,28 @@ public class UserService {
         return new CustomerListDTO(customers);
     }
 
+    public OrderListDTO getCustomerOrders(String tokenHash, Integer userId) {
+        validatorFactory.getAdminValidator().validate(tokenHash);
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException("User not found!"));
+
+        List<Purchase> purchases = purchaseRepository.findByUser(user);
+
+        List<OrderDTO> customerOrders = new ArrayList<>();
+
+        for (Purchase p : purchases) {
+            OrderDTO order = new OrderDTO();
+            Double orderCost = p.getProducts().stream().reduce(0.0, (a, ab) -> a + (ab.getNrItems() * ab.getProduct().getPrice()), (aa, bb) -> null);
+            order.setCost(orderCost);
+            order.setDateCreated(p.getDateCreated());
+            order.setStatus(p.getStatus());
+
+            customerOrders.add(order);
+        }
+
+        return new OrderListDTO(customerOrders);
+    }
+
     private Token getToken(String tokenHash) {
         validatorFactory.getTokenValidator().validate(tokenHash);
         return tokenRepository.findByHash(tokenHash);

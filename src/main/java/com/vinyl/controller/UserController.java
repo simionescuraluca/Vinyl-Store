@@ -138,4 +138,21 @@ public class UserController {
 
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
+
+    @ApiOperation(value = "Admin gets all orders of a customer", response = ResponseEntity.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 401, message = NOT_AUTHORIZED_MESSAGE),
+            @ApiResponse(code = 400, message = BAD_REQUEST_MESSAGE),
+            @ApiResponse(code = 200, message = "You successfully got the orders")
+
+    })
+    @RequestMapping(value = "/users/{userId}/orders", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllCustomerOrders(@ApiParam(value = "Token hash to send in the request header", required = true) @RequestHeader(value = "Authorization", required = false) String auth,
+                                                  @ApiParam(value = "Token hash to send in the request header", required = true) @PathVariable Integer userId) {
+        String token = AuthenticationHeaderHelper.getTokenHashOrNull(auth);
+
+        OrderListDTO orders = userService.getCustomerOrders(token, userId);
+
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
 }
