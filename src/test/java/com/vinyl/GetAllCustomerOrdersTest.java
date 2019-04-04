@@ -38,9 +38,13 @@ public class GetAllCustomerOrdersTest extends ManagerBaseIntegration {
     @Test
     public void testWhenOk() {
         ResponseEntity<OrderListDTO> response = setUpHeaderAndGetTheResponse();
+
         Assertions.assertThat(response.getStatusCode()).isEqualTo(OK);
         Assertions.assertThat(response.getBody().getOrders().size()).isEqualTo(1);
-        Assertions.assertThat(response.getBody().getOrders().get(0).getCost()).isEqualTo(product.getPrice() * purchaseProductRepository.findByPurchase(order).getNrItems());
+        Assertions.assertThat(response.getBody().getOrders().get(0).getStatus()).isEqualTo(order.getStatus());
+
+        Double expectedCost = 200.0;
+        Assertions.assertThat(response.getBody().getOrders().get(0).getCost()).isEqualTo(expectedCost);
     }
 
     @Test

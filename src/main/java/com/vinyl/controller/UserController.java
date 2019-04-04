@@ -99,7 +99,9 @@ public class UserController {
 
     })
     @RequestMapping(value = "/users/{userId}/{productId}", method = RequestMethod.POST)
-    public ResponseEntity<?> deleteProductFromCart(@RequestHeader(value = "Authorization", required = false) String auth, @PathVariable Integer userId, @PathVariable Integer productId) {
+    public ResponseEntity<?> deleteProductFromCart(@ApiParam(value = "Token hash to send in the request header", required = true) @RequestHeader(value = "Authorization", required = false) String auth, @PathVariable Integer userId,
+                                                   @ApiParam(value = "User id", required = true) @PathVariable Integer productId) {
+
 
         String token = AuthenticationHeaderHelper.getTokenHashOrNull(auth);
         userService.deleteProductFromCart(token, productId, userId);
@@ -148,7 +150,7 @@ public class UserController {
     })
     @RequestMapping(value = "/users/{userId}/orders", method = RequestMethod.GET)
     public ResponseEntity<?> getAllCustomerOrders(@ApiParam(value = "Token hash to send in the request header", required = true) @RequestHeader(value = "Authorization", required = false) String auth,
-                                                  @ApiParam(value = "Token hash to send in the request header", required = true) @PathVariable Integer userId) {
+                                                  @ApiParam(value = "User id", required = true) @PathVariable Integer userId) {
         String token = AuthenticationHeaderHelper.getTokenHashOrNull(auth);
 
         OrderListDTO orders = userService.getCustomerOrders(token, userId);
