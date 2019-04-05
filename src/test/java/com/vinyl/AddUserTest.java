@@ -29,12 +29,12 @@ public class AddUserTest extends BaseIntegration {
 
     private BCryptPasswordEncoder mockedPasswordEncoder;
 
-    UserDTO userDTO = new UserDTO();
+    UserDTO userDTO;
 
     @Override
     public void setUp() {
         super.setUp();
-        setUserDTO(userDTO);
+        userDTO = createUserDTO(userDTO);
         mockedPasswordEncoder = Mockito.mock(BCryptPasswordEncoder.class);
         Mockito.when(mockedPasswordEncoder.encode(any())).thenReturn(userDTO.getPass());
         passwordEncoder.setPasswordEncoder(mockedPasswordEncoder);
@@ -48,7 +48,7 @@ public class AddUserTest extends BaseIntegration {
 
     @Test
     public void testWhenOk() {
-        ResponseEntity<User> response = trt.exchange("/users", HttpMethod.POST, new HttpEntity<>(userDTO), User.class);
+        ResponseEntity<User> response = getResponse();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         User savedUser = userRepository.findByEmail(userDTO.getEmail()).get();
         Assertions.assertThat(savedUser).isNotNull();
@@ -60,38 +60,45 @@ public class AddUserTest extends BaseIntegration {
     @Test
     public void testWhenFirstNameIsInvalid() {
         userDTO.setFirstName("invalid_first_name");
-        assertResponseWhenInvalidInput();
+        sendRequestAndAssertResponseWhenInputIsInvalid();
     }
 
 
     @Test
     public void testwhenSecondNameIsInvalid() {
         userDTO.setSecondName("invalid_second_name");
-        assertResponseWhenInvalidInput();
+        sendRequestAndAssertResponseWhenInputIsInvalid();
     }
 
     @Test
     public void testWhenEmailIsInvalid() {
         userDTO.setEmail("invalid_email");
-        assertResponseWhenInvalidInput();
+        sendRequestAndAssertResponseWhenInputIsInvalid();
     }
 
     @Test
     public void testWhenPassIsInvalid() {
         userDTO.setPass("invalid_pass");
-        assertResponseWhenInvalidInput();
+        sendRequestAndAssertResponseWhenInputIsInvalid();
     }
 
-    private void assertResponseWhenInvalidInput() {
-        ResponseEntity<User> response = trt.exchange("/users", HttpMethod.POST, new HttpEntity<>(userDTO), User.class);
+    private void sendRequestAndAssertResponseWhenInputIsInvalid() {
+        ResponseEntity<User> response = getResponse();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         Assertions.assertThat(userRepository.findByEmail(userDTO.getEmail())).isNotNull();
     }
 
-    private void setUserDTO(UserDTO userDTO) {
+    private ResponseEntity<User> getResponse(){
+        return trt.exchange("/users", HttpMethod.POST, new HttpEntity<>(userDTO), User.class);
+    }
+
+    private UserDTO createUserDTO(UserDTO userDTO) {
+        userDTO = new UserDTO();
         userDTO.setEmail("test1@email.com");
         userDTO.setFirstName("Raluca");
         userDTO.setSecondName("Simionescu");
         userDTO.setPass("P@ssword1");
+
+        return userDTO;
     }
 }
