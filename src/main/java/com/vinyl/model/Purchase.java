@@ -21,8 +21,9 @@ public class Purchase {
     @NotNull
     @Column(nullable = false)
     private LocalDate dateCreated;
-    
+
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status;
     @NotNull
     @ManyToOne
