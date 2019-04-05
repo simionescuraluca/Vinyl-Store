@@ -37,7 +37,7 @@ public class AddUserValidator implements Validator<UserDTO> {
         validateEmail(userDto);
     }
 
-    public void validateName(UserDTO userDto) {
+    private void validateName(UserDTO userDto) {
         Matcher firstNameMatcher = NAME_PATTERN.matcher(userDto.getFirstName());
         Matcher secondNameMatcher = NAME_PATTERN.matcher(userDto.getSecondName());
         if (!firstNameMatcher.find() || !secondNameMatcher.find()) {
@@ -46,7 +46,7 @@ public class AddUserValidator implements Validator<UserDTO> {
         }
     }
 
-    public void validateEmail(UserDTO userDto) {
+    private void validateEmail(UserDTO userDto) {
         Matcher emailMatcher = EMAIL_PATTERN.matcher(userDto.getEmail());
         if (!emailMatcher.find()) {
             LOGGER.error("Invalid Email Error");
@@ -57,7 +57,7 @@ public class AddUserValidator implements Validator<UserDTO> {
         });
     }
 
-    public void validatePassword(UserDTO userDto) {
+    private void validatePassword(UserDTO userDto) {
         Matcher passwordMatcher = PASS_PATTERN.matcher(userDto.getPass());
         if (!passwordMatcher.find()) {
             LOGGER.error("Invalid Password Error");
