@@ -71,8 +71,6 @@ public class UserService {
         user.setSecondName(userDTO.getSecondName());
         user.setEmail(userDTO.getEmail());
         user.setPass(passwordEncoder.encode(userDTO.getPass()));
-        System.out.printf("ghghg");
-
     }
 
     private void addBasicRole(User user) {
