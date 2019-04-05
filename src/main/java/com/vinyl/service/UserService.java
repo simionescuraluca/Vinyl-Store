@@ -7,7 +7,6 @@ import com.vinyl.service.exception.BadRequestException;
 import com.vinyl.service.exception.UnauthorizedException;
 import com.vinyl.service.validation.ValidatorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,9 +28,6 @@ public class UserService {
     private AddressRepository addressRepository;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
     private ValidatorFactory validatorFactory;
 
     @Autowired
@@ -50,24 +46,37 @@ public class UserService {
     private ProductRepository productRepository;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private PurchaseProductRepository purchaseProductRepository;
 
-    public User addUser(User user) {
+    public User addUser(UserDTO userDTO) {
+        validatorFactory.getAddUserValidator().validate(userDTO);
+        User user = new User();
+        populateUser(userDTO, user);
+        addBasicRole(user);
+        addDefaultAddress(user);
+        return userRepository.save(user);
+    }
 
-        Role r = new Role("BASIC_USER");
-        r = roleRepository.save(r);
-        user.setRole(r);
-
+    private void addDefaultAddress(User user) {
         Address defaultAddress = addressRepository.findByCountryAndCityAndStreetAndNumber("Romania", "Iasi",
                 "Strada Palat", 1);
         user.setAddress(defaultAddress);
+    }
 
-        validatorFactory.getUserNameValidator().validate(user);
-        validatorFactory.getUserEmailValidator().validate(user);
-        validatorFactory.getUserPasswordValidator().validate(user);
+    private void populateUser(UserDTO userDTO, User user) {
+        user.setFirstName(userDTO.getFirstName());
+        user.setSecondName(userDTO.getSecondName());
+        user.setEmail(userDTO.getEmail());
+        user.setPass(passwordEncoder.encode(userDTO.getPass()));
+    }
 
-        user.setPass(passwordEncoder.encode(user.getPass()));
-        return userRepository.save(user);
+    private void addBasicRole(User user) {
+        Role r = new Role("BASIC_USER");
+        r = roleRepository.save(r);
+        user.setRole(r);
     }
 
     public void deleteUser(EmailPassDTO credentials) {

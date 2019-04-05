@@ -3,6 +3,7 @@ package com.vinyl.service.validation;
 import com.vinyl.model.User;
 import com.vinyl.modelDTO.EmailPassDTO;
 import com.vinyl.repository.UserRepository;
+import com.vinyl.service.PasswordEncoder;
 import com.vinyl.service.exception.BadRequestException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -11,9 +12,9 @@ import java.util.Optional;
 public class EmailAndPasswordValidator implements Validator<EmailPassDTO> {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    public EmailAndPasswordValidator(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public EmailAndPasswordValidator(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }

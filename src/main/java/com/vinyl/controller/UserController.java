@@ -2,7 +2,6 @@ package com.vinyl.controller;
 
 import com.vinyl.helper.AuthenticationHeaderHelper;
 import com.vinyl.model.Token;
-import com.vinyl.model.User;
 import com.vinyl.modelDTO.*;
 import com.vinyl.service.UserService;
 import io.swagger.annotations.*;
@@ -30,13 +29,8 @@ public class UserController {
     @RequestMapping(value = "/users", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> addUser(@ApiParam(value = "UserDTO object to send in the request body", required = true) @RequestBody UserDTO userDTO) {
 
-        User user = new User();
-        user.setFirstName(userDTO.getFirstName());
-        user.setSecondName(userDTO.getSecondName());
-        user.setEmail(userDTO.getEmail());
-        user.setPass(userDTO.getPass());
 
-        userService.addUser(user);
+        userService.addUser(userDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

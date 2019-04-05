@@ -4,6 +4,7 @@ import com.vinyl.model.Token;
 import com.vinyl.modelDTO.EmailPassDTO;
 import com.vinyl.modelDTO.TokenDTO;
 import com.vinyl.repository.TokenRepository;
+import com.vinyl.service.PasswordEncoder;
 import com.vinyl.service.validation.ValidatorFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -11,7 +12,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
@@ -21,15 +21,15 @@ public class LoginTest extends BaseIntegration {
     @Autowired
     private TokenRepository tokenRepository;
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private ValidatorFactory validatorFactory;
-    private BCryptPasswordEncoder mockedPasswordEncoder;
+    private PasswordEncoder mockedPasswordEncoder;
 
     @Override
     public void setUp() {
         super.setUp();
-        mockedPasswordEncoder = Mockito.mock(BCryptPasswordEncoder.class);
+        mockedPasswordEncoder = Mockito.mock(PasswordEncoder.class);
         Mockito.when(mockedPasswordEncoder.matches(anyString(), anyString())).thenReturn(true);
         validatorFactory.setPasswordEncoder(mockedPasswordEncoder);
     }
@@ -73,7 +73,7 @@ public class LoginTest extends BaseIntegration {
 
     @Test
     public void loginWithInvalidPass() {
-        validatorFactory.setPasswordEncoder(passwordEncoder);
+        Mockito.when(mockedPasswordEncoder.matches(anyString(), anyString())).thenReturn(false);
         EmailPassDTO request = new EmailPassDTO();
         request.setEmail(user.getEmail());
         request.setPass("thisisnotthepassword");
