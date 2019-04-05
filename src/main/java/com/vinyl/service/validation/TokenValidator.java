@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 public class TokenValidator implements Validator<String> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserNameValidator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TokenValidator.class);
 
     protected final TokenRepository tokenRepository;
 

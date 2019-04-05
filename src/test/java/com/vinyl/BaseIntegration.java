@@ -61,7 +61,7 @@ public abstract class BaseIntegration {
     public void createAddress() {
         address = new Address();
         address.setCity("Iasi");
-        address.setCountry("Romaniaa");
+        address.setCountry("Romania");
         address.setNumber(1);
         address.setStreet("Strada Palat");
         address = addressRepository.save(address);
