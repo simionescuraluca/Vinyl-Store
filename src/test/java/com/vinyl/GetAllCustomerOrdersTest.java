@@ -53,6 +53,7 @@ public class GetAllCustomerOrdersTest extends ManagerBaseIntegration {
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
+    @Override
     protected ResponseEntity<OrderListDTO> setUpHeaderAndGetTheResponse() {
         return setUpHeaderAndGetTheResponse(getUrl());
     }
