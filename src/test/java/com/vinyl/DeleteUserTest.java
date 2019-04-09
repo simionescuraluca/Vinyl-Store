@@ -18,8 +18,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 
 public class DeleteUserTest extends BaseIntegration {
 
-    private EmailPassDTO request;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -33,6 +31,8 @@ public class DeleteUserTest extends BaseIntegration {
 
     @Autowired
     private PurchaseRepository purchaseRepository;
+
+    private EmailPassDTO request;
 
     @Override
     public void setUp() {
