@@ -47,5 +47,6 @@ public abstract class LoggedInBaseIntegration extends BaseIntegration {
     }
 
     protected abstract String getUrl();
+
     protected abstract HttpMethod getMethod();
 }

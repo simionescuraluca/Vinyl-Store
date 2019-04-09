@@ -2,7 +2,8 @@
 <configuration>
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger{36}.%M - %msg%n</pattern>
+            <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger{36}.%M - %msg%n
+            </pattern>
         </encoder>
     </appender>
 
@@ -23,10 +24,10 @@
     </appender>
 
     <logger name="com.vinyl" level="error">
-        <appender-ref ref="SAVE-TO-FILE" />
+        <appender-ref ref="SAVE-TO-FILE"/>
     </logger>
 
     <root level="info">
-        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

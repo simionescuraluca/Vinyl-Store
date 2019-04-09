@@ -16,14 +16,11 @@ import org.springframework.http.*;
 public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
 
     @Autowired
+    ProductRepository productRepository;
+    @Autowired
     private CartRepository cartRepository;
-
     @Autowired
     private ProductCartRepository productCartRepository;
-
-    @Autowired
-    ProductRepository productRepository;
-
     private Product product;
 
     private Cart cart;
@@ -55,12 +52,12 @@ public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
     public void testWhenUserIsLoggedInAndTriesToDeleteFromAnotherCart() {
         User otherUser = createUser("otheruser@email.com");
         Cart otherCart = defaultEntitiesHelper.createCart(otherUser);
-        defaultEntitiesHelper.createProductCart(otherCart,product);
+        defaultEntitiesHelper.createProductCart(otherCart, product);
 
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse("/users/" + otherUser.getId() + "/" + product.getId());
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        Assertions.assertThat(productCartRepository.findByProductAndCart(product,otherCart)).isNotNull();
+        Assertions.assertThat(productCartRepository.findByProductAndCart(product, otherCart)).isNotNull();
     }
 
     @Test
@@ -76,7 +73,7 @@ public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
     public void testWhenProductIsInvalid() {
         deleteCart();
         defaultEntitiesHelper.createCart(user);
-        Integer invalidProductId=000;
+        Integer invalidProductId = 000;
 
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse("/users/" + user.getId() + "/" + invalidProductId);
 
@@ -121,7 +118,7 @@ public class DeleteProductFromCartTest extends LoggedInBaseIntegration {
     }
 
     @Override
-    protected HttpMethod getMethod(){
+    protected HttpMethod getMethod() {
         return HttpMethod.POST;
     }
 }

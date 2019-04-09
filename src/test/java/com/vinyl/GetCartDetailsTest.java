@@ -62,7 +62,7 @@ public class GetCartDetailsTest extends LoggedInBaseIntegration {
     }
 
     @Override
-    protected HttpMethod getMethod(){
+    protected HttpMethod getMethod() {
         return HttpMethod.GET;
     }
 }

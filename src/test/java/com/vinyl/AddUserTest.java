@@ -18,18 +18,14 @@ import static org.mockito.ArgumentMatchers.any;
 
 public class AddUserTest extends BaseIntegration {
 
+    UserDTO userDTO;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Autowired
     private BCryptPasswordEncoder originalPasswordEncoder;
-
     private BCryptPasswordEncoder mockedPasswordEncoder;
-
-    UserDTO userDTO;
 
     @Override
     public void setUp() {
@@ -87,7 +83,7 @@ public class AddUserTest extends BaseIntegration {
         Assertions.assertThat(userRepository.findByEmail(userDTO.getEmail())).isNotNull();
     }
 
-    private ResponseEntity<User> getResponse(){
+    private ResponseEntity<User> getResponse() {
         return trt.exchange("/users", HttpMethod.POST, new HttpEntity<>(userDTO), User.class);
     }
 
