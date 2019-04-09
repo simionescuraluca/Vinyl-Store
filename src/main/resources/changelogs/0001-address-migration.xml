@@ -1,136 +1,135 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog
-	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-	<changeSet id="1_create_address_table" author="raluca">
-		<preConditions onFail="MARK_RAN">
-			<not>
-				<tableExists tableName="ADDRESS" schemaName="vinylstore" />
-			</not>
-		</preConditions>
-		<createTable tableName="ADDRESS" schemaName="vinylstore">
-			<column name="id" type="int" autoIncrement="true"
-				startWith="1">
-				<constraints primaryKey="true" />
-			</column>
-			<column name="country" type="varchar(100)">
-				<constraints nullable="false" />
-			</column>
-			<column name="city" type="varchar(100)">
-				<constraints nullable="false" />
-			</column>
-			<column name="street" type="varchar(100)">
-				<constraints nullable="false" />
-			</column>
-			<column name="number" type="int">
-				<constraints nullable="false" />
-			</column>
+    <changeSet id="1_create_address_table" author="raluca">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ADDRESS" schemaName="vinylstore"/>
+            </not>
+        </preConditions>
+        <createTable tableName="ADDRESS" schemaName="vinylstore">
+            <column name="id" type="int" autoIncrement="true"
+                    startWith="1">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="country" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number" type="int">
+                <constraints nullable="false"/>
+            </column>
 
-		</createTable>
-	</changeSet>
+        </createTable>
+    </changeSet>
 
-	<changeSet id="2_add_uq_constraint" author="raluca">
-		<preConditions>
-			<sqlCheck expectedResult="0">
-				select count(*)
-				from
-				information_schema.table_constraints
-				where table_name='address'and
-				table_schema='vinylstore' and
-				constraint_type='UNIQUE';
-			</sqlCheck>
-		</preConditions>
-		<addUniqueConstraint
-			columnNames="country, city, street, number" tableName="ADDRESS"
-			schemaName="vinylstore" constraintName="uq_address" />
-	</changeSet>
+    <changeSet id="2_add_uq_constraint" author="raluca">
+        <preConditions>
+            <sqlCheck expectedResult="0">
+                select count(*)
+                from
+                information_schema.table_constraints
+                where table_name='address'and
+                table_schema='vinylstore' and
+                constraint_type='UNIQUE';
+            </sqlCheck>
+        </preConditions>
+        <addUniqueConstraint
+                columnNames="country, city, street, number" tableName="ADDRESS"
+                schemaName="vinylstore" constraintName="uq_address"/>
+    </changeSet>
 
-	<changeSet id="2_drop_user_address_column" author="raluca">
-		<preConditions onFail="MARK_RAN">
-			<columnExists columnName="address" tableName="USER" />
-		</preConditions>
-		<dropColumn schemaName="vinylstore" columnName="address"
-			tableName="USER" />
-	</changeSet>
+    <changeSet id="2_drop_user_address_column" author="raluca">
+        <preConditions onFail="MARK_RAN">
+            <columnExists columnName="address" tableName="USER"/>
+        </preConditions>
+        <dropColumn schemaName="vinylstore" columnName="address"
+                    tableName="USER"/>
+    </changeSet>
 
-	<changeSet id="3_add_user_address_id_" author="raluca">
-		<preConditions onFail="MARK_RAN">
-			<not>
-				<columnExists columnName="address_id" tableName="USER" />
-			</not>
-		</preConditions>
-		<addColumn schemaName="vinylstore" tableName="USER">
-			<column name="address_id" type="int">
-			</column>
-		</addColumn>
-	</changeSet>
+    <changeSet id="3_add_user_address_id_" author="raluca">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="address_id" tableName="USER"/>
+            </not>
+        </preConditions>
+        <addColumn schemaName="vinylstore" tableName="USER">
+            <column name="address_id" type="int">
+            </column>
+        </addColumn>
+    </changeSet>
 
-	<changeSet id="4_insert_default_address_in_address"
-		author="raluca">
-		<preConditions onFail="MARK_RAN">
-			<sqlCheck expectedResult="0">
-				SELECT
-				COUNT(1)
-				FROM
-				ADDRESS
-				WHERE
-				((ADDRESS.country="Romania") AND
-				(ADDRESS.city="Iasi") AND
-				(ADDRESS.street="Strada Palat") AND
-				(ADDRESS.number=1));
-			</sqlCheck>
-		</preConditions>
-		<sql>
-			INSERT INTO ADDRESS(country,city,street,number)
-			values("Romania","Iasi","Strada Palat", 1);
-		</sql>
-	</changeSet>
+    <changeSet id="4_insert_default_address_in_address"
+               author="raluca">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT
+                COUNT(1)
+                FROM
+                ADDRESS
+                WHERE
+                ((ADDRESS.country="Romania") AND
+                (ADDRESS.city="Iasi") AND
+                (ADDRESS.street="Strada Palat") AND
+                (ADDRESS.number=1));
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO ADDRESS(country,city,street,number)
+            values("Romania","Iasi","Strada Palat", 1);
+        </sql>
+    </changeSet>
 
-	<changeSet id="5_update_user_address_id" author="raluca" runOnChange="true">
-		<sql>
-			UPDATE USER
-			SET
-			USER.address_id=(SELECT ADDRESS.id from ADDRESS
-			WHERE
-			(ADDRESS.country="Romania") AND
-			(ADDRESS.city="Iasi") AND
-			(ADDRESS.street="Strada Palat") AND
-			(ADDRESS.number=1)
-			)
-			WHERE
-			USER.address_id is null;
-		</sql>
-	</changeSet>
+    <changeSet id="5_update_user_address_id" author="raluca" runOnChange="true">
+        <sql>
+            UPDATE USER
+            SET
+            USER.address_id=(SELECT ADDRESS.id from ADDRESS
+            WHERE
+            (ADDRESS.country="Romania") AND
+            (ADDRESS.city="Iasi") AND
+            (ADDRESS.street="Strada Palat") AND
+            (ADDRESS.number=1)
+            )
+            WHERE
+            USER.address_id is null;
+        </sql>
+    </changeSet>
 
-	<changeSet id="6_add_user_address_id_fk" author="raluca">
-		<preConditions onFail="MARK_RAN">
-			<not>
-				<foreignKeyConstraintExists
-					foreignKeyName="fk_user_address_id" />
-			</not>
-		</preConditions>
-		<addForeignKeyConstraint
-			constraintName="fk_user_address_id" baseTableName="USER"
-			baseColumnNames="address_id" baseTableSchemaName="vinylstore"
-			referencedTableName="ADDRESS" referencedColumnNames="id"
-			referencedTableSchemaName="vinylstore" />
-	</changeSet>
+    <changeSet id="6_add_user_address_id_fk" author="raluca">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists
+                        foreignKeyName="fk_user_address_id"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint
+                constraintName="fk_user_address_id" baseTableName="USER"
+                baseColumnNames="address_id" baseTableSchemaName="vinylstore"
+                referencedTableName="ADDRESS" referencedColumnNames="id"
+                referencedTableSchemaName="vinylstore"/>
+    </changeSet>
 
-	<changeSet id="7_add_not_null_address_id" author="raluca" runOnChange="true">
-		<preConditions onFail="MARK_RAN">
-			<sqlCheck expectedResult="1">
-				SELECT COUNT(*)
-				FROM INFORMATION_SCHEMA.COLUMNS
-				WHERE table_name='USER'
-				AND column_name='address_id' AND IS_NULLABLE = "YES";
-			</sqlCheck>
-		</preConditions>
-		<sql>
-			ALTER TABLE vinylstore.USER MODIFY address_id INT NOT NULL;
-		</sql>
-		<addNotNullConstraint columnDataType="int" schemaName="vinylstore" tableName="USER" columnName="address_id"/>
-	</changeSet>
+    <changeSet id="7_add_not_null_address_id" author="raluca" runOnChange="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*)
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE table_name='USER'
+                AND column_name='address_id' AND IS_NULLABLE = "YES";
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            ALTER TABLE vinylstore.USER MODIFY address_id INT NOT NULL;
+        </sql>
+        <addNotNullConstraint columnDataType="int" schemaName="vinylstore" tableName="USER" columnName="address_id"/>
+    </changeSet>
 </databaseChangeLog>

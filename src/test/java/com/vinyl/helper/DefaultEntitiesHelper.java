@@ -82,7 +82,7 @@ public class DefaultEntitiesHelper {
         return productCartRepository.save(productCart);
     }
 
-    public Purchase createPurchase( User user){
+    public Purchase createPurchase(User user) {
         Purchase purchase = new Purchase();
         purchase.setUser(user);
         purchase.setStatus(Status.PROCESSED);
@@ -91,7 +91,7 @@ public class DefaultEntitiesHelper {
         return purchaseRepository.save(purchase);
     }
 
-    public PurchaseProduct createPurchaseProduct(Purchase purchase, Product product ){
+    public PurchaseProduct createPurchaseProduct(Purchase purchase, Product product) {
         PurchaseProduct purchaseProduct = new PurchaseProduct();
         purchaseProduct.setNrItems(2);
         purchaseProduct.setProduct(product);

@@ -1,44 +1,43 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog
-	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-	<changeSet id="1_create_token_table" author="raluca">
-		<preConditions onFail="MARK_RAN">
-			<not>
-				<tableExists tableName="TOKEN" schemaName="vinylstore" />
-			</not>
-		</preConditions>
-		<createTable tableName="TOKEN" schemaName="vinylstore">
-			<column name="id" type="int" autoIncrement="true"
-				startWith="1">
-				<constraints primaryKey="true" />
-			</column>
-			<column name="hash" type="varchar(1000)">
-				<constraints nullable="false" />
-			</column>
-			<column name="valid_until" type="date">
-				<constraints nullable="false" />
-			</column>
-			<column name="user_id" type="int">
-				<constraints nullable="false" />
-			</column>
-		</createTable>
-	</changeSet>
-	
-	<changeSet id="2_add_foreign_key_to_user_in_token_table" author="raluca">
-			<preConditions onFail="MARK_RAN">
-			<not>
-				<foreignKeyConstraintExists
-					foreignKeyName="fk_token_user_id" />
-			</not>
-		</preConditions>
-				<addForeignKeyConstraint
-			constraintName="fk_token_user_id" baseTableName="TOKEN"
-			baseColumnNames="user_id" baseTableSchemaName="vinylstore"
-			referencedTableName="USER" referencedColumnNames="id"
-			referencedTableSchemaName="vinylstore" />
-	</changeSet>
+    <changeSet id="1_create_token_table" author="raluca">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="TOKEN" schemaName="vinylstore"/>
+            </not>
+        </preConditions>
+        <createTable tableName="TOKEN" schemaName="vinylstore">
+            <column name="id" type="int" autoIncrement="true"
+                    startWith="1">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="hash" type="varchar(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="valid_until" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2_add_foreign_key_to_user_in_token_table" author="raluca">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists
+                        foreignKeyName="fk_token_user_id"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint
+                constraintName="fk_token_user_id" baseTableName="TOKEN"
+                baseColumnNames="user_id" baseTableSchemaName="vinylstore"
+                referencedTableName="USER" referencedColumnNames="id"
+                referencedTableSchemaName="vinylstore"/>
+    </changeSet>
 </databaseChangeLog>

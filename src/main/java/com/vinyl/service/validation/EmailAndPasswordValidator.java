@@ -5,7 +5,6 @@ import com.vinyl.modelDTO.EmailPassDTO;
 import com.vinyl.repository.UserRepository;
 import com.vinyl.service.PasswordEncoder;
 import com.vinyl.service.exception.BadRequestException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 

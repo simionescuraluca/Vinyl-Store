@@ -40,6 +40,6 @@ public class AddProductToStoreTest extends ProductManagementBaseIntegration {
 
     @Override
     protected HttpMethod getMethod() {
-        return  HttpMethod.POST;
+        return HttpMethod.POST;
     }
 }

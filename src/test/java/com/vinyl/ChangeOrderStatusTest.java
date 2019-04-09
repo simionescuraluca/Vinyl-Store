@@ -42,7 +42,7 @@ public class ChangeOrderStatusTest extends ManagerBaseIntegration {
     }
 
     @Test
-    public void testWhenStatusIsInvalid(){
+    public void testWhenStatusIsInvalid() {
         status.setStatus("INVALID_STATUS");
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -50,7 +50,7 @@ public class ChangeOrderStatusTest extends ManagerBaseIntegration {
     }
 
     @Test
-    public void testWhenOrderIdIsInvalid(){
+    public void testWhenOrderIdIsInvalid() {
         ResponseEntity<?> response = setUpHeaderAndGetTheResponse("/orders/" + 00);
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }

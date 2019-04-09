@@ -20,21 +20,15 @@ import java.time.LocalDate;
 public class AddProductToCartTest extends BaseIntegration {
 
     @Autowired
+    ProductRepository productRepository;
+    @Autowired
     private TokenHeaderHelper tokenHeaderHelper;
-
     @Autowired
     private ProductCartRepository productCartRepository;
-
     @Autowired
     private CartRepository cartRepository;
-
     @Autowired
     private TokenRepository tokenRepository;
-
-
-    @Autowired
-    ProductRepository productRepository;
-
     private AddProductToCartDTO request;
 
     private Product product;

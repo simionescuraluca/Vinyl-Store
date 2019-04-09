@@ -62,7 +62,7 @@ public class RemoveProductFromStoreTest extends ManagerBaseIntegration {
         return response;
     }
 
-    public ResponseEntity<?> setUpHeaderAndGetTheResponse(Integer id){
+    public ResponseEntity<?> setUpHeaderAndGetTheResponse(Integer id) {
         HttpHeaders headers = tokenHeaderHelper.setupToken(token.getHash());
         ResponseEntity<?> response = trt.exchange("/products/" + id, HttpMethod.DELETE, new HttpEntity<>(headers), Void.class);
 
